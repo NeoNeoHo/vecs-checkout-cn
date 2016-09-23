@@ -5,7 +5,7 @@ angular.module('webApp')
 		var getTree = function() {
 			var defer = $q.defer();
 			// $http.get('/api/megamenus/')
-			$http.get('https://vecsgardenia.com/index.php?route=api/megamenu/getTree').then(function(result) {
+			$http.get('http://vecs-gardenia.com.cn/index.php?route=api/megamenu/getTree').then(function(result) {
 				defer.resolve(result.data.treemenu);
 			}, function(err) {
 				defer.reject(err);
