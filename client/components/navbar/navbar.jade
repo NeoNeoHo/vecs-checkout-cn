@@ -1,0 +1,93 @@
+div.home-default(ng-controller='NavbarController')
+	div.navbar.navbar-default.navbar-fixed-top.hidden-xs
+		div.container
+			div.navbar-header
+				button.navbar-toggle-vecs.pull-left(type='button', ng-click='isCollapsed = !isCollapsed')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				//- a.navbar-brand.hidden-xs(href='http://vecs-gardenia.com.cn') 嘉丹妮爾
+
+			div#navbar-main.navbar-collapse.collapse(uib-collapse='isCollapsed')
+				//- ul.nav.navbar-nav
+				//-   li(ng-repeat='item in nav.menu', ui-sref-active='active')
+				//-     a(ui-sref='{{item.state}}') {{item.title}}
+
+				//-   li(ng-show='isAdmin()', ui-sref-active='active')
+				//-     a(ui-sref='admin') Admin
+
+				ul.nav.navbar-nav.navbar-right.small
+					//- li(ng-hide='isLoggedIn()', ui-sref-active='active')
+					//-   a(ui-sref='signup') Sign up
+
+					//- li(ng-hide='isLoggedIn()', ui-sref-active='active')
+					//-   a(ui-sref='login') Login
+
+					li(ng-show='isLoggedIn()')
+						a 您好，{{ getCurrentUser().firstname }}
+
+					li(ng-show='isLoggedIn()', ui-sref-active='active')
+						a(href="http://vecs-gardenia.com.cn/index.php?route=account/account") 會員中心
+
+					li(ng-show='isLoggedIn()')
+						a(href="http://vecs-gardenia.com.cn/index.php?route=account/logout") 登出
+					
+					li.visible-xs(role="navigation")
+						a(href="http://vecs-gardenia.com.cn/") 所有商品
+							span.caret
+					
+					li.visible-xs(role="navigation")
+						a(href="http://blog.vecsgardenia.com/") VECS 小教室
+	div.navbar.navbar-default.navbar-static-top.visible-xs
+		div.container
+			div.navbar-header
+				button.navbar-toggle-vecs.pull-left(type='button', ng-click='isCollapsed = !isCollapsed')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand.hidden-xs(href='http://vecs-gardenia.com.cn') 嘉丹妮爾
+
+			div#navbar-main.navbar-collapse.collapse(uib-collapse='isCollapsed')
+				//- ul.nav.navbar-nav
+				//-   li(ng-repeat='item in nav.menu', ui-sref-active='active')
+				//-     a(ui-sref='{{item.state}}') {{item.title}}
+
+				//-   li(ng-show='isAdmin()', ui-sref-active='active')
+				//-     a(ui-sref='admin') Admin
+
+				ul.nav.navbar-nav.navbar-right.small
+					//- li(ng-hide='isLoggedIn()', ui-sref-active='active')
+					//-   a(ui-sref='signup') Sign up
+
+					//- li(ng-hide='isLoggedIn()', ui-sref-active='active')
+					//-   a(ui-sref='login') Login
+
+					li(ng-show='isLoggedIn()')
+						a 您好，{{ getCurrentUser().firstname }}
+
+					li(ng-show='isLoggedIn()', ui-sref-active='active')
+						a(href="http://vecs-gardenia.com.cn/index.php?route=account/account") 會員中心
+
+					li(ng-show='isLoggedIn()')
+						a(href="http://vecs-gardenia.com.cn/index.php?route=account/logout") 登出
+					
+					li.visible-xs(role="navigation")
+						a(href="http://vecs-gardenia.com.cn/") 所有商品
+							span.caret
+					
+					li.visible-xs(role="navigation")
+						a(href="http://blog.vecsgardenia.com/") VECS 小教室
+	.container
+		.inner(style="width:100%")
+			.logo-store#logo
+				a(href="http://vecs-gardenia.com.cn")
+					img.img-responsive.center-block.logo(src="../assets/images/checkout/vecslogoweb.jpg")
+		.row.hidden-xs
+			.mainnav-default#pav-mainnav
+				.mainnav-wrap
+					.pav-megamenu
+						.navbar
+							.megamenu#mainmenutop(role="navigation")
+								ng-bind-html(ng-bind-html="trustAsHtml(megamenu)")

@@ -1,0 +1,71 @@
+navbar
+.container#form-container
+	.row
+		div.col-xs-10.col-xs-offset-1
+			div.jumbotron.text-center.text-white.hidden-xs(style="background-image: url('../assets/images/checkout/03.jpg'); background-size: 100% auto;", ng-click="backToHome()")
+				h1 謝謝您的購買
+				p 我們的出貨小組已經收到您的訂單
+				button.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官網首頁
+					span.glyphicon.glyphicon-home.pull-right
+			div.well.text-center.visible-xs(style="border:0px solid black;")
+				h2 謝謝您的購買
+				p 我們的出貨小組已經收到您的訂單
+				a.btn.btn-default.btn-lg(ng-click="backToHome()", role="button") 回到官網首頁
+			.page-header.h4 
+				| 訂單資訊 （訂單編號：{{order.order_id}}）
+			.row
+				.col-md-12
+					table.table.table-default
+						tr
+							th.col-lg-6.col-md-6.col-sm-6.col-xs-6.text-center 商品名稱
+							th.col-lg-2.col-md-2.col-sm-2.col-xs-2.text-center 數量
+							th.col-lg-1.col-md-3.col-sm-3.col-xs-3.text-center 總價
+						tr(ng-repeat="product in order.products")
+							td 
+								a.text-center(ng-href="{{product.href}}") {{product.name}}
+								em.small(ng-repeat="option in product.options")
+									br
+									| {{option.name}},{{option.value}}
+							td.text-center {{product.quantity}}
+							td.text-center {{product.total}}
+					em.pull-right ({{order.payment_method}} , {{order.shipping_method}})
+			.row
+				.col-md-4.col-md-offset-8.col-xs-12
+					table.table
+						tr(ng-repeat="order_total in order_totals")
+							td.text-right {{order_total.title}}:
+							td.text-right $ {{order_total.value}}
+			.page-header.h4 商品處理資訊
+			.row
+				div.col-md-4
+					div.well(ng-class="{'well-blur': (order_status_level!= '_created')}")
+						.row
+							.col-xs-4
+								img.center-block(src='../assets/images/checkout/box.png', style="width:100%")
+							.col-xs-8
+								p.text-center 我們已經收到您的訂單。嘉丹妮爾的出貨小組將會盡快為您裝箱與出貨。再耐心等一下下吧！
+					
+				div.col-md-4.hidden-xs
+					div.well(ng-class="{'well-focus': (order_status_level=='_shipped'), 'well-blur': (order_status_level!= '_shipped')}")
+						.row
+							.col-xs-4
+								img.center-block(src='../assets/images/checkout/car.png', style="width:100%")
+							.col-xs-8
+								p.text-center 出貨囉！！若是超商取貨，商品到店後會寄簡訊通知您
+				div.col-md-4.hidden-xs
+					div.well(ng-class="{'well-focus': (order_status_level=='_received'), 'well-blur': (order_status_level!= '_received')}")
+						.row
+							.col-xs-4
+								img.center-block(src='../assets/images/checkout/gift.png', style="width:100%")
+							.col-xs-8
+								p.text-center 謝謝您的訂購，希望拿到商品的您會喜歡嘉丹妮爾
+			.page-header
+			div.text-muted
+				p 注意事項：
+				ul
+					li 當您完成商品訂購程序之後，系統將會自動發送電子郵件於您所留的電子郵件信箱。您可隨時至「訂單查詢」確認訂單最新資料，並可點選該筆訂單的「訂單明細」確認付款/出貨資訊等資料。
+					li 若當次訂購享有跨產品或滿額贈禮優惠者，有需要取消或退貨時，需將當次訂購之商品全部取消或退貨。
+					li 辦理退換貨時，您需要負擔商品寄至本公司的郵資。
+
+			button.col-md-3.col-xs-10.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官網首頁
+				span.glyphicon.glyphicon-home.pull-right

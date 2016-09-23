@@ -1,0 +1,150 @@
+div.panel.panel-default
+	div.panel-body
+		table#checkout_cart_table_final.table.checkout-cart.table-default.hidden-xs
+			tr
+				th.col-md-6.text-center 商品名稱
+				th.col-md-2 數量
+				th.col-md-2 單價
+				th.col-md-2 總價
+			tr(ng-repeat="product in cart.products")
+				td.cart-name
+					div.col-md-4
+						a(ng-href="{{product.href}}")
+							img.img-responsive(ng-attr-title="{{product.name}}", ng-src="{{product.image}}", style="width:100%")
+					div.col-md-8
+						a(ng-href="{{product.href}}")
+							h5 {{product.name}}
+						h6(ng-repeat="option_product in product.option") {{option_product.value}}
+						h6(ng-show="product.reward") + 紅利 {{product.reward}} 點  
+				td.cart-quantity {{product.quantity}}
+				td.cart-price
+					| $ {{product.spot_price + product.option_price}}
+					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
+						| $ {{product.price.unit_price + product.option_price}} 
+					div.text-green(ng-repeat="discount_condition in product.discount")
+						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
+				td.cart-total $ {{product.total}}
+		table#checkout_cart_table_final_xs.table.checkout-cart.table-default.visible-xs
+			tr
+				th.col-xs-8.text-center 商品名稱
+				th.col-xs-4 數量
+			tr(ng-repeat-start="product in cart.products")
+				td(rowspan="2").cart-name
+					div.col-xs-12
+						a(ng-href="{{product.href}}")
+							img.img-responsive(ng-attr-title="{{product.name}}", ng-src="{{product.image}}", style="width:100%", ng-loading)
+				td.cart-quantity 
+					h3 {{product.quantity}}件
+			tr
+				td(colspan="2") 
+					h3 $ {{product.spot_price + product.option_price}}
+						small /件
+					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
+						| $ {{product.price.unit_price + product.option_price}} 
+			tr(ng-repeat-end)
+				td(colspan="3", style="border-top:0px solid black;")
+					div
+						a(ng-href="{{product.href}}")
+							h5 {{product.name}}
+						span(ng-repeat="option_product in product.option") {{option_product.value}}，
+						h6(ng-show="product.reward") + 紅利 {{product.reward}} 點  
+					div.text-green(ng-repeat="discount_condition in product.discount")
+						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
+
+div.panel.panel-default
+	div.panel-body
+		.row
+			.col-md-6.col-xs-12.dl-horizontal
+				dl
+					dt 配送方式
+					dd 
+						b {{shipping_info.shipment_sel_str}}
+						br
+						address#home(ng-show="shipping_info.shipment_sel_str !== SHIPPING_NAME.ship_to_store")
+							span {{shipping_info.district_d.postcode + '，' + shipping_info.city_d.name + shipping_info.district_d.name + shipping_info.address}}
+							span(ng-show="shipping_info.shipment_sel_str === SHIPPING_NAME.ship_to_overseas") ，{{shipping_info.country_d.name}}
+							br
+							| 收件人：{{shipping_info.firstname}}
+							br
+							| 電話：{{shipping_info.telephone}}
+						address#store(ng-show="shipping_info.shipment_sel_str === SHIPPING_NAME.ship_to_store")
+							span 店名：{{shipping_info.ezship_store_info.stName}}
+							br
+							|	地址：{{shipping_info.ezship_store_info.stAddr}}
+							br
+							| 收件人：{{shipping_info.firstname}}
+							br
+							| 電話：{{shipping_info.telephone}}
+				dl
+					dt 付款方式
+					dd 
+						b {{shipping_info.payment_sel_str}}
+				dl
+					dt 訂單備註
+					dd
+						p
+							b(ng-show="shipping_info.comment") {{shipping_info.comment}}
+						p
+							b(ng-show="shipping_info.company_id") {{shipping_info.company_id}}
+			.col-md-2.hidden-xs
+				img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
+			.col-md-4.pull-right.hidden-xs
+				table.table
+					tr
+						td.text-right 商品總計:
+						td.text-right $ {{cart.product_total_price}}
+					tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
+						td.text-right 紅利折扣:
+						td.text-right - $ {{cart.discount.reward.saved_amount}}
+					tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
+						td.text-right 折扣碼
+							b {{cart.discount.coupon.name}}:
+						td.text-right - $ {{cart.discount.coupon.saved_amount}}
+					tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
+						td.text-right 禮品券:
+						td.text-right 
+							| - $ {{cart.discount.voucher.saved_amount}}
+							br
+							small 尚餘 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
+					tr
+						td.text-right 運費:
+						td.text-right $ {{cart.shipment_fee}}
+					tr.h2
+						td.text-right 總計
+						td.text-right $ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+
+div.visible-xs
+	.row
+		//- .col-xs-5
+			//- img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
+		.col-xs-12
+			table.table
+				tr
+					td.text-right 商品總計:
+					td.text-right $ {{cart.product_total_price}}
+				tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
+					td.text-right 紅利折扣:
+					td.text-right - $ {{cart.discount.reward.saved_amount}}
+				tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
+					td.text-right 折扣碼
+						b {{cart.discount.coupon.name}}:
+					td.text-right - $ {{cart.discount.coupon.saved_amount}}
+				tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
+					td.text-right 禮品券:
+					td.text-right 
+						| - $ {{cart.discount.voucher.saved_amount}}
+						br
+						small 尚餘 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
+				tr
+					td.text-right 運費:
+					td.text-right $ {{cart.shipment_fee}}
+				tr.h3
+					td.text-right 總計
+					td.text-right $ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+div.loading(ng-show="cross_obj.is_submitted") Loading
+div.row.panel.panel-body
+	button.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-click="checkout_second_step()") 上一步
+	button.col-md-3.col-xs-7.btn.btn-default.btn-sharp.btn-lg.pull-right.text-justify(ng-click="proceedCheckout()", ng-disabled="checkout_form.$invalid || cross_obj.is_submitted") 送出結帳
+		span.glyphicon.glyphicon-circle-arrow-right.pull-right(ng-show="!cross_obj.is_submitted")
+		i.fa.fa-spinner.fa-pulse.fa-1x.fa-fw.pull-right(ng-show="cross_obj.is_submitted")
+		span.sr-only(ng-show="cross_obj.is_submitted") Loading ...

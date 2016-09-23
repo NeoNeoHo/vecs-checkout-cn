@@ -1,0 +1,161 @@
+.page-header.h4
+	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
+	| 選擇配送方式
+	small(type="button", ng-show="shipping_info.shipment_sel_str") {{shipping_info.shipment_sel_str}} (運費 +{{cart.shipment_fee}}元)
+div
+	div.btn-group-lg.hidden-xs
+		.row
+			.col-md-4
+				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_overseas", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_overseas)", required) 
+					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_overseas}}
+						span 
+						img(src='../assets/images/checkout/airplane.png', style="height:40px")
+			.col-md-4		
+				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_home", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_home)", required) 
+					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_home}}
+						span  
+						img(src='../assets/images/checkout/house.png', style="height:40px")
+			.col-md-4
+				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_store", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_store)", required) 
+					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_store}}
+						span  
+						img(src='../assets/images/checkout/family.png', style="height:40px")
+						img(src='../assets/images/checkout/hilife.png', style="height:40px")
+						img(src='../assets/images/checkout/ok1.png', style="height:40px")
+	div.btn-group-vertical.btn-group-lg.visible-xs
+		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_overseas", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_overseas)", required) 
+			.row
+				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_overseas}}
+				.col-xs-6
+					img.img-responsive.center-block(src='../assets/images/checkout/airplane.png', style="width:30px")
+		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_home", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_home)", required) 
+			.row
+				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_home}}
+				.col-xs-6
+					img.img-responsive.center-block(src='../assets/images/checkout/house.png', style="width:30px")
+		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_store", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_store)", required) 
+			.row
+				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_store}}
+				.col-xs-6.center-block
+					img(src='../assets/images/checkout/family.png', style="width:30px")
+					img(src='../assets/images/checkout/hilife.png', style="height:30px")
+					img(src='../assets/images/checkout/ok1.png', style="height:30px")
+	div.well(ng-show="shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_store")
+		.row
+			.col-sm-6.col-sm-offset-3
+				.row(ng-show="ezship_store_info")
+					p 您選擇的是: 
+						strong {{ezship_store_info.stName}}                    
+					p 地址為: 
+						strong {{ezship_store_info.stAddr}}
+				.row
+					button.btn.btn-vecs-default.form-control(ng-click="setEzshipStore()", ng-class="{'form-invalid': shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_store && !shipping_info.ezship_store_info}") {{store_select_text}}
+				.row
+					br
+					li.text-center 
+						small.text-muted 當商品送達您指定之全家或萊爾富門市時，將會發送簡訊到店通知。
+	div.well(ng-show="shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_overseas")
+		ul.small.text-muted
+			li 港澳，新加坡，馬來西亞一律 350元 ， 費用不包含保險，滿5000元可享免運
+			li 中國，韓國，日本，澳洲，紐西蘭，加拿大，美國，英國一律550元，費用不包含保險，滿6000元可享免運
+			li 其他地區請來信至 customer@vecsgardenia.com
+
+.page-header.h4 
+	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
+	| 選擇付款方式
+div.row
+	.col-xs-12
+		.row
+			div.col-md-4.col-xs-12(ng-show="payment_btn.credit_pay")
+				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.credit_pay", required) {{PAYMENT_NAME.credit_pay}}
+			div.col-md-4.col-xs-12(ng-show="payment_btn.hand_pay")
+				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.hand_pay", required) {{PAYMENT_NAME.hand_pay}}
+			div.col-md-4.col-xs-12(ng-show="payment_btn.store_pay")
+				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.store_pay", required, ng-disabled="cart.total_price_with_discount > EZSHIP_PRICE_UPPER_BOUND") {{PAYMENT_NAME.store_pay}}
+				.small.text-muted
+					br
+					li 若訂購金額高於NTD6000，無法提供此項服務。
+
+
+div.page-header.h4 
+	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
+	| 收件人資料
+div.panel.panel-default
+	div.panel-body
+		div.form-group.required
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_name') 姓名
+			div.col-md-4.col-sm-10.col-xs-8
+				input.form-control(type='text', name='input_name', placeholder='請填寫真實姓名，以利寄送', ng-model="shipping_info.firstname", ng-minlength="2", required)
+		div.form-group.required(ng-class="{'disabled': payment_btn.store_pay}")
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_country') 地址
+			.row.col-sm-4.col-xs-8(ng-show="shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_overseas")
+				div.col-sm-6.col-xs-12
+					select.form-control(ng-options="country.country_id as country.name for country in country_coll", ng-model="shipping_info.country_id", ng-change="setCities(shipping_info.country_id)", name="input_country")
+						option(value='') 國家
+				div.col-sm-6.col-xs-12
+					select.form-control(ng-options="city.zone_id as city.name for city in city_coll", ng-model="shipping_info.city_id", ng-change="setCityName(shipping_info.city_id)", ng-disabled="!with_city_ready", name="input_city")
+						option(value='') 城市
+			.row.col-sm-4.col-xs-8(ng-show="shipping_info.shipment_sel_str != SHIPPING_NAME.ship_to_overseas")
+				div.col-sm-6.col-xs-12
+					select.form-control(ng-options="city.zone_id as city.name for city in city_coll", ng-model="shipping_info.city_id", ng-change="setDistricts(shipping_info.city_id)", ng-disabled="!with_city_ready", name="input_city2")
+						option(value='') 縣市
+				div.col-sm-6.col-xs-12
+					select.form-control(ng-options="district.district_id as district.name for district in district_coll", ng-model="shipping_info.district_id", ng-disabled="!shipping_info.city_id && !with_district_ready", ng-change="setDistrictName(shipping_info.district_id)", name="input_district")
+						option(value='') 鄉鎮市區
+			div.col-sm-6.col-xs-8.pull-right
+				input.form-control(type='address', id='input_address', placeholder='您的地址', ng-model="shipping_info.address", name="input_address")
+		div.form-group.required
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_phone') 行動電話
+			div.col-md-4.col-sm-10.col-xs-8
+				input.form-control(type='tel', name='input_phone', ng-model="shipping_info.telephone", ng-minlength="10", required) 
+
+div.page-header.h4(ng-click="with_memo_collapsed = !with_memo_collapsed") 
+	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
+	| 發票及備註資訊(選填)
+div.panel.panel-default
+	div.panel-body
+		div.form-group
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_comment') 訂單備註：
+			div.col-md-4.col-sm-10.col-xs-8
+				input.form-control(ng-model="shipping_info.comment", type='textarea', name='input_comment', placeholder='選填') 
+		div.form-group
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_comp_id') 發票統編：
+			div.col-md-4.col-sm-10.col-xs-8
+				input.form-control(ng-model="shipping_info.company_id", type='number', name='input_comp_id', placeholder='請填寫發票統編(8位數字)，選填', ng-minlength="8", ng-maxlength="8")
+		div.form-group
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_comp_name') 買受人：
+			div.col-md-4.col-sm-10.col-xs-8
+				input.form-control(ng-model="shipping_info.company_name", type='text', name='input_comp_name', placeholder='選填') 
+.row(ng-hide="true;")
+	.col-md-3
+		div.page-header.h4 
+			img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
+			| 總計
+		table.table
+			tr
+				td.text-right 商品總計:
+				td.text-right $ {{cart.product_total_price}}
+			tr(style="color:green")
+				td.text-right 折扣:
+				td.text-right - $ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
+			tr
+				td.text-right 運費:
+				td.text-right $ {{cart.shipment_fee}}
+			tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
+				td.text-right 禮品券:
+				td.text-right 
+					| - $ {{cart.discount.voucher.saved_amount}}
+					br
+					small 尚餘 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
+			tr.h2
+				td.text-right 總計
+				td.text-right $ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+.row
+	div.panel.panel-body
+		button.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-click="checkout_first_step()") 上一步
+		div.col-md-3.col-xs-7.pull-right
+			.row
+				button.col-xs-12.btn.btn-vecs.btn-sharp.btn-lg.text-justify(ng-click="checkout_third_step()", ng-disabled="checkout_form.$invalid", ng-class="{'btn-danger': checkout_form.$invalid}") 下一步
+					span.glyphicon.glyphicon-circle-arrow-right.pull-right
+			.row(ng-show="checkout_form.$invalid || !is_address_valid")
+				p.text-danger --請檢查以上填寫的送貨資料 
