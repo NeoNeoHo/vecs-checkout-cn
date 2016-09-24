@@ -9,6 +9,7 @@ import path from 'path';
 
 export default function(app) {
 	// Insert routes below
+	app.use('/api/alipays', require('./api/alipay'));
 	app.use('/api/customers', require('./api/customer'));
 	app.use('/api/rewards', require('./api/reward'));
 	app.use('/api/coupons', require('./api/coupon'));
