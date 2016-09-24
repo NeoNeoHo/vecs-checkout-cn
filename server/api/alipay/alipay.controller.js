@@ -41,8 +41,10 @@ exports.create_direct_pay_by_user = function(req, res) {
 		}
 		var commercial_data = {
 			out_trade_no: order_id,
-			subject: order.firstname + '\'s order',
-			total_fee: order.total
+			subject: 'order',
+			total_fee: order.total,
+			body:'',
+			show_url:''
 		};
 		//建立请求
 		var alipaySubmit = new AlipaySubmit(ALIPAY_CONFIG);

@@ -103,15 +103,13 @@ AlipaySubmit.prototype.buildRequestForm = function (para_temp, method, button_na
             +  "_input_charset="
             + this.alipay_config['input_charset'].toLowerCase().trim()
             + "' method='" + method + "'>";
-
     for(var key in para){
         var val = para[key];
-        sHtml += "<input type='hidden' name='" + key + "' value='" + val + "'/>";
+        sHtml += "<input type='hidden' name='" + key + "' value='" + val + "'>";
     }
 
     //submit按钮控件请不要含有name属性
     sHtml = sHtml+ "<input type='submit' value='" + button_name + "'></form>";
-
     sHtml = sHtml + "<script>document.forms['alipaysubmit'].submit();</script>";
 
     return sHtml; 
