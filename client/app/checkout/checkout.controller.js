@@ -110,7 +110,7 @@ angular.module('webApp')
 		$scope.payment_btn = {
 			store_pay: true,
 			hand_pay: true,
-			credit_pay: true
+			alipay: true
 		};
 		$scope.with_city_ready = false;
 		$scope.with_district_ready = false;
@@ -220,7 +220,7 @@ angular.module('webApp')
 			$scope.shipping_info.country_id = 206;
 			$scope.payment_btn.store_pay = (lstrcmp([SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
 			$scope.payment_btn.hand_pay = (lstrcmp([SHIPPING_NAME.ship_to_home], lmethod)) ? true : false;
-			$scope.payment_btn.credit_pay = (lstrcmp([SHIPPING_NAME.ship_to_home,SHIPPING_NAME.ship_to_overseas, SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
+			$scope.payment_btn.alipay = (lstrcmp([SHIPPING_NAME.ship_to_home,SHIPPING_NAME.ship_to_overseas, SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
 
 			
 			var total_price_with_discount = $scope.cart.product_total_price - $scope.cart.discount.reward.saved_amount - $scope.cart.discount.coupon.saved_amount;
@@ -403,8 +403,8 @@ angular.module('webApp')
 					case PAYMENT_NAME.store_pay:
 						payment_promise = Payment.setPayOnStore(resp_new_order_id);
 						break;
-					case PAYMENT_NAME.credit_pay:
-						payment_promise = Payment.setPayByCreditCard(resp_new_order_id);
+					case PAYMENT_NAME.alipay:
+						payment_promise = Payment.setPayByAlipay(resp_new_order_id);
 						break;
 					default:
 						alert('請檢查付款方式，謝謝');
@@ -416,10 +416,10 @@ angular.module('webApp')
 
 				// Step 5-2. 再處理付款方式，回傳訂單狀態與訂單編號
 				payment_promise.then(function(datas) {
-					console.log('完成付款部分: ');
 					var checkout_result = datas;
-					console.log(checkout_result);
-					if(payment_method !== PAYMENT_NAME.credit_pay) {
+					if(payment_method == PAYMENT_NAME.alipay) {
+						$scope.alipay_form_html = $sce.trustAsHtml(checkout_result);
+					} else {
 						$location.path('/checkout/success').search({order_id: checkout_result.order_id}).hash('');
 					}
 				}, function(err) {

@@ -10,17 +10,17 @@ angular.module('webApp')
 		var PAY_ON_STORE_METHOD = Config.PAYMENT_NAME.store_pay;
 		var PAY_ON_STORE_SUCCESS_ORDER_STATUS_ID = 58;
 
-		var PAY_BY_CREDIT_CARD_METHOD = Config.PAYMENT_NAME.credit_pay;
-		var PAY_BY_CREDIT_CARD_STATUS_coll = [
+		var PAY_BY_ALIPAY_METHOD = Config.PAYMENT_NAME.alipay;
+		var PAY_BY_ALIPAY_STATUS_coll = [
 			{shipping_method: Config.SHIPPING_NAME.ship_to_home, confirm_status_id: 53, success_status_id: 54},
 			{shipping_method: Config.SHIPPING_NAME.ship_to_store, confirm_status_id: 56, success_status_id: 57},
 			{shipping_method: Config.SHIPPING_NAME.ship_to_overseas, confirm_status_id: 59, success_status_id: 60}
 		];
 
-		var getCathayStrRqXML = function(order_id) {
+		var getAliDirectPaySubmitForm = function(order_id) {
 			var defer = $q.defer();
-			$http.get('/api/payment/cathay/rqXML/'+order_id).then(function(resp) {
-				defer.resolve(resp.data.rqXML);
+			$http.get('/api/alipays/'+order_id).then(function(data) { //order_id: 36758
+				defer.resolve(data.data);
 			}, function(err) {
 				defer.reject(err);
 			});
@@ -80,23 +80,23 @@ angular.module('webApp')
 			return defer.promise;
 		};
 
-		var setPayByCreditCard = function(order_id) {
+
+		//支付宝即时到帐交易接口
+		var setPayByAlipay = function(order_id) {
 			var defer = $q.defer();
 			Order.getOrder(order_id).then(function(orders) {
 				var order = orders[0];
 				var shipping_method = order.shipping_method;
-				var matched_shipping_method = _.find(PAY_BY_CREDIT_CARD_STATUS_coll, {shipping_method: shipping_method})
+				var matched_shipping_method = _.find(PAY_BY_ALIPAY_STATUS_coll, {shipping_method: shipping_method})
 				var confirm_order_status_id = matched_shipping_method ? matched_shipping_method.confirm_status_id : 0;
 
 				var update_dict = {
-					payment_method: PAY_BY_CREDIT_CARD_METHOD,
+					payment_method: PAY_BY_ALIPAY_METHOD,
 					order_status_id: confirm_order_status_id
 				};
 				Order.updateOrder(order_id, update_dict).then(function(data) {
-					getCathayStrRqXML(order_id).then(function(strRqXML) {
-						document.getElementById("strRqXMLID").value = strRqXML;
-						document.getElementById("cathay_order_form").submit();
-						defer.resolve(data);
+					getAliDirectPaySubmitForm(order_id).then(function(html_form) {
+						defer.resolve(html_form);
 					}, function(err) {
 						console.log(err);
 						defer.reject(err);
@@ -114,6 +114,6 @@ angular.module('webApp')
 		return {
 			setPayOnDeliver: setPayOnDeliver,
 			setPayOnStore: setPayOnStore,
-			setPayByCreditCard: setPayByCreditCard
+			setPayByAlipay: setPayByAlipay
 		};
 	});

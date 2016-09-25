@@ -36,7 +36,7 @@ angular.module('webApp')
 		var PAYMENT_NAME = {
 			store_pay: '超商付現',
 			hand_pay: '貨到付款',
-			credit_pay: '信用卡'
+			alipay: '支付寶'
 		};
 
 		var SHIPPING_NAME = {

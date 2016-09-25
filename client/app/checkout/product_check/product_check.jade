@@ -102,12 +102,6 @@ div.panel.panel-default
 						button.form-control.btn.btn-vecs(ng-click="calcRewardSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 確認
 					div.help-block(ng-messages="checkout_form.input_rewards.$error", ng-show="checkout_form.input_rewards.$error.max")
 						p(ng-message="max") 您此筆訂單最多使用{{cart.rewards_available}}點紅利
-				.form-group
-					label.col-md-4.col-xs-12.control-label(for="input_voucher") 使用禮品券
-					.col-md-5.col-xs-8
-						input.form-control(id="input_voucher", name="input_voucher", ng-model="cart.discount.voucher.name", type='text', ng-change="cart.discount.voucher.saved_amount = 0")
-					.col-md-3.col-xs-4
-						button.form-control.btn.btn-vecs(ng-click="calcVoucherSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 確認
 			.col-md-2.hidden-xs
 				img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
 			.col-md-4.pull-right.hidden-xs
@@ -118,12 +112,6 @@ div.panel.panel-default
 					tr(style="color:green")
 						td.text-right 折扣:
 						td.text-right - $ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
-					tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
-						td.text-right 禮品券:
-						td.text-right 
-							| - $ {{cart.discount.voucher.saved_amount}}
-							br
-							small 尚餘 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
 					tr.h2
 						td.text-right 小計
 						td.text-right $ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
@@ -138,12 +126,6 @@ div.visible-xs
 				tr(style="color:green")
 					td.text-right 折扣:
 					td.text-right - $ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
-				tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
-					td.text-right 禮品券:
-					td.text-right 
-						| - $ {{cart.discount.voucher.saved_amount}}
-						br
-						small 尚餘 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
 				tr.h3
 					td.text-right 小計
 					td.text-right $ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}

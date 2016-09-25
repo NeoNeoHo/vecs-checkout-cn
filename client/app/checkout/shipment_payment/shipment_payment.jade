@@ -5,78 +5,25 @@
 div
 	div.btn-group-lg.hidden-xs
 		.row
-			.col-md-4
-				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_overseas", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_overseas)", required) 
-					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_overseas}}
-						span 
-						img(src='../assets/images/checkout/airplane.png', style="height:40px")
 			.col-md-4		
 				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_home", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_home)", required) 
 					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_home}}
 						span  
 						img(src='../assets/images/checkout/house.png', style="height:40px")
-			.col-md-4
-				label.btn.btn-vecs-default.btn-lg.form-check.col-sm-12(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_store", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_store)", required) 
-					div.col-md-12.hidden-xs {{SHIPPING_NAME.ship_to_store}}
-						span  
-						img(src='../assets/images/checkout/family.png', style="height:40px")
-						img(src='../assets/images/checkout/hilife.png', style="height:40px")
-						img(src='../assets/images/checkout/ok1.png', style="height:40px")
 	div.btn-group-vertical.btn-group-lg.visible-xs
-		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_overseas", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_overseas)", required) 
-			.row
-				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_overseas}}
-				.col-xs-6
-					img.img-responsive.center-block(src='../assets/images/checkout/airplane.png', style="width:30px")
 		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_home", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_home)", required) 
 			.row
 				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_home}}
 				.col-xs-6
 					img.img-responsive.center-block(src='../assets/images/checkout/house.png', style="width:30px")
-		label.btn.btn-vecs-default.form-check(name="input_shipment", ng-model="shipping_info.shipment_sel_str", uib-btn-radio="SHIPPING_NAME.ship_to_store", ng-click="setPaymentMethod(SHIPPING_NAME.ship_to_store)", required) 
-			.row
-				.col-xs-6.text-center {{SHIPPING_NAME.ship_to_store}}
-				.col-xs-6.center-block
-					img(src='../assets/images/checkout/family.png', style="width:30px")
-					img(src='../assets/images/checkout/hilife.png', style="height:30px")
-					img(src='../assets/images/checkout/ok1.png', style="height:30px")
-	div.well(ng-show="shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_store")
-		.row
-			.col-sm-6.col-sm-offset-3
-				.row(ng-show="ezship_store_info")
-					p 您選擇的是: 
-						strong {{ezship_store_info.stName}}                    
-					p 地址為: 
-						strong {{ezship_store_info.stAddr}}
-				.row
-					button.btn.btn-vecs-default.form-control(ng-click="setEzshipStore()", ng-class="{'form-invalid': shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_store && !shipping_info.ezship_store_info}") {{store_select_text}}
-				.row
-					br
-					li.text-center 
-						small.text-muted 當商品送達您指定之全家或萊爾富門市時，將會發送簡訊到店通知。
-	div.well(ng-show="shipping_info.shipment_sel_str == SHIPPING_NAME.ship_to_overseas")
-		ul.small.text-muted
-			li 港澳，新加坡，馬來西亞一律 350元 ， 費用不包含保險，滿5000元可享免運
-			li 中國，韓國，日本，澳洲，紐西蘭，加拿大，美國，英國一律550元，費用不包含保險，滿6000元可享免運
-			li 其他地區請來信至 customer@vecsgardenia.com
-
 .page-header.h4 
 	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
 	| 選擇付款方式
 div.row
 	.col-xs-12
 		.row
-			div.col-md-4.col-xs-12(ng-show="payment_btn.credit_pay")
-				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.credit_pay", required) {{PAYMENT_NAME.credit_pay}}
-			div.col-md-4.col-xs-12(ng-show="payment_btn.hand_pay")
-				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.hand_pay", required) {{PAYMENT_NAME.hand_pay}}
-			div.col-md-4.col-xs-12(ng-show="payment_btn.store_pay")
-				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.store_pay", required, ng-disabled="cart.total_price_with_discount > EZSHIP_PRICE_UPPER_BOUND") {{PAYMENT_NAME.store_pay}}
-				.small.text-muted
-					br
-					li 若訂購金額高於NTD6000，無法提供此項服務。
-
-
+			div.col-md-4.col-xs-12(ng-show="payment_btn.alipay")
+				label.btn.btn-vecs-default.btn-lg.col-xs-12(name="input_payment", ng-model="shipping_info.payment_sel_str", uib-btn-radio="PAYMENT_NAME.alipay", required) {{PAYMENT_NAME.alipay}}
 div.page-header.h4 
 	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
 	| 收件人資料
