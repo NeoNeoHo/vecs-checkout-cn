@@ -17,6 +17,7 @@ import url from 'url';
 
 var ALIPAY_CONFIG = api_config.DEFAULT_ALIPAY_CONFIG;
 var Order = require('../order/order.controller.js');
+var Mail = require('../mandrill/mandrill.controller.js');
 var AlipayNotify = require('./alipay_notify.class').AlipayNotify;    
 var AlipaySubmit = require('./alipay_submit.class').AlipaySubmit;
 var DOMParser = require('xmldom').DOMParser;
@@ -65,4 +66,127 @@ exports.create_direct_pay_by_user = function(req, res) {
 	}, function(err) {
 		res.status(400).send('Error. Johny, fix it.');
 	});
+};
+
+
+//支付宝即时到帐交易接口，處理服务器异步通知
+exports.create_direct_pay_by_user_notify = function(req, res){
+	var _POST = req.body;
+	//计算得出通知验证结果
+	var alipayNotify = new AlipayNotify(ALIPAY_CONFIG);
+	//验证消息是否是支付宝发出的合法消息
+	alipayNotify.verifyNotify(_POST, function(verify_result){
+		if(verify_result) {//验证成功
+			//商户订单号
+			var out_trade_no = _POST['out_trade_no'];
+			//支付宝交易号
+			var trade_no = _POST['trade_no'];
+			//交易状态
+			var trade_status = _POST['trade_status'];
+			//交易金額
+			var total_fee = _POST['total_fee'];
+			//訂單更新訊息
+			var update_msg = "交易付款时间:" + _POST['gmt_payment'] + ",买家支付宝账户号:" + _POST['buyer_id'] + ",交易状态:" + _POST['trade_status'] + ",支付宝交易号:" + _POST['trade_no'];
+			
+			Order.lgetOrder(out_trade_no).then(function(orders) {
+				var order = orders[0] || orders;
+				var order_status_id = order.order_status_id;
+				var next_order_status_id = api_config.AlipayPaymentNextOrderStatusId(order_status_id);
+				
+				//回傳金額不正確，不予處理
+				if(total_fee !== order.total) {
+					console.log('order total_fee not equals to order total record');
+					res.send('fail');
+				} 
+				//回傳內容正確，進行資料庫訂單更新
+				else if(trade_status  == 'TRADE_FINISHED'){
+					console.log(_POST);
+					//请不要修改或删除
+					res.send("success");
+				}
+				else if(trade_status == 'TRADE_SUCCESS'){
+					updateOrderByAlipayResponse(order.order_id, update_msg, next_order_status_id).then(function(result) {
+						Mail.sendOrderSuccess(order.order_id);
+						//请不要修改或删除
+						res.send("success");
+					}, function(err) {
+						console.log(err);
+						res.send('fail');
+					});
+				}		
+			}, function(err) {
+				console.log(_POST + ' fails');
+				res.send("fail");
+			});
+		}
+		else {
+			//验证失败
+			console.log(_POST + ' fails');
+			res.send("fail");
+		}
+	});
+};
+
+
+//支付宝即时到帐交易接口，處理页面跳转同步
+exports.create_direct_pay_by_user_return = function(req, res){
+	var _GET = req.query;
+	//计算得出通知验证结果
+	var alipayNotify = new AlipayNotify(ALIPAY_CONFIG);
+	//验证消息是否是支付宝发出的合法消息
+	alipayNotify.verifyReturn(_GET, function(verify_result){
+		if(verify_result) {//验证成功
+			//商户订单号
+			var out_trade_no = _GET['out_trade_no'];
+			//支付宝交易号
+			var trade_no = _GET['trade_no'];
+			//交易状态
+			var trade_status = _GET['trade_status'];
+			//交易金額
+			var total_fee = _GET['total_fee'];
+			res.redirect('/checkout/success?order_id='+out_trade_no);	
+		}
+		else {
+			//验证失败
+			console.log(_POST + ' fails');
+			res.redirect('/checkout/failure?order_id='+order_id+'&msg=please_contact_us');
+		}
+	});
+};
+
+
+var updateOrderByAlipayResponse = function(order_id, update_msg, order_status_id) {
+	var defer = q.defer();
+	var order_update_dict = {
+		payment_custom_field: update_msg, 
+		order_status_id: order_status_id
+	};
+	var order_condition_dict = {
+		order_id: order_id
+	};
+
+	var order_history_insert_dict = {
+		order_id: order_id,
+		order_status_id: order_status_id,
+		notify: 0,
+		comment:update_msg,
+		date_added: new Date()
+	};
+	var sql = updateDictSql('oc_order', order_update_dict, order_condition_dict);
+	sql += ';';
+	sql += insertDictSql('oc_order_history', order_history_insert_dict);
+	mysql_pool.getConnection(function(err, connection) {
+		if(err) {
+			console.log(err);
+			defer.reject(err);
+		} else {
+			connection.query(sql, function(err, result) {
+				if(err) {
+					defer.reject(err);
+				}
+				defer.resolve(result)
+			});								
+		}
+	});
+	return defer.promise;
 };

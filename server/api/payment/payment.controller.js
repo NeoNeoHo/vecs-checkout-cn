@@ -206,7 +206,7 @@ export function redirectSuccess(req, res) {
 	}
 	catch (e) {
 		console.log(e);
-		res.redirect('/checkout/failure?msg=please_contact_cs');
+		res.redirect('/checkout/failure?msg=please_contact_us');
 	}
 };
 
@@ -226,7 +226,7 @@ export function redirectFailure(req, res) {
 	}
 	catch (e) {
 		console.log(e);
-		res.redirect('/checkout/failure?msg=please_contact_cs');
+		res.redirect('/checkout/failure?msg=please_contact_us');
 	}
 };
 

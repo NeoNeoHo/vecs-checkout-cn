@@ -9,6 +9,7 @@
 var qs = require('querystring');
 var fs = require('fs');
 var https = require('https');
+var request = require('request');
 //var Iconv  = require('iconv').Iconv;
 
 /* *
@@ -150,26 +151,27 @@ exports.getHttpResponsePOST = function(url, cacert_url, para, input_charset, cal
 exports.getHttpResponseGET = function(url,cacert_url, callback){
     var parsed_url = require('url').parse(url);
 
+    // var options = {
+    //     hostname:parsed_url.host,
+    //     port:443,
+    //     path:parsed_url.path,
+    //     method:'GET',
+    // };
+
     var options = {
-        hostname:parsed_url.host,
-        port:443,
-        path:parsed_url.path,
-        method:'GET',
+        url: url
     };
 
     if(cacert_url){ options.cert = fs.readFileSync(cacert_url); }
 
-    var req = https.request(options, function(res) {
+    request.get(options, function(err, res, body) {
+        if(err) {
+            callback(err);
+        }
         var responseText='';
-        res.on('data', function(chunk){
-            responseText += chunk;
-        });
-        res.on('end', function(){
-           callback && callback(responseText);
-        });
+        responseText = body;
+        callback(responseText);
     });
-
-    req.end();
 }
 
 /**

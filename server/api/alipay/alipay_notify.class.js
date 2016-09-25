@@ -53,6 +53,7 @@ AlipayNotify.prototype.verifyNotify = function(_POST, callback){
         //isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
         if (null != _POST["notify_id"]) {
             this.getResponse(_POST["notify_id"], function(responseTxt){
+                console.log(responseTxt);
             	callback(responseTxt == 'true' && isSign);
             });
         }
