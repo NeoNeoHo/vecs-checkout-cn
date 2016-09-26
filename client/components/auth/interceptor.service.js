@@ -20,7 +20,7 @@ function authInterceptor($rootScope, $q, $cookies, $injector, Util, $location) {
     responseError(response) {
       if (response.status === 401) {
         // (state || (state = $injector.get('$state'))).go('login');
-        window.location = "https://vecsgardenia.com/index.php?route=account/login";
+        window.location = "http://vecs-gardenia.com.cn/index.php?route=account/login";
         // remove any stale tokens
         $cookies.remove('vecs_token');
       }
