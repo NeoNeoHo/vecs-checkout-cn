@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('webApp')
-	.factory('Payment', function ($http, $q, $filter, Location, Order, Config) {
+	.factory('Payment', function ($http, $q, $filter, Location, Order, Config, $window) {
 		// Service logic
 		// ...
 		var PAY_ON_DELIVER_METHOD = Config.PAYMENT_NAME.hand_pay;
@@ -19,7 +19,13 @@ angular.module('webApp')
 
 		var getAliDirectPaySubmitForm = function(order_id) {
 			var defer = $q.defer();
-			$http.get('/api/alipays/'+order_id).then(function(data) { //order_id: 36758
+			var url = '';
+			if($window.innerWidth <= 768){
+				url = '/api/alipays/wap/'+order_id;
+			} else {
+				url = '/api/alipays/'+order_id;
+			}
+			$http.get(url).then(function(data) { //order_id: 36758
 				defer.resolve(data.data);
 			}, function(err) {
 				defer.reject(err);

@@ -117,11 +117,14 @@ exports.create_wap_direct_pay_by_user = function(req, res) {
 //支付宝即时到帐交易接口，處理服务器异步通知
 exports.create_direct_pay_by_user_notify = function(req, res){
 	var _POST = req.body;
+	console.log('get notify by alipay');
 	//计算得出通知验证结果
 	var alipayNotify = new AlipayNotify(ALIPAY_CONFIG);
 	//验证消息是否是支付宝发出的合法消息
 	alipayNotify.verifyNotify(_POST, function(verify_result){
 		if(verify_result) {//验证成功
+			console.log('alipay notify success');
+			console.log(_POST);
 			//商户订单号
 			var out_trade_no = _POST['out_trade_no'];
 			//支付宝交易号
@@ -144,12 +147,12 @@ exports.create_direct_pay_by_user_notify = function(req, res){
 					res.send('fail');
 				} 
 				//回傳內容正確，進行資料庫訂單更新
-				else if(trade_status  == 'TRADE_FINISHED'){
+				if(trade_status  == 'TRADE_FINISHED'){
 					console.log(_POST);
 					//请不要修改或删除
 					res.send("success");
 				}
-				else if(trade_status == 'TRADE_SUCCESS'){
+				if(trade_status == 'TRADE_SUCCESS'){
 					updateOrderByAlipayResponse(order.order_id, update_msg, next_order_status_id).then(function(result) {
 						Mail.sendOrderSuccess(order.order_id);
 						//请不要修改或删除
