@@ -45,11 +45,15 @@ export default function(app) {
     secret: 'GuGGiNeoNeo',
     saveUninitialized: false,
     resave: false,
-    name: 'PHPSESSID',
+    name: 'PHPREDIS_SESSION',
     store: new redisStore({
       prefix: 'PHPREDIS_SESSION:'
     })
   }));
+  app.use(function(req, res, next) {
+  req.session.nodejs = 'Hello from node.js!';
+  next();
+});
 
   /**
    * Lusca - express server security
