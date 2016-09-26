@@ -20,6 +20,7 @@ import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import connectRedis from 'connect-redis'
 import mongoose from 'mongoose';
+import serialize from 'locutus/php/var/serialize';
 // var mongoStore = connectMongo(session);
 import redis from 'redis';
 var redisStore = connectRedis(session);
@@ -41,14 +42,12 @@ export default function(app) {
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
   app.use(session({
-    secret: 'PHPSESSID',
-    saveUninitialized: true,
+    secret: 'GuGGiNeoNeo',
+    saveUninitialized: false,
     resave: false,
     name: 'PHPSESSID',
     store: new redisStore({
-      host: 'tcp://127.0.0.1',
-      port: 6379,
-      client: client
+      prefix: 'PHPREDIS_SESSION:'
     })
   }));
 
