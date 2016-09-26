@@ -46,14 +46,11 @@ export default function(app) {
     saveUninitialized: false,
     resave: false,
     name: 'PHPREDIS_SESSION',
+    domain: '.vecs-gardenia.com.cn',
     store: new redisStore({
       prefix: 'PHPREDIS_SESSION:'
     })
   }));
-  app.use(function(req, res, next) {
-  req.session.nodejs = 'Hello from node.js!';
-  next();
-});
 
   /**
    * Lusca - express server security
