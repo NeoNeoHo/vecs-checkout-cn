@@ -22,6 +22,46 @@ var AlipayNotify = require('./alipay_notify.class').AlipayNotify;
 var AlipaySubmit = require('./alipay_submit.class').AlipaySubmit;
 var DOMParser = require('xmldom').DOMParser;
 
+var mysql_pool = db_config.mysql_pool;
+var mysql_config = db_config.mysql_config;  
+
+var updateDictSql = function(table, update_dict, condition_dict) {
+	var set_string = '';
+	var where_string = '';
+	_.forEach(_.pairs(update_dict), function(pair) {
+		if(set_string.length == 0) {
+			set_string = pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+		else {
+			set_string = set_string + ', ' + pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+	});
+	_.forEach(_.pairs(condition_dict), function(pair) {
+		if(where_string.length == 0) {
+			where_string = pair[0] + ' = ' + pair[1];
+		}
+		else {
+			where_string = where_string + ' and ' + pair[0] + ' = ' + pair[1];
+		}
+
+	});
+	var sql_string = 'update ' + table + ' set ' + set_string + ' where ' + where_string;
+	return sql_string;
+}
+
+var insertDictSql = function(table, insert_dict) {
+	var set_string = '';
+	_.forEach(_.pairs(insert_dict), function(pair) {
+		if(set_string.length == 0) {
+			set_string = pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+		else {
+			set_string = set_string + ', ' + pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+	});
+	var sql_string = 'insert into ' + table + ' set ' + set_string;
+	return sql_string;
+}
 
 //支付宝即时到帐交易接口
 /*data{

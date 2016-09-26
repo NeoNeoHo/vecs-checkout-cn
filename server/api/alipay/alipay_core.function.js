@@ -123,7 +123,7 @@ exports.getHttpResponsePOST = function(url, cacert_url, para, input_charset, cal
         }
     };
 
-    if(cacert_url){ options.cert = fs.readFileSync(cacert_url); }
+    if(cacert_url){ //options.cert = fs.readFileSync(cacert_url); }
 
     var req = https.request(options, function(res) {
         var responseText='';
@@ -162,7 +162,7 @@ exports.getHttpResponseGET = function(url,cacert_url, callback){
         url: url
     };
 
-    if(cacert_url){ options.cert = fs.readFileSync(cacert_url); }
+    if(cacert_url){ //options.cert = fs.readFileSync(cacert_url); }
 
     request.get(options, function(err, res, body) {
         if(err) {
