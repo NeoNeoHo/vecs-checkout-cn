@@ -152,8 +152,7 @@ var getSession = function(session_id) {
 			if(err) defer.reject(err);
 			// 1. Unserialize PHP Session To readable JSON format
 			if(reply){
-				console.log(reply);
-				sess_obj = JSON.parse(reply);
+				sess_obj = PHPUnserialize.unserializeSession(reply);
 				defer.resolve(sess_obj);
 			} else {
 				defer.reject('no session');
@@ -175,10 +174,9 @@ export function getSession(req, res) {
 	try {
 		var client = redis.createClient();
 		client.get(session_id, function(err, reply) {
+			// 1. Unserialize PHP Session To readable JSON format
 			if(reply){
-				console.log(JSON.parse(reply));
-				sess_obj = JSON.parse(reply);
-				console.log(sess_obj.cart);
+				sess_obj = PHPUnserialize.unserializeSession(reply);
 				// 2. Unserialize cart string to cart JSON
 				UnserializeToCartColl(sess_obj.cart).then(function(data) {
 					var cart_coll = data;
@@ -204,14 +202,17 @@ export function updateProducts(req, res) {
 	var session_id = api_config.SESSION_ID + ':' + req.user.session_id;
 	var update_products = req.body.update_products; //[{product_key:'fda', quantity: 1}]
 	getSession(session_id).then(function(sess_obj) {
-		if(update_products){
-			var cart = {};
+		if(sess_obj.cart){
+			sess_obj.cart = {};
 			_.forEach(update_products, function(product) {
 				if(product.product_key){
-					cart[product.product_key] = product.quantity;
+					sess_obj.cart[product.product_key] = product.quantity;
 				}
 			});
-			req.session.cart = cart;
+			var client = redis.createClient();
+			client.set(session_id, jsonToPHPSerializeSession(sess_obj), function(err, result) {
+				client.quit();
+			});
 			res.status(200).json('ok');
 		} else {
 			res.status(200).json('ok');
@@ -226,7 +227,11 @@ export function deleteCart(req, res) {
 	var session_id = api_config.SESSION_ID + ':' + req.user.session_id;
 	getSession(session_id).then(function(sess_obj) {
 		if(sess_obj.cart){
-			req.session.cart = '';
+			delete sess_obj.cart;
+			var client = redis.createClient();
+			client.set(session_id, jsonToPHPSerializeSession(sess_obj), function(err, result) {
+				client.quit();
+			});
 			res.status(200).json('ok');
 		} else {
 			res.status(200).json('ok');

@@ -48,7 +48,7 @@ export default function(app) {
     name: 'PHPREDIS_SESSION',
     domain: '.vecs-gardenia.com.cn',
     store: new redisStore({
-      prefix: 'PHPREDIS_SESSION:'
+      prefix: 'temp:'
     })
   }));
 
