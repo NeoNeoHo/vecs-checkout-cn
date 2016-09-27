@@ -8,7 +8,10 @@ function AuthService($location, $http, $cookies, $q, appConfig, Util, User) {
   var userRoles = appConfig.userRoles || [];
   var searchUrlObject = $location.search();
 
+  // both cookie token and url token could get the user info
   if ($cookies.get('vecs_token') && $location.path() !== '/logout') {
+    currentUser = User.get();
+  } else if (searchUrlObject['vecs_t']) {
     currentUser = User.get();
   }
 
