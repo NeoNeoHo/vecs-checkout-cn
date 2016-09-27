@@ -168,7 +168,7 @@ var getSession = function(session_id) {
 };
 
 export function getSession(req, res) {
-	var session_id = api_config.SESSION_ID + ':' +req.user.session_id;
+	var session_id = req.user.session_id;
 	var sess_obj = '';
 	console.log(session_id);
 	try {
@@ -199,7 +199,7 @@ export function getSession(req, res) {
 };
 
 export function updateProducts(req, res) {
-	var session_id = api_config.SESSION_ID + ':' + req.user.session_id;
+	var session_id = req.user.session_id;
 	var update_products = req.body.update_products; //[{product_key:'fda', quantity: 1}]
 	getSession(session_id).then(function(sess_obj) {
 		if(sess_obj.cart){
@@ -224,7 +224,7 @@ export function updateProducts(req, res) {
 };
 
 export function deleteCart(req, res) {
-	var session_id = api_config.SESSION_ID + ':' + req.user.session_id;
+	var session_id = req.user.session_id;
 	getSession(session_id).then(function(sess_obj) {
 		if(sess_obj.cart){
 			delete sess_obj.cart;
