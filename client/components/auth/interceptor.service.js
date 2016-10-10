@@ -13,7 +13,7 @@ function authInterceptor($rootScope, $q, $cookies, $injector, Util, $location) {
       if ($cookies.get('vecs_token')) {
         config.headers.Authorization = 'Bearer ' + $cookies.get('vecs_token');
       } else if (searchUrlObject['vecs_t']) {
-        $cookies.put('vecs_token', searchUrlObject['vecs_t']);
+        $cookies.put('vecs_token', searchUrlObject['vecs_t'], {domain: '.vecs-gardenia.com.cn'});
         config.headers.Authorization = 'Bearer ' + searchUrlObject['vecs_t'];
       }
       return config;

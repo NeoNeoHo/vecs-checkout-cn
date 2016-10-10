@@ -40,10 +40,13 @@ export function countries(req, res) {
 		if(err) handleError(res, err);
 		var sql = 'select country_id, name from '+ mysql_config.db_prefix+'country where status = 1';
 		connection.query(sql,[], function(err, rows) {
-			if(err) handleError(res, err);
 			connection.release();
-			handleEntityNotFound(res, rows);
-			respondWithResult(res, rows);
+			if(err) handleError(res, err);
+			if(!(rows[0]||rows)) {
+				res.status(404).end();
+			} else {
+				res.status(200).json(rows);
+			}
 		});
 	});
 }
@@ -54,10 +57,13 @@ export function cities(req, res) {
 		if(err) handleError(res, err);
 		var sql = 'select zone_id, name from '+ mysql_config.db_prefix+'zone where status = 1 and country_id = ' + country_id;
 		connection.query(sql,[], function(err, rows) {
-			if(err) handleError(res, err);
 			connection.release();
-			handleEntityNotFound(res, rows);
-			respondWithResult(res, rows);
+			if(err) handleError(res, err);
+			if(!(rows[0]||rows)) {
+				res.status(404).end();
+			} else {
+				res.status(200).json(rows);
+			}
 		});
 	});
 }
@@ -68,10 +74,13 @@ export function districts(req, res) {
 		if(err) handleError(res, err);
 		var sql = 'select district_id, name, postcode from '+ mysql_config.db_prefix+'district where status = 1 and zone_id = ' + city_id;
 		connection.query(sql,[], function(err, rows) {
-			if(err) handleError(res, err);
 			connection.release();
-			handleEntityNotFound(res, rows);
-			respondWithResult(res, rows);
+			if(err) handleError(res, err);
+			if(!(rows[0]||rows)) {
+				res.status(404).end();
+			} else {
+				res.status(200).json(rows);
+			}
 		});
 	});
 }
@@ -86,10 +95,13 @@ export function getAddress(req, res) {
 			sql = 'select a.*, b.name as city_name,  c.name as country_name, d.name as district_name, d.postcode as postcode from '+ mysql_config.db_prefix+'address a, ' + mysql_config.db_prefix + 'zone b, ' + mysql_config.db_prefix + 'country c, ' + mysql_config.db_prefix + 'district d where a.address_id = ' + address_id + ' and a.customer_id = ' + customer_id + ' and a.zone_id = b.zone_id and a.country_id = c.country_id and a.district_id = d.district_id';
 		}
 		connection.query(sql,[], function(err, rows) {
-			if(err) handleError(res, err);
 			connection.release();
-			handleEntityNotFound(res, rows);
-			respondWithResult(res, rows);
+			if(err) handleError(res, err);
+			if(!(rows[0]||rows)) {
+				res.status(404).end();
+			} else {
+				res.status(200).json(rows);
+			}
 		});
 	});
 }

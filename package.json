@@ -14,7 +14,7 @@
     "cors": "^2.7.1",
     "errorhandler": "^1.4.2",
     "express": "^4.13.3",
-    "express-jwt": "^3.0.0",
+    "express-jwt": "^5.0.0",
     "express-session": "^1.14.0",
     "form-data": "^1.0.0-rc4",
     "iconv-lite": "^0.4.13",

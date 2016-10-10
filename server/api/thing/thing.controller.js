@@ -59,6 +59,12 @@ function handleError(res, statusCode) {
   };
 }
 
+// Health Check Add by Johny 2016-09-28
+
+export function healthCheck(req, res){
+  res.status(200).send('ok');
+}
+
 // Gets a list of Things
 export function index(req, res) {
   Thing.findAsync()

@@ -31,6 +31,14 @@ export function isAuthenticated() {
 			}
 			validateJwt(req, res, next);
 		})
+		// When Fail to validate JWT, res with status 401
+		.use(function(err, req, res, next) {
+			if (err.name === 'UnauthorizedError') {
+				res.status(401).send(err);
+			} else {
+				next();
+			}
+		})
 		// Attach user to request
 		.use(function(req, res, next) {
 			// console.log(req.user);
@@ -48,6 +56,7 @@ export function isAuthenticated() {
 							customer_group_id: rows[0].customer_group_id,
 							address_id: rows[0].address_id,
 							email: rows[0].email,
+							firstname: rows[0].firstname,
 							address_id: rows[0].address_id,
 							session_id: session_id
 						};
