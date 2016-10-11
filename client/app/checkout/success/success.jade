@@ -3,23 +3,23 @@ navbar
 	.row
 		div.col-xs-10.col-xs-offset-1
 			div.jumbotron.text-center.text-white.hidden-xs(style="background-image: url('../assets/images/checkout/03.jpg'); background-size: 100% auto;", ng-click="backToHome()")
-				h1 謝謝您的購買
-				p 我們的出貨小組已經收到您的訂單
-				button.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官網首頁
+				h1 谢谢您的购买
+				p 我们的出货小组已经收到您的订单
+				button.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官网首页
 					span.glyphicon.glyphicon-home.pull-right
 			div.well.text-center.visible-xs(style="border:0px solid black;")
-				h2 謝謝您的購買
-				p 我們的出貨小組已經收到您的訂單
-				a.btn.btn-default.btn-lg(ng-click="backToHome()", role="button") 回到官網首頁
+				h2 谢谢您的购买
+				p 我们的出货小组已经收到您的订单
+				a.btn.btn-default.btn-lg(ng-click="backToHome()", role="button") 回到官网首页
 			.page-header.h4 
-				| 訂單資訊 （訂單編號：{{order.order_id}}）
+				| 订单资讯 （订单编号：{{order.order_id}}）
 			.row
 				.col-md-12
 					table.table.table-default
 						tr
-							th.col-lg-6.col-md-6.col-sm-6.col-xs-6.text-center 商品名稱
-							th.col-lg-2.col-md-2.col-sm-2.col-xs-2.text-center 數量
-							th.col-lg-1.col-md-3.col-sm-3.col-xs-3.text-center 總價
+							th.col-lg-6.col-md-6.col-sm-6.col-xs-6.text-center 名称
+							th.col-lg-2.col-md-2.col-sm-2.col-xs-2.text-center 数量
+							th.col-lg-1.col-md-3.col-sm-3.col-xs-3.text-center 总价
 						tr(ng-repeat="product in order.products")
 							td 
 								a.text-center(ng-href="{{product.href}}") {{product.name}}
@@ -35,7 +35,7 @@ navbar
 						tr(ng-repeat="order_total in order_totals")
 							td.text-right {{order_total.title}}:
 							td.text-right $ {{order_total.value}}
-			.page-header.h4 商品處理資訊
+			.page-header.h4 商品处理资讯
 			.row
 				div.col-md-4
 					div.well(ng-class="{'well-blur': (order_status_level!= '_created')}")
@@ -43,7 +43,7 @@ navbar
 							.col-xs-4
 								img.center-block(src='../assets/images/checkout/box.png', style="width:100%")
 							.col-xs-8
-								p.text-center 我們已經收到您的訂單。嘉丹妮爾的出貨小組將會盡快為您裝箱與出貨。再耐心等一下下吧！
+								p.text-center 我们已经收到您的订单。嘉丹妮尔的出货小组将会尽快为您装箱与出货。再耐心等一下下吧！
 					
 				div.col-md-4.hidden-xs
 					div.well(ng-class="{'well-focus': (order_status_level=='_shipped'), 'well-blur': (order_status_level!= '_shipped')}")
@@ -51,21 +51,21 @@ navbar
 							.col-xs-4
 								img.center-block(src='../assets/images/checkout/car.png', style="width:100%")
 							.col-xs-8
-								p.text-center 出貨囉！！若是超商取貨，商品到店後會寄簡訊通知您
+								p.text-center 出货啰！若是超商取货，商品到店后会寄简讯通知您
 				div.col-md-4.hidden-xs
 					div.well(ng-class="{'well-focus': (order_status_level=='_received'), 'well-blur': (order_status_level!= '_received')}")
 						.row
 							.col-xs-4
 								img.center-block(src='../assets/images/checkout/gift.png', style="width:100%")
 							.col-xs-8
-								p.text-center 謝謝您的訂購，希望拿到商品的您會喜歡嘉丹妮爾
+								p.text-center 谢谢您的订购，希望拿到商品的您会喜欢嘉丹妮尔
 			.page-header
 			div.text-muted
-				p 注意事項：
+				p 注意事项：
 				ul
-					li 當您完成商品訂購程序之後，系統將會自動發送電子郵件於您所留的電子郵件信箱。您可隨時至「訂單查詢」確認訂單最新資料，並可點選該筆訂單的「訂單明細」確認付款/出貨資訊等資料。
-					li 若當次訂購享有跨產品或滿額贈禮優惠者，有需要取消或退貨時，需將當次訂購之商品全部取消或退貨。
-					li 辦理退換貨時，您需要負擔商品寄至本公司的郵資。
+					li 当您完成商品订购程序之后，系统将会自动发送电子邮件于您所留的电子邮件信箱。您可随时至「订单查询」确认订单最新资料，并可点选该笔订单的「订单明细」确认付款/出货资讯等资料。
+					li 若当次订购享有跨产品或满额赠礼优惠者，有需要取消或退货时，需将当次订购之商品全部取消或退货。
+					li 办理退换货时，您需要负担商品寄至本公司的邮资。
 
-			button.col-md-3.col-xs-10.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官網首頁
+			button.col-md-3.col-xs-10.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官网首页
 				span.glyphicon.glyphicon-home.pull-right

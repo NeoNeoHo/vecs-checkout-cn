@@ -33,7 +33,7 @@ angular.module('webApp')
 		$scope.shipping_info = $scope.shipping_info || {
 			firstname: '',
 			telephone: '',
-			country_id: 206,
+			country_id: 44,
 			payment_sel_str: null,
 			shipment_sel_str: null
 		};

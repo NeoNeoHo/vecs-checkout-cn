@@ -2,11 +2,11 @@ div.panel.panel-default
 	div.panel-body
 		table#checkout_cart_table.table.checkout-cart.table-default.hidden-xs
 			tr
-				th.col-md-6.text-center 商品名稱
-				th.col-md-2 數量
-				th.col-md-2 單價
-				th.col-md-1 總價
-				th.col-md-1 刪除
+				th.col-md-6.text-center 名称
+				th.col-md-2 数量
+				th.col-md-2 单价
+				th.col-md-1 总价
+				th.col-md-1 删除
 			tr(ng-repeat="product in cart.products")
 				td.cart-name
 					div.col-md-4
@@ -16,7 +16,7 @@ div.panel.panel-default
 						a(ng-href="{{product.href}}")
 							h5 {{product.name}}
 						h6.text-muted(ng-repeat="option_product in product.option") {{option_product.name + ' - ' + option_product.value}}
-						h6.text-muted(ng-show="product.reward") + 紅利 {{product.reward}} 點  
+						h6.text-muted(ng-show="product.reward") + 红利 {{product.reward}} 点  
 				td.cart-quantity
 					div.input-group(ng-show="!product.isLimited")
 						select(ng-options="option for option in allow_amount track by option", ng-model="product.quantity", ng-change="updateCartTotal()")
@@ -33,9 +33,9 @@ div.panel.panel-default
 						span.glyphicon.glyphicon-trash
 		table#checkout_cart_table_xs.table.checkout-cart.table-default.visible-xs
 			tr
-				th.col-xs-8.text-center 商品名稱
-				th.col-xs-2 數量
-				th.col-xs-2 刪除
+				th.col-xs-8.text-center 名称
+				th.col-xs-2 数量
+				th.col-xs-2 删除
 			tr(ng-repeat-start="product in cart.products")
 				td(rowspan="2").cart-name
 					div.col-xs-12
@@ -60,17 +60,17 @@ div.panel.panel-default
 						a(ng-href="{{product.href}}")
 							h5 {{product.name}}
 						p.text-muted(ng-repeat="option_product in product.option") {{option_product.name + ' - ' + option_product.value}}
-						h6(ng-show="product.reward") + 紅利 {{product.reward}} 點  
+						h6(ng-show="product.reward") + 红利 {{product.reward}} 点  
 					div.text-green(ng-repeat="discount_condition in product.discount")
 						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
 		.row
 			.col-md-4.col-xs-8.col-md-offset-8.col-xs-offset-4
 				table.table
 					tr
-						td.text-right 商品總計:
+						td.text-right 商品总计:
 						td.text-right $ {{cart.product_total_price}}
 div#checkout_buymore.panel.panel-default(ng-hide="true")
-	div.panel-heading.lead 超值加購區
+	div.panel-heading.lead 超值加购区
 	div.panel-body
 		div.row
 			div.col-lg-3.col-md-4.col-sm-6.col-xs-6(ng-repeat="product in promotion_list")
@@ -82,32 +82,32 @@ div#checkout_buymore.panel.panel-default(ng-hide="true")
 							strong.text-red $ {{product.price}}
 							del.small.pull-right $ {{product.default_price}}1000
 						p
-							label.btn.btn-sharp.btn-default(href="#", role="button", ng-click="addPromoteItem(product.key)") 加入購物車
+							label.btn.btn-sharp.btn-default(href="#", role="button", ng-click="addPromoteItem(product.key)") 加入购物车
 
 div.panel.panel-default
 	div.panel-body
 		.row
 			.col-md-6.col-xs-12
 				.form-group
-					label.col-md-4.col-xs-12.control-label(for="input_coupon") 使用折扣碼
+					label.col-md-4.col-xs-12.control-label(for="input_coupon") 使用折扣码
 					.col-md-5.col-xs-8
-						input.form-control(id="input_coupon", name="input_coupon", ng-model="cart.discount.coupon.name", type='text', aria-label="...", placeholder='我要使用折扣碼', ng-change="cart.discount.coupon.saved_amount = 0")
+						input.form-control(id="input_coupon", name="input_coupon", ng-model="cart.discount.coupon.name", type='text', aria-label="...", placeholder='我要使用折扣码', ng-change="cart.discount.coupon.saved_amount = 0")
 					.col-md-3.col-xs-4
-						button.form-control.btn.btn-vecs(ng-click="calcCouponSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 確認
+						button.form-control.btn.btn-vecs(ng-click="calcCouponSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 确认
 				.form-group
-					label.col-md-4.col-xs-12.control-label(for="input_rewards") 使用紅利點數折抵
+					label.col-md-4.col-xs-12.control-label(for="input_rewards") 使用红利点数折抵
 					.col-md-5.col-xs-8
 						input.form-control(name="input_rewards", id="input_rewards",  ng-model="cross_obj.temp_reward_use", type='number', aria-label="...", ng-change="cart.discount.reward.saved_amount = 0", placeholder='您可使用{{cart.rewards_available}}點', max="{{cart.rewards_available}}", min="0")
 					.col-md-3.col-xs-4
-						button.form-control.btn.btn-vecs(ng-click="calcRewardSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 確認
+						button.form-control.btn.btn-vecs(ng-click="calcRewardSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 确认
 					div.help-block(ng-messages="checkout_form.input_rewards.$error", ng-show="checkout_form.input_rewards.$error.max")
-						p(ng-message="max") 您此筆訂單最多使用{{cart.rewards_available}}點紅利
+						p(ng-message="max") 您此笔订单最多使用{{cart.rewards_available}}点红利
 			.col-md-2.hidden-xs
 				img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
 			.col-md-4.pull-right.hidden-xs
 				table.table
 					tr
-						td.text-right 商品總計:
+						td.text-right 商品总计:
 						td.text-right $ {{cart.product_total_price}}
 					tr(style="color:green")
 						td.text-right 折扣:
@@ -121,7 +121,7 @@ div.visible-xs
 		.col-xs-12
 			table.table
 				tr
-					td.text-right 商品總計:
+					td.text-right 商品总计:
 					td.text-right $ {{cart.product_total_price}}
 				tr(style="color:green")
 					td.text-right 折扣:
@@ -130,6 +130,6 @@ div.visible-xs
 					td.text-right 小計
 					td.text-right $ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
 div.row.panel.panel-body
-	a.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-href="{{cross_obj.DIR_DOMAIN}}") 回官網
+	a.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-href="{{cross_obj.DIR_DOMAIN}}") 回官网
 	button.col-md-3.col-xs-7.btn.btn-vecs.btn-sharp.btn-lg.pull-right.text-justify(ng-click="checkout_second_step()") 下一步
 		span.glyphicon.glyphicon-circle-arrow-right.pull-right
