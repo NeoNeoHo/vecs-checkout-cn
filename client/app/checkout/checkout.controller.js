@@ -202,7 +202,7 @@ angular.module('webApp')
 
 					$scope.shipping_info.country_id = (data.country_id) ? data.country_id : 0;
 					$scope.shipping_info.country_d = {country_id: data.country_id, name: data.country_name};
-					$scope.setCities((data.country_id) ? data.country_id : 206);
+					$scope.setCities((data.country_id) ? data.country_id : 44);
 
 					$scope.shipping_info.district_id = (data.district_id) ? data.district_id : 0;
 					$scope.shipping_info.district_d = {district_id: data.district_id, name: data.district_name, postcode: data.postcode};
@@ -217,7 +217,7 @@ angular.module('webApp')
 		$scope.setPaymentMethod = function(lmethod) {
 			$scope.shipping_info.shipment_sel_str = lmethod;
 			$scope.shipping_info.payment_sel_str = null;
-			$scope.shipping_info.country_id = 206;
+			$scope.shipping_info.country_id = 44;
 			$scope.payment_btn.store_pay = (lstrcmp([SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
 			$scope.payment_btn.hand_pay = (lstrcmp([SHIPPING_NAME.ship_to_home], lmethod)) ? true : false;
 			$scope.payment_btn.alipay = (lstrcmp([SHIPPING_NAME.ship_to_home,SHIPPING_NAME.ship_to_overseas, SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
@@ -225,8 +225,8 @@ angular.module('webApp')
 			
 			var total_price_with_discount = $scope.cart.product_total_price - $scope.cart.discount.reward.saved_amount - $scope.cart.discount.coupon.saved_amount;
 			if(lmethod === SHIPPING_NAME.ship_to_home) {
-				$scope.shipping_info.country_id = 206;
-				$scope.setCities(206);
+				$scope.shipping_info.country_id = 44;
+				$scope.setCities(44);
 				$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_FEE) ? 0 : SHIPMENT_HOME_FEE;
 			}
 			if(lmethod === SHIPPING_NAME.ship_to_store) {
