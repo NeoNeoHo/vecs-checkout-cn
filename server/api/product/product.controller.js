@@ -38,7 +38,10 @@ var getProducts = function(product_id_list, customer_group_id) {
 	var defer = q.defer();
 	product_id_list = product_id_list.length ? product_id_list : '';
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT a.*, b.name as name, c.points as reward FROM oc_product a, oc_product_description b, oc_product_reward c WHERE a.product_id in (?) AND a.status = 1 AND a.quantity > 0 AND a.date_available <= NOW() AND a.product_id = b.product_id AND b.language_id = 2 AND a.product_id = c.product_id AND c.customer_group_id = ?;', [product_id_list, customer_group_id], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
@@ -54,7 +57,10 @@ var getProductDiscounts = function(product_id_list, customer_group_id) {
 	product_id_list = product_id_list.length ? product_id_list : product_id_list;
 	var today = moment().format('YYYY-MM-DD');
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT product_id, customer_group_id, quantity, price FROM oc_product_discount WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end >= ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
@@ -69,7 +75,10 @@ var getProductSpecials = function(product_id_list, customer_group_id) {
 	product_id_list = product_id_list.length ? product_id_list : '';
 	var today = moment().format('YYYY-MM-DD');
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT * FROM oc_product_special WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end >= ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
@@ -83,7 +92,10 @@ var getProductRewards = function(product_id_list, customer_group_id) {
 	var defer = q.defer();
 	product_id_list = product_id_list.length ? product_id_list : '';
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT * FROM oc_product_reward WHERE product_id in (?) AND customer_group_id = ?;', [product_id_list, customer_group_id], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
@@ -97,7 +109,10 @@ var getProductOptionValue = function(product_option_value_id_list) {
 	var defer = q.defer();
 	product_option_value_id_list = product_option_value_id_list.length ? product_option_value_id_list : '';
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT product_option_value_id, price as option_price FROM oc_product_option_value WHERE product_option_value_id in (?);', [product_option_value_id_list], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);

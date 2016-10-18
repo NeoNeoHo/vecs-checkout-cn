@@ -157,7 +157,10 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 	};
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('INSERT INTO oc_order SET ?;', order_dict, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -179,7 +182,10 @@ var createOrderHistory = function(order_id = 0, order_status_id = 0, notify = 0,
 		date_added: new Date()
 	};
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('INSERT INTO oc_order_history SET ?;', insert_dict, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -209,7 +215,10 @@ var createOrderProduct = function(order_id, cart) {
 	});
 	var sql = insertBulkSql('oc_order_product', insert_coll);
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query(sql, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -233,7 +242,10 @@ var reduceProductQuantity = function(cart) {
 		return sql;
 	}, '');
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query(update_sql, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -253,7 +265,10 @@ var increaseProductQuantity = function(cart) {
 		return sql;
 	}, '');
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query(update_sql, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -281,7 +296,10 @@ var createOrderOption = function(order_id, order_product_id, options) {
 	});
 	var sql = insertBulkSql('oc_order_option', insert_coll);
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query(sql, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -316,7 +334,10 @@ var createOrderTotal = function(order_id = 0, shipping_info, cart) {
 	
 	var sql = insertBulkSql('oc_order_total', insert_coll);
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query(sql, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -339,7 +360,10 @@ var createCutomerReward = function(order_id = 0, customer_id = 0, description = 
 		date_added: new Date()
 	};
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('INSERT INTO oc_customer_reward SET ?;', insert_dict, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -361,7 +385,10 @@ var createCouponHistory = function(order_id = 0, customer_id = 0, coupon_id = 0,
 		date_added: new Date()
 	};
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('INSERT INTO oc_coupon_history SET ?;', insert_dict, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -382,7 +409,10 @@ var createVoucherHistory = function(order_id = 0, voucher_id,  amount = 0) {
 		date_added: new Date()
 	};
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('INSERT INTO oc_voucher_history SET ?;', insert_dict, function(err, rows) {
 			connection.release();
 			if(err) {
@@ -576,7 +606,10 @@ export function getOrder(req, res) {
 	var order_id = req.params.order_id;
 	var customer_id = req.user._id;
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) res.status(400).json(err);
+		if(err) {
+			connection.release();
+			res.status(400).json(err);
+		}
 		connection.query('SELECT * FROM oc_order WHERE order_id = ? and customer_id = ?', [order_id, customer_id], function(err, rows) {
 			connection.release();
 			if(err) res.status(400).json(err);
@@ -590,7 +623,10 @@ export function getOrderTotals(req, res) {
 	var order_id = req.params.order_id;
 	var customer_id = req.user._id;
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) res.status(400).json(err);
+		if(err) {
+			connection.release();
+			res.status(400).json(err);
+		}
 		connection.query('SELECT * FROM oc_order_total WHERE order_id = ? order by sort_order asc', [order_id], function(err, rows) {
 			connection.release();
 			if(err) res.status(400).json(err);
@@ -648,7 +684,10 @@ export function deleteOrderResidual(order_id) {
 	console.log('######  Cancel Order Discount Record for : ' + order_id);
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		var sql = 'delete from oc_coupon_history where order_id = ' + order_id + ';';
 		sql += 'delete from oc_customer_reward where order_id = ' + order_id + ';';
 		sql += 'delete from oc_voucher_history where order_id = ' + order_id + ';';
@@ -669,7 +708,10 @@ export function deleteOrderResidual(order_id) {
 export function lgetOrder(order_id) {
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT * FROM oc_order WHERE order_id = ?', [order_id], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);

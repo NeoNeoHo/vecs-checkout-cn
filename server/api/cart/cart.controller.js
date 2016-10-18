@@ -31,7 +31,10 @@ var mysql_config = db_config.mysql_config;
 var getProductOptionValue = function(product_option_value_ids) {
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT * from ' + mysql_config.db_prefix + 'product_option_value where product_option_value_id in (?)', [product_option_value_ids], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
@@ -44,7 +47,10 @@ var getProductOptionValue = function(product_option_value_ids) {
 var getOptionDetail= function(option_id, option_value_id) {
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) defer.reject(err);
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
 		connection.query('SELECT a.name as name, b.name as value from ' + mysql_config.db_prefix + 'option_description a, ' + mysql_config.db_prefix + 'option_value_description b where a.option_id = ? and a.language_id = 2 and b.option_value_id = ? and b.language_id = 2', [option_id, option_value_id], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);

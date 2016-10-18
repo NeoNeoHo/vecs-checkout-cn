@@ -105,10 +105,12 @@ var updateOrderByCathayResponse = function(order_id, update_msg, order_status_id
 	sql += insertDictSql('oc_order_history', order_history_insert_dict);
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
+			connection.release();
 			console.log(err);
 			defer.reject(err);
 		} else {
 			connection.query(sql, function(err, result) {
+				connection.release();
 				if(err) {
 					defer.reject(err);
 				}

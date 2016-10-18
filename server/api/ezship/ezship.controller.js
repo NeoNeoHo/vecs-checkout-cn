@@ -52,7 +52,10 @@ export function upsertHistory(req, res) {
 		stTel : content.stTel || ''
 	};
 	mysql_pool.getConnection(function(err, connection){
-		if(err) handleError(res, err);
+		if(err) {
+			connection.release();
+			handleError(res, err);
+		}
 		connection.query('insert into oc_customer_ezship_history set ?',obj, function(err, rows) {
 			if(err) {
 				// connection.query('update oc_customer_ezship_history set ? where customer_id = ?',[obj, customer_id] , function(err, rows) {
@@ -72,7 +75,10 @@ export function upsertHistory(req, res) {
 export function getHistory(req, res) {
 	var customer_id = req.user._id;
 	mysql_pool.getConnection(function(err, connection){
-		if(err) { handleError(res, err); }
+		if(err) { 
+			connection.release();
+			handleError(res, err); 
+		}
 		connection.query('select * from oc_customer_ezship_history where customer_id = ? order by ezship_history_id desc limit 1;',[customer_id] , function(err, result_coll) {
 			connection.release();
 			// Handle Query Process Error.
@@ -93,7 +99,10 @@ export function sendOrder(req, res) {
 	var order_id = req.body.order_id;
 	var order_type = req.body.order_type;
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) { res.status(400).send(err); }
+		if(err) { 
+			connection.release();
+			res.status(400).send(err); 
+		}
 		connection.query('SELECT * FROM oc_order WHERE order_id = ? AND customer_id = ?;', [order_id, customer_id], function(err, rows) {
 			connection.release();
 			if(err) res.status(400).send(err);

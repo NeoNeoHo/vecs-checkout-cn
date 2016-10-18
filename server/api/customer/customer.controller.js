@@ -43,7 +43,10 @@ export function update(req, res) {
 	var info = req.body;
 	// console.log(info);
 	mysql_pool.getConnection(function(err, connection){
-		if(err) handleError(res, err);
+		if(err) {
+			connection.release();
+			handleError(res, err);
+		}
 		connection.query('update '+ mysql_config.db_prefix + 'customer set ? where customer_id = ? ',[info, customer_id] , function(err, rows) {
 			connection.release();
 			if(err) handleError(res, err);
@@ -56,7 +59,10 @@ export function update(req, res) {
 export function get(req, res) {
 	var customer_id = req.params.id;
 	mysql_pool.getConnection(function(err, connection) {
-		if(err) handleError(res, err);
+		if(err) {
+			connection.release();
+			handleError(res, err);
+		}
 		connection.query('SELECT * from '+ mysql_config.db_prefix + 'customer where customer_id = ? ',[customer_id] , function(err, rows) {
 			connection.release();
 			if(err) handleError(res, err);

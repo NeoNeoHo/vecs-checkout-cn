@@ -22,6 +22,7 @@ var AlipayNotify = require('./alipay_notify.class').AlipayNotify;
 var AlipaySubmit = require('./alipay_submit.class').AlipaySubmit;
 var DOMParser = require('xmldom').DOMParser;
 
+
 var mysql_pool = db_config.mysql_pool;
 var mysql_config = db_config.mysql_config;  
 
@@ -82,10 +83,10 @@ exports.create_direct_pay_by_user = function(req, res) {
 		}
 		var commercial_data = {
 			out_trade_no: order_id,
-			subject: 'order',
+			subject: 'Vecs Gardenia 嘉丹妮尔',
 			total_fee: order.total,
-			body:'',
-			show_url:''
+			body: 'Vecs Gardenia 订单编号:' + order_id + ' @ ' + order.date_added.split(' ')[0],
+			show_url: api_config.HOST_PATH
 		};
 		//建立请求
 		var alipaySubmit = new AlipaySubmit(ALIPAY_CONFIG);
@@ -127,11 +128,11 @@ exports.create_wap_direct_pay_by_user = function(req, res) {
 		}
 		var commercial_data = {
 			out_trade_no: order_id,
-			subject: 'order',
+			subject: 'Vecs Gardenia 嘉丹妮尔',
 			total_fee: order.total,
 			app_pay: 'Y',
-			body:'',
-			show_url:''
+			body: 'Vecs Gardenia 订单编号:' + order_id + ' @ ' + order.date_added.split('T')[0],
+			show_url: api_config.HOST_PATH
 		};
 		//建立请求
 		var alipaySubmit = new AlipaySubmit(ALIPAY_CONFIG);
@@ -182,26 +183,28 @@ exports.create_direct_pay_by_user_notify = function(req, res){
 				var next_order_status_id = api_config.AlipayPaymentNextOrderStatusId(order_status_id);
 				
 				//回傳金額不正確，不予處理
-				if(total_fee !== order.total) {
+				if(parseFloat(total_fee) !== parseFloat(order.total)) {
 					console.log('order total_fee not equals to order total record');
-					res.send('fail');
+					res.status(400).send('fail');
 				} 
 				//回傳內容正確，進行資料庫訂單更新
-				if(trade_status  == 'TRADE_FINISHED'){
-					console.log(_POST);
-					//请不要修改或删除
-					res.send("success");
-				}
-				if(trade_status == 'TRADE_SUCCESS'){
-					updateOrderByAlipayResponse(order.order_id, update_msg, next_order_status_id).then(function(result) {
-						Mail.sendOrderSuccess(order.order_id);
+				else {
+					if(trade_status  == 'TRADE_FINISHED'){
+						console.log(_POST);
 						//请不要修改或删除
 						res.send("success");
-					}, function(err) {
-						console.log(err);
-						res.send('fail');
-					});
-				}		
+					}
+					if(trade_status == 'TRADE_SUCCESS'){
+						updateOrderByAlipayResponse(order.order_id, update_msg, next_order_status_id).then(function(result) {
+							Mail.sendOrderSuccess(order.order_id);
+							//请不要修改或删除
+							res.send("success");
+						}, function(err) {
+							console.log(err);
+							res.send('fail');
+						});
+					}
+				}	
 			}, function(err) {
 				console.log(_POST + ' fails');
 				res.send("fail");
