@@ -21,13 +21,13 @@ angular.module('webApp')
 
 		var SHIPPING_FEE = {
 			EZSHIP: 60,
-			HOME: 90,
+			HOME: 15,
 			OVERSEAS: 350,
 		};
 
 		var FREE_SHIPPING_CONDICTION = {
-			EZSHIP: 1200,
-			HOME: 1200,
+			EZSHIP: 200,
+			HOME: 200,
 			OVERSEAS: 5000
 		};
 
@@ -36,11 +36,11 @@ angular.module('webApp')
 		var PAYMENT_NAME = {
 			store_pay: '超商付現',
 			hand_pay: '貨到付款',
-			alipay: '支付寶'
+			alipay: '支付宝'
 		};
 
 		var SHIPPING_NAME = {
-			ship_to_home: '送貨到府',
+			ship_to_home: '送货到府',
 			ship_to_overseas: '海外配送',
 			ship_to_store: '超商取貨'
 		};

@@ -102,8 +102,8 @@ div.panel.panel-default
 						button.form-control.btn.btn-vecs(ng-click="calcRewardSaved()", ng-disabled="checkout_form.input_rewards.$error.max") 确认
 					div.help-block(ng-messages="checkout_form.input_rewards.$error", ng-show="checkout_form.input_rewards.$error.max")
 						p(ng-message="max") 您此笔订单最多使用{{cart.rewards_available}}点红利
-			.col-md-2.hidden-xs
-				img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
+			//- .col-md-2.hidden-xs
+			//- 	img.img-responsive(src="../assets/images/checkout/freeship.png", style="width:100%")
 			.col-md-4.pull-right.hidden-xs
 				table.table
 					tr

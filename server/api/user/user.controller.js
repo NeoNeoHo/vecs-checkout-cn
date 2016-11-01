@@ -108,7 +108,10 @@ export function me(req, res, next) {
 	var userId = req.user._id;
 	console.log(req.user);
 	mysql_pool.getConnection(function(err, connection){
-		if(err) handleError(res)(err);
+		if(err) {
+			connection.release();
+			handleError(res)(err);
+		}
 		connection.query('select * from oc_customer where customer_id = ?',[userId], function(err, rows) {
 			connection.release();
 			if(err) next(err);
