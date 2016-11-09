@@ -272,6 +272,7 @@ angular.module('webApp')
 				$scope.checkout_second_step();
 				return 0;
 			}
+			$scope.setShipmentFee();
 			var shipping_promise = [];
 			var payment_promise = [];
 			var shipment_method = $scope.shipping_info.shipment_sel_str;
