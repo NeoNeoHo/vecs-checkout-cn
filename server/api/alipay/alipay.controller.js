@@ -85,7 +85,7 @@ exports.create_direct_pay_by_user = function(req, res) {
 			out_trade_no: order_id,
 			subject: 'Vecs Gardenia 嘉丹妮尔',
 			total_fee: order.total,
-			body: 'Vecs Gardenia 订单编号:' + order_id + ' @ ' + order.date_added.split(' ')[0],
+			body: 'Vecs Gardenia 订单编号:' + order_id + ' @ ' + order.date_added,
 			show_url: api_config.HOST_PATH
 		};
 		//建立请求
