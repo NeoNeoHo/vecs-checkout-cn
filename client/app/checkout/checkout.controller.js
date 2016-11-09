@@ -266,7 +266,7 @@ angular.module('webApp')
 				$scope.checkout_second_step();
 				return 0;
 			}
-			if($scope.shipping_info.shipment_sel_str || $scope.shipping_info.payment_sel_str) {
+			if(!$scope.shipping_info.shipment_sel_str || !$scope.shipping_info.payment_sel_str) {
 				alert('请检查配送资讯，谢谢');
 				$scope.cross_obj.is_submitted = false;
 				$scope.checkout_second_step();
