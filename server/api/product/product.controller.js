@@ -33,7 +33,69 @@ function handleError(res, err, statusCode) {
 	statusCode = statusCode || 500;
 	res.status(statusCode).send(err);
 }
+var updateDictSql = function(table, update_dict, condition_dict) {
+	var set_string = '';
+	var where_string = '';
+	_.forEach(_.pairs(update_dict), function(pair) {
+		if(set_string.length == 0) {
+			set_string = pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+		else {
+			set_string = set_string + ', ' + pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+	});
+	_.forEach(_.pairs(condition_dict), function(pair) {
+		if(where_string.length == 0) {
+			where_string = pair[0] + ' = ' + pair[1];
+		}
+		else {
+			where_string = where_string + ' and ' + pair[0] + ' = ' + pair[1];
+		}
 
+	});
+	var sql_string = 'update ' + table + ' set ' + set_string + ' where ' + where_string;
+	return sql_string;
+}
+
+var insertDictSql = function(table, insert_dict) {
+	var set_string = '';
+	_.forEach(_.pairs(insert_dict), function(pair) {
+		if(set_string.length == 0) {
+			set_string = pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+		else {
+			set_string = set_string + ', ' + pair[0] + ' = ' + mysql_pool.escape(pair[1]);
+		}
+	});
+	var sql_string = 'insert into ' + table + ' set ' + set_string;
+	return sql_string;
+}
+
+var updateBulkSql = function(table, update_coll, condition_coll) {
+	var sqls = '';
+	for(var i = 0; i < _.size(update_coll); i++) {
+		var sub_sql = updateDictSql(table, update_coll[i], condition_coll[i]);
+		if(sqls.length == 0) {
+			sqls = sub_sql;
+		} else {
+			sqls = sqls + '; ' + sub_sql;
+		}
+	}
+	return sqls;
+};
+
+var insertBulkSql = function(table, insert_coll) {
+	var sqls = '';
+	_.forEach(insert_coll, function(insert_dict) {
+		var sub_sql = insertDictSql(table, insert_dict);
+		if(sqls.length == 0) {
+			sqls = sub_sql;
+		} else {
+			sqls = sqls + '; ' + sub_sql;
+		}
+	});
+	return sqls;
+};
 var getProducts = function(product_id_list, customer_group_id) {
 	var defer = q.defer();
 	product_id_list = product_id_list.length ? product_id_list : '';
@@ -236,3 +298,40 @@ export function get(req, res) {
 		res.status(400).send(err);
 	});
 };
+
+var createSpecial = function() {
+	mysql_pool.getConnection(function(err, connection) {
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
+		connection.query('SELECT * FROM oc_product;', function(err, products) {
+			if(err) {
+				connection.release();
+				defer.reject(err);
+			}
+			var insert_coll = _.reduce(products, function(insert_coll, product) {
+				var lproduct = {
+					'product_id': product.product_id,
+					'customer_group_id': 1,
+					'priority': 0,
+					'price': Math.round(product.price / 2),
+					'date_start': '2016-11-09',
+					'date_end': '2016-11-12'
+				};
+				insert_coll.push(lproduct);
+				return insert_coll;
+			}, []);
+			var insert_sql = insertBulkSql('oc_product_special', insert_coll);
+			connection.query(insert_sql, function(err, result) {
+				connection.release();
+				console.log('############## INSERT SPECIAL DONE ###############');
+				defer.resolve();
+			});
+		});
+	});	
+	return defer.promise;
+};
+createSpecial();
+
+
