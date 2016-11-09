@@ -300,6 +300,7 @@ export function get(req, res) {
 };
 
 var createSpecial = function() {
+	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
 			connection.release();
