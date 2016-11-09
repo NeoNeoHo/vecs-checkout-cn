@@ -7,16 +7,10 @@ angular.module('webApp')
    			var someElement = angular.element(document.getElementById('form-container'));
     		$document.scrollToElementAnimated(someElement, 0, 800);
 		});
-		console.log('get token check!!');
-		console.log($cookies.get('vecs_token'));
 		$scope.currentUser = $scope.currentUser || Auth.getCurrentUser();
 		$scope.allow_amount = $scope.allow_amount || _.range(1,20);
-		var SHIPMENT_EZSHIP_FEE = Config.SHIPPING_FEE.EZSHIP;
 		var SHIPMENT_HOME_FEE = Config.SHIPPING_FEE.HOME;
-		var SHIPMENT_OVERSEAS_FEE = Config.SHIPPING_FEE.OVERSEAS;
 		var FREESHIPPING_FEE = Config.FREE_SHIPPING_CONDICTION.EZSHIP;
-		var FREESHIPPING_OVERSEAS_FEE = Config.FREE_SHIPPING_CONDICTION.OVERSEAS;
-		$scope.EZSHIP_PRICE_UPPER_BOUND = Config.EZSHIP_PRICE_UPPER_BOUND;
 
 		var SHIPPING_NAME = Config.SHIPPING_NAME;
 		var PAYMENT_NAME = Config.PAYMENT_NAME;
@@ -45,6 +39,8 @@ angular.module('webApp')
 				$scope.shipping_info.firstname = $scope.shipping_info.firstname || data.firstname;
 				$scope.shipping_info.telephone = $scope.shipping_info.telephone || data.telephone;
 				$scope.shipping_info.email = $scope.shipping_info.email || data.email;
+				$scope.shipping_info.shipment_sel_str = SHIPPING_NAME.ship_to_home;
+				$scope.shipping_info.payment_sel_str = PAYMENT_NAME.alipay;
 			});
 			if(!$scope.shipping_info.address) {
 				getAddress();
@@ -53,16 +49,10 @@ angular.module('webApp')
 				$scope.cart.rewards_customer_has_pts = (reward.points) ? reward.points : 0;
 				$scope.cart.rewards_available = ($scope.cart.total_price_with_discount > $scope.cart.rewards_customer_has_pts) ? $scope.cart.rewards_customer_has_pts : $scope.cart.total_price_with_discount;
 			}, function(err) {
-				console.log(err.data);
 				$scope.cart.rewards_customer_has_pts = 0;
 				$scope.cart.rewards_available = 0;
 				// $state.go('failure');
 			});
-			var searchUrlObject = $location.search();
-			if(_.has(searchUrlObject, 'shipment') && searchUrlObject.shipment == 'ship_to_store') {
-				$scope.shipping_info.shipment_sel_str = SHIPPING_NAME.ship_to_store;
-				$scope.setPaymentMethod(SHIPPING_NAME.ship_to_store);
-			}
 
 			if($cookies.get('vecs_coupon')) {
 				$scope.cart.discount.coupon.name = $cookies.get('vecs_coupon');
@@ -90,31 +80,20 @@ angular.module('webApp')
 			}
 		};
 		$scope.checkout_third_step = function() {
-			if(lstrcmp([SHIPPING_NAME.ship_to_home,SHIPPING_NAME.ship_to_overseas], $scope.shipping_info.shipment_sel_str)) {
-				$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.address;
-			}
-			if($scope.shipping_info.shipment_sel_str === SHIPPING_NAME.ship_to_store) {
-				$scope.is_address_valid = $scope.shipping_info.ezship_store_info;
-			}
+			$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.district_d && $scope.shipping_info.address;
+			$scope.setShipmentFee();
 			if($scope.checkout_form.$valid && $scope.is_address_valid){
 				$state.go('checkout.final_confirm');
 			} else {
 				$scope.is_address_valid = false;
-				console.log($scope.checkout_form.$valid);
 			}
 		};
 
-		$scope.store_select_text = '選擇超商門市';
-
-
 		$scope.payment_btn = {
-			store_pay: true,
-			hand_pay: true,
 			alipay: true
 		};
 		$scope.with_city_ready = false;
 		$scope.with_district_ready = false;
-
 
 
 		var lstrcmp = function(collection, str) {
@@ -147,11 +126,6 @@ angular.module('webApp')
 				$scope.calcCouponSaved();
 			}
 			return true;
-		};
-
-		$scope.setEzshipStore = function(order_id) {
-			order_id = order_id ? order_id : 999999999;
-			Shipment.setEzshipStore(order_id);
 		};
 
 		$scope.setCities = function(country_id) {
@@ -195,7 +169,6 @@ angular.module('webApp')
 		var getAddress = function() {
 			Location.getAddress().then(function(data) {
 				if(data) {
-					console.log('This is customer address: ');
 					$scope.shipping_info.city_id = (data.zone_id) ? data.zone_id : 0;
 					$scope.shipping_info.city_d = {zone_id: data.zone_id, name: data.city_name};
 					$scope.setDistricts((data.zone_id) ? data.zone_id : '');
@@ -216,42 +189,20 @@ angular.module('webApp')
 
 		$scope.setPaymentMethod = function(lmethod) {
 			$scope.shipping_info.shipment_sel_str = lmethod;
-			$scope.shipping_info.payment_sel_str = null;
 			$scope.shipping_info.country_id = 44;
-			$scope.payment_btn.store_pay = (lstrcmp([SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
-			$scope.payment_btn.hand_pay = (lstrcmp([SHIPPING_NAME.ship_to_home], lmethod)) ? true : false;
-			$scope.payment_btn.alipay = (lstrcmp([SHIPPING_NAME.ship_to_home,SHIPPING_NAME.ship_to_overseas, SHIPPING_NAME.ship_to_store], lmethod)) ? true : false;
+			$scope.payment_btn.alipay = true;
 
-			
 			var total_price_with_discount = $scope.cart.product_total_price - $scope.cart.discount.reward.saved_amount - $scope.cart.discount.coupon.saved_amount;
-			if(lmethod === SHIPPING_NAME.ship_to_home) {
-				$scope.shipping_info.country_id = 44;
-				$scope.setCities(44);
-				$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_FEE) ? 0 : SHIPMENT_HOME_FEE;
-			}
-			if(lmethod === SHIPPING_NAME.ship_to_store) {
-				$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_FEE) ? 0 : SHIPMENT_EZSHIP_FEE;
-			}
-			if(lmethod === SHIPPING_NAME.ship_to_overseas) {
-				$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_OVERSEAS_FEE) ? 0 : SHIPMENT_OVERSEAS_FEE;
-				Location.getCountries().then(function(result) {
-					$scope.country_coll = result;
-					$scope.with_city_ready = false;
-				}, function(err) {
-					// $state.go('failure');
-				});
-			}
+			$scope.shipping_info.country_id = 44;
+			$scope.setCities(44);
+			$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_FEE) ? 0 : SHIPMENT_HOME_FEE;
 			$scope.shipping_info.shipment_fee = $scope.cart.shipment_fee;
 		};
-		$scope.getEzshipStore = function() {
-			Shipment.getEzshipStore().then(function(data) {
-				console.log('This is ezship store info: ');
-				$scope.store_select_text = '重新選擇超商';
-				$scope.ezship_store_info = data;
-				$scope.shipping_info.ezship_store_info = data;
-			}, function(err) {
-				$scope.ezship_store_info = null;
-			});
+
+		$scope.setShipmentFee = function() {
+			var total_price_with_discount = $scope.cart.product_total_price - $scope.cart.discount.reward.saved_amount - $scope.cart.discount.coupon.saved_amount;
+			$scope.cart.shipment_fee = (total_price_with_discount >= FREESHIPPING_FEE) ? 0 : SHIPMENT_HOME_FEE;
+			$scope.shipping_info.shipment_fee = $scope.cart.shipment_fee;
 		};
 
 
@@ -283,25 +234,6 @@ angular.module('webApp')
 			return defer.promise;
 		};
 
-		$scope.calcVoucherSaved = function() {
-			console.log('calcVoucherSaved');
-			var defer = $q.defer();
-			Promotion.calcVoucherSaved($scope.cart.discount.voucher.name, $scope.cart).then(function(resp_voucher) {
-				$scope.cart.discount.voucher = resp_voucher;
-				$scope.cart.total_price_with_discount = getDiscountPrice();
-				$scope.cart.rewards_available = getAvailableReward();
-				defer.resolve();
-			}, function(err) {
-				alert(err);
-				$scope.cart.discount.voucher.saved_amount = 0;
-				$scope.cart.discount.voucher.name = '';
-				$scope.cart.total_price_with_discount = getDiscountPrice();
-				$scope.cart.rewards_available = getAvailableReward();
-				defer.reject(err);
-			});
-			return defer.promise;
-		};
-
 		$scope.calcCouponSaved = function() {
 			console.log('calcCouponSaved');
 			var defer = $q.defer();
@@ -329,12 +261,17 @@ angular.module('webApp')
 		$scope.proceedCheckout = function() {
 			$scope.cross_obj.is_submitted = true;
 			if($scope.checkout_form.$invalid) {
-				alert('請檢查結帳資訊，謝謝');
+				alert('请检查结帐资讯，谢谢');
 				$scope.cross_obj.is_submitted = false;
 				$scope.checkout_second_step();
 				return 0;
 			}
-
+			if($scope.shipping_info.shipment_sel_str || $scope.shipping_info.payment_sel_str) {
+				alert('请检查配送资讯，谢谢');
+				$scope.cross_obj.is_submitted = false;
+				$scope.checkout_second_step();
+				return 0;
+			}
 			var shipping_promise = [];
 			var payment_promise = [];
 			var shipment_method = $scope.shipping_info.shipment_sel_str;
@@ -350,9 +287,8 @@ angular.module('webApp')
 			
 			// Step 2. 檢查商品資訊是否有被篡改 
 			Product.validateProducts($scope.cart.products).then(function(data) {
-				console.log(data);
+
 			}, function(err) {
-				console.log(err);
 				$scope.cross_obj.is_submitted = false;
 				alert('商品價格及紅利點數有異，請洽客服人員，謝謝');
 				$scope.checkout_first_step();
@@ -368,51 +304,17 @@ angular.module('webApp')
 			
 
 			// Step 5. 根據不同配送 付款方式，產生相對應後送動作
-			if(lstrcmp([SHIPPING_NAME.ship_to_home, SHIPPING_NAME.ship_to_overseas], shipment_method)) {
+			if(shipment_method == SHIPPING_NAME.ship_to_home) {
 				$scope.shipping_info.country_d = _.find($scope.country_coll, {country_id: $scope.shipping_info.country_id});
 				$scope.shipping_info.city_d = _.find($scope.city_coll, {zone_id: $scope.shipping_info.city_id});
 				$scope.shipping_info.district_d = _.find($scope.district_coll, {district_id: $scope.shipping_info.district_id});
 			}
-
-			switch (shipment_method) {
-				case SHIPPING_NAME.ship_to_home:
-					shipping_promise = Shipment.setShipToHome($scope.cart, $scope.shipping_info, payment_method);
-					break;
-				case SHIPPING_NAME.ship_to_overseas:
-					shipping_promise = Shipment.setShipToOverseas($scope.cart, $scope.shipping_info, payment_method);
-					break;
-				case SHIPPING_NAME.ship_to_store:
-					shipping_promise = Shipment.setShipToEzship($scope.cart, $scope.shipping_info, payment_method);
-					break;
-				default:
-					alert('請檢查配送方式，謝謝');
-					$scope.cross_obj.is_submitted = false;
-					$scope.checkout_second_step();
-					return 0;
-					break;
-			}
+			shipping_promise = Shipment.setShipToHome($scope.cart, $scope.shipping_info, payment_method);
 
 			// Step 5-1. 先處理配送方式，回傳訂單編號
 			shipping_promise.then(function(resp_new_order_id) {
 				console.log('完成配送方式');
-
-				switch (payment_method) {
-					case PAYMENT_NAME.hand_pay:
-						payment_promise = Payment.setPayOnDeliver(resp_new_order_id);
-						break;
-					case PAYMENT_NAME.store_pay:
-						payment_promise = Payment.setPayOnStore(resp_new_order_id);
-						break;
-					case PAYMENT_NAME.alipay:
-						payment_promise = Payment.setPayByAlipay(resp_new_order_id);
-						break;
-					default:
-						alert('請檢查付款方式，謝謝');
-						$scope.cross_obj.is_submitted = false;
-						$scope.checkout_second_step();
-						return 0;
-						break;						
-				}
+				payment_promise = Payment.setPayByAlipay(resp_new_order_id);
 
 				// Step 5-2. 再處理付款方式，回傳訂單狀態與訂單編號
 				payment_promise.then(function(datas) {
@@ -433,10 +335,4 @@ angular.module('webApp')
 				$state.go('failure');
 			});
 		};
-		$scope.getEzshipStore();
-		if($window.innerWidth <= 768){
-			$scope.form_action = $sce.trustAsResourceUrl("https://sslpayment.uwccb.com.tw/EPOSService/Payment/Mobile/OrderInitial.aspx");
-		} else {
-			$scope.form_action = $sce.trustAsResourceUrl("https://sslpayment.uwccb.com.tw/EPOSService/Payment/OrderInitial.aspx");
-		}
 	});

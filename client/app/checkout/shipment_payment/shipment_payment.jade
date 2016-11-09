@@ -32,18 +32,18 @@ div.panel.panel-default
 		div.form-group.required
 			label.col-sm-2.col-xs-4.control-label.text-right(for='input_name') 姓名
 			div.col-md-4.col-sm-10.col-xs-8
-				input.form-control(type='text', name='input_name', placeholder='请填写真实姓名，以利寄送', ng-model="shipping_info.firstname", ng-minlength="2", required)
+				input.form-control(type='text', name='input_name', placeholder='请填写真实姓名，以利寄送', ng-model="shipping_info.firstname", ng-minlength="1", required)
 		div.form-group.required(ng-class="{'disabled': payment_btn.store_pay}")
 			label.col-sm-2.col-xs-4.control-label.text-right(for='input_country') 地址
 			.row.col-sm-4.col-xs-8(ng-show="shipping_info.shipment_sel_str != SHIPPING_NAME.ship_to_overseas")
 				div.col-sm-6.col-xs-12
-					select.form-control(ng-options="city.zone_id as city.name for city in city_coll", ng-model="shipping_info.city_id", ng-change="setDistricts(shipping_info.city_id)", ng-disabled="!with_city_ready", name="input_city2")
+					select.form-control(ng-options="city.zone_id as city.name for city in city_coll", ng-model="shipping_info.city_id", ng-change="setDistricts(shipping_info.city_id)", ng-disabled="!with_city_ready", name="input_city2", required)
 						option(value='') 省市区
 				div.col-sm-6.col-xs-12
-					select.form-control(ng-options="district.district_id as district.name for district in district_coll", ng-model="shipping_info.district_id", ng-disabled="!shipping_info.city_id && !with_district_ready", ng-change="setDistrictName(shipping_info.district_id)", name="input_district")
+					select.form-control(ng-options="district.district_id as district.name for district in district_coll", ng-model="shipping_info.district_id", ng-disabled="!shipping_info.city_id && !with_district_ready", ng-change="setDistrictName(shipping_info.district_id)", name="input_district", required)
 						option(value='') 地区
 			div.col-sm-6.col-xs-8.pull-right
-				input.form-control(type='address', id='input_address', placeholder='您的地址', ng-model="shipping_info.address", name="input_address")
+				input.form-control(type='address', id='input_address', placeholder='您的地址', ng-model="shipping_info.address", name="input_address", required)
 		div.form-group.required
 			label.col-sm-2.col-xs-4.control-label.text-right(for='input_phone') 联络电话
 			div.col-md-4.col-sm-10.col-xs-8
@@ -87,7 +87,7 @@ div.panel.panel-default
 		button.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-click="checkout_first_step()") 上一步
 		div.col-md-3.col-xs-7.pull-right
 			.row
-				button.col-xs-12.btn.btn-vecs.btn-sharp.btn-lg.text-justify(ng-click="checkout_third_step()", ng-disabled="checkout_form.$invalid", ng-class="{'btn-danger': checkout_form.$invalid}") 下一步
+				button.col-xs-12.btn.btn-vecs.btn-sharp.btn-lg.text-justify(ng-click="checkout_third_step()", ng-disabled="checkout_form.$invalid", ng-class="{'btn-danger': checkout_form.$invalid || !is_address_valid}") 下一步
 					span.glyphicon.glyphicon-circle-arrow-right.pull-right
 			.row(ng-show="checkout_form.$invalid || !is_address_valid")
 				p.text-danger --请检查以上填写的送货资料 

@@ -34,21 +34,6 @@
 				.row
 					form.form-horizontal(name="checkout_form", novalidate)
 						div#form-views(ui-view="")
-
-form(method="post", id="cathay_order_form", action="{{form_action}}")
-	input(type='hidden', id='strRqXMLID', name='strRqXML', value='')
-form(method="post", id="ezship_order_form", action="https://www.ezship.com.tw/emap/rv_request_web.jsp")
-	input(type="hidden", id="rv_name", name="rv_name", value='')
-	input(type="hidden", id="rv_email", name="rv_email", value='')
-	input(type="hidden", id="rv_mobil", name="rv_mobil", value='')
-	input(type="hidden", id="rv_amount", name="rv_amount", value='')
-	input(type="hidden", id="order_id", name="order_id", value='')
-	input(type="hidden", id="order_status", name="order_status", value='')
-	input(type="hidden", id="su_id", name="su_id", value='')
-	input(type="hidden", id="order_type", name="order_type", value='')
-	input(type="hidden", id="st_code", name="st_code", value='')
-	input(type="hidden", id="rturl", name="rturl", value='')
-	input(type="hidden", id="webtemp", name="webtemp", value='')
 	
 //- .pre {{shipping_info}}
 //- .well {{cart}}
