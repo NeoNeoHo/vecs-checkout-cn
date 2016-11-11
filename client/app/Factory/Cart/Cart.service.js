@@ -111,7 +111,7 @@ angular.module('webApp')
 				});
 				console.log(cart_cookies);
 				var cart = {
-					products: clean_cart_cookies,
+					products: cart_cookies,
 					product_total_price: _.reduce(cart_cookies, function(sum, o){return sum+o.price*o.quantity}, 0),
 					discount: {
 						reward: {
