@@ -132,7 +132,8 @@ angular.module('webApp')
 					},
 					shipment_fee: 0,
 				};
-
+				console.log('Cart 到底是什麼');
+				console.log(cart);
 				Product.getProductsDetail(cart.products).then(function(db_products) {
 					cart.products = _.map(cart.products, function(product) {
 						var db_product = _.find(db_products, {product_id: product.product_id});
