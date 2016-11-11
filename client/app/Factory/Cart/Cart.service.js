@@ -154,7 +154,7 @@ angular.module('webApp')
 						}
 						return product;
 					});
-					cart = updateCartTotal(cart);
+					// cart = updateCartTotal(cart);
 					// cart_cache = cart;
 					defer.resolve(cart);
 				}, function(err) {
