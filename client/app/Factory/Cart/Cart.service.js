@@ -97,22 +97,15 @@ angular.module('webApp')
 		};
 		var getCart = function() {
 			var defer = $q.defer();
-			// if(!$cookies.get('vecs_cart')) {
-			// 	console.log('redirect to host');
-			// 	window.location.href = Config.DIR_DOMAIN;
-			// }
-			// var cart_cookies = JSON.parse($cookies.get('vecs_cart'));
 			getSession().then(function(result) {
 				var cart_cookies = result.data.cart;
 
-				var clean_cart_cookies = _.map(cart_cookies, function(lproduct) {
-					lproduct.product_id = parseInt(lproduct.product_id);
-					return lproduct;
-				});
-				console.log('where cart_cookies first happen');
-				console.log(cart_cookies);
+				// var clean_cart_cookies = _.map(cart_cookies, function(lproduct) {
+				// 	lproduct.product_id = parseInt(lproduct.product_id);
+				// 	return lproduct;
+				// });
 				var cart = {
-					products: result.data.cart,
+					products: cart_cookies,
 					product_total_price: _.reduce(cart_cookies, function(sum, o){return sum+o.price*o.quantity}, 0),
 					discount: {
 						reward: {
@@ -135,6 +128,8 @@ angular.module('webApp')
 				};
 				console.log('Cart 到底是什麼');
 				console.log(cart);
+				console.log(cart_cookies);
+				console.log('Cart 的部分結束');
 				Product.getProductsDetail(cart.products).then(function(db_products) {
 					cart.products = _.map(cart.products, function(product) {
 						var db_product = _.find(db_products, {product_id: product.product_id});
@@ -154,7 +149,7 @@ angular.module('webApp')
 						}
 						return product;
 					});
-					// cart = updateCartTotal(cart);
+					cart = updateCartTotal(cart);
 					// cart_cache = cart;
 					defer.resolve(cart);
 				}, function(err) {
