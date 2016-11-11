@@ -78,6 +78,8 @@ angular.module('webApp')
 			cart = checkDiscount(cart);
 			cart = updateProductTotal(cart);
 			cart.product_total_price = _.reduce(cart.products, function(sum, o){return sum+o.total}, 0);
+			console.log('fjdosifjasoif');
+			console.log(cart);
 			updateCartCookiesSession(cart.products);
 			return cart;
 		};
