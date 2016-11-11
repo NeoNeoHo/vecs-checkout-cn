@@ -112,7 +112,7 @@ angular.module('webApp')
 				console.log('where cart_cookies first happen');
 				console.log(cart_cookies);
 				var cart = {
-					products: cart_cookies,
+					products: result.data.cart,
 					product_total_price: _.reduce(cart_cookies, function(sum, o){return sum+o.price*o.quantity}, 0),
 					discount: {
 						reward: {
