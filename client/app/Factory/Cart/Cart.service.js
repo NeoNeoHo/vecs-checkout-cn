@@ -87,7 +87,7 @@ angular.module('webApp')
 			var defer = $q.defer();
 			$http.get('/api/carts/session/')
 			.then(function(result) {
-				console.log(result);
+				// console.log(result);
 				defer.resolve(result);
 			}, function(err) {
 				console.log(err);
@@ -109,6 +109,7 @@ angular.module('webApp')
 					lproduct.product_id = parseInt(lproduct.product_id);
 					return lproduct;
 				});
+				console.log('where cart_cookies first happen');
 				console.log(cart_cookies);
 				var cart = {
 					products: cart_cookies,
@@ -168,7 +169,7 @@ angular.module('webApp')
 
 
 		var clear = function() {
-			console.log('Clear Cart');
+			// console.log('Clear Cart');
 			clearCartCookieSession();
 			// window.location.href = Config.SERVER_HOST + '/index.php?route=checkout/cart/clear';
 		};
