@@ -104,7 +104,7 @@ angular.module('webApp')
 				// 	lproduct.product_id = parseInt(lproduct.product_id);
 				// 	return lproduct;
 				// });
-				var cart = {
+				var lcart = {
 					products: cart_cookies,
 					product_total_price: _.reduce(cart_cookies, function(sum, o){return sum+o.price*o.quantity}, 0),
 					discount: {
@@ -127,11 +127,11 @@ angular.module('webApp')
 					shipment_fee: 0,
 				};
 				console.log('Cart 到底是什麼');
-				console.log(cart);
+				console.log(lcart);
 				console.log(cart_cookies);
 				console.log('Cart 的部分結束');
-				Product.getProductsDetail(cart.products).then(function(db_products) {
-					cart.products = _.map(cart.products, function(product) {
+				Product.getProductsDetail(lcart.products).then(function(db_products) {
+					lcart.products = _.map(lcart.products, function(product) {
 						var db_product = _.find(db_products, {product_id: product.product_id});
 						if(db_product) {
 							product.price = db_product.price;
@@ -149,9 +149,9 @@ angular.module('webApp')
 						}
 						return product;
 					});
-					cart = updateCartTotal(cart);
+					lcart = updateCartTotal(lcart);
 					// cart_cache = cart;
-					defer.resolve(cart);
+					defer.resolve(lcart);
 				}, function(err) {
 					defer.reject(err);
 				});
