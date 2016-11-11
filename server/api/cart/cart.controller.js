@@ -208,7 +208,7 @@ export function updateProducts(req, res) {
 	var session_id = api_config.SESSION_ID+':'+req.user.session_id;
 	var update_products = req.body.update_products; //[{product_key:'fda', quantity: 1}]
 	getSession(session_id).then(function(sess_obj) {
-		if(sess_obj.cart){
+		if(sess_obj.cart && _.size(update_products) > 0){
 			sess_obj.cart = {};
 			_.forEach(update_products, function(product) {
 				if(product.product_key){
