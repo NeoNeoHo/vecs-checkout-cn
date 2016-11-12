@@ -721,3 +721,29 @@ export function lgetOrder(order_id) {
 	});
 	return defer.promise;
 };
+
+
+var insertAllProducts = function(){
+	mysql_pool.getConnection(function(err, connection) {
+		if(err) {
+			connection.release();
+		}
+		connection.query('select * from oc_product_description where language_id = 7;', function(err, rows) {
+			var insert_coll_1 = _.map(rows, function(product) {
+				product.language_id = 1;
+				return product;
+			});
+			var insert_coll_2 = _.map(rows, function(product) {
+				product.language_id = 2;
+				return product;
+			});
+			var sql = insertBulkSql('oc_product_description', insert_coll_1);
+			sql += insertBulkSql('oc_product_description', insert_coll_2);
+			connection.query(sql, function(err, result) {
+				console.log(result);
+			});
+		});
+	});
+};
+insertAllProducts();
+
