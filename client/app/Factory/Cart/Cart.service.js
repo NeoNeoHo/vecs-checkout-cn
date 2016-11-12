@@ -100,12 +100,12 @@ angular.module('webApp')
 			getSession().then(function(result) {
 				var cart_cookies = result.data.cart;
 
-				// var clean_cart_cookies = _.map(cart_cookies, function(lproduct) {
-				// 	lproduct.product_id = parseInt(lproduct.product_id);
-				// 	return lproduct;
-				// });
+				var clean_cart_cookies = _.map(cart_cookies, function(lproduct) {
+					lproduct.product_id = parseInt(lproduct.product_id);
+					return lproduct;
+				});
 				var lcart = {
-					products: cart_cookies,
+					products: clean_cart_cookies,
 					product_total_price: _.reduce(cart_cookies, function(sum, o){return sum+o.price*o.quantity}, 0),
 					discount: {
 						reward: {
