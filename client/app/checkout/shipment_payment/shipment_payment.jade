@@ -51,11 +51,11 @@ div.panel.panel-default
 
 div.page-header.h4(ng-click="with_memo_collapsed = !with_memo_collapsed") 
 	img(src="../assets/images/checkout/logo_leaf.png", style="width:40px")
-	| 備註資訊(选填)
+	| 备注资讯(选填)
 div.panel.panel-default
 	div.panel-body
 		div.form-group
-			label.col-sm-2.col-xs-4.control-label.text-right(for='input_comment') 訂單備註：
+			label.col-sm-2.col-xs-4.control-label.text-right(for='input_comment') 订单备注：
 			div.col-md-4.col-sm-10.col-xs-8
 				input.form-control(ng-model="shipping_info.comment", type='textarea', name='input_comment', placeholder='选填') 
 .row(ng-hide="true;")

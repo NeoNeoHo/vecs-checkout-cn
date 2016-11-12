@@ -3,18 +3,16 @@ navbar
 	.row
 		div.col-xs-10.col-xs-offset-1
 			div.jumbotron.text-center.text-white.hidden-xs(style="background-image: url('../assets/images/checkout/03.jpg'); background-size: 100% auto;", ng-click="backToCheckout()")
-				h1 Oops ! 我們出了一點小問題
-				p 再次結帳，或撥打客服 02-23623827
-				p 或是臉書私訊我們 m.me/vecs.gardenia
-				button.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToCheckout()", role="button") 再次結帳
+				h1 Oops ! 我们出了一点小问题
+				p 再次结帐，或联络我们微信公众号 vg_jdnr
+				button.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToCheckout()", role="button") 再次结帐
 					span.glyphicon.glyphicon-home.pull-right
 			div.well.text-center.visible-xs(style="border:0px solid black;")
-				h2 Oops ! 我們出了一點小問題
-				p 再次結帳，或撥打客服 02-23623827
-				p 或是臉書私訊我們 m.me/vecs.gardenia
-				a.btn.btn-default.btn-lg(ng-click="backToCheckout()", role="button") 再次結帳
+				h2 Oops ! 我们出了一点小问题
+				p 再次结帐，或联络我们微信公众号 vg_jdnr
+				a.btn.btn-default.btn-lg(ng-click="backToCheckout()", role="button") 再次结帐
 			.page-header.h4(ng-show="order")
-				| 訂單資訊 （訂單編號：{{order.order_id}}）
+				| 订单资讯 （订单编号：{{order.order_id}}）
 			.page-header
 			//- div.text-muted
 			//- 	p 注意事項：
@@ -23,5 +21,5 @@ navbar
 			//- 		li 若當次訂購享有跨產品或滿額贈禮優惠者，有需要取消或退貨時，需將當次訂購之商品全部取消或退貨。
 			//- 		li 辦理退換貨時，您需要負擔商品寄至本公司的郵資。
 
-			button.col-md-3.col-xs-10.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官網首頁
+			button.col-md-3.col-xs-10.btn.btn-danger.btn-sharp.btn-lg.pull-right.text-justify(ng-click="backToHome()", role="button") 回到官网首页
 				span.glyphicon.glyphicon-home.pull-right
