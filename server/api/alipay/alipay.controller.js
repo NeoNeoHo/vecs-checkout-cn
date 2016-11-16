@@ -239,7 +239,7 @@ exports.create_direct_pay_by_user_return = function(req, res){
 		}
 		else {
 			//验证失败
-			console.log(_POST + ' fails');
+			console.log(_GET + ' fails');
 			res.redirect('/checkout/failure?order_id='+order_id+'&msg=please_contact_us');
 		}
 	});
