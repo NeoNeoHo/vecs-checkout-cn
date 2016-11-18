@@ -128,11 +128,12 @@ exports.create_wap_direct_pay_by_user = function(req, res) {
 		}
 		var commercial_data = {
 			out_trade_no: order_id,
-			subject: 'Vecs Gardenia 嘉丹妮尔',
+			subject: 'Vecs Gardenia 嘉丹妮尔 美妆保养品',
 			total_fee: order.total,
 			app_pay: 'Y',
 			body: 'Vecs Gardenia 订单编号:' + order_id + ' @ ' + order.date_added,
-			show_url: api_config.HOST_PATH
+			show_url: api_config.HOST_PATH + '/product_check',
+			seller_id: ALIPAY_CONFIG.partner,
 		};
 		//建立请求
 		var alipaySubmit = new AlipaySubmit(ALIPAY_CONFIG);
@@ -142,8 +143,9 @@ exports.create_wap_direct_pay_by_user = function(req, res) {
 			payment_type:'1', //支付类型
 			notify_url: url.resolve(ALIPAY_CONFIG.host, ALIPAY_CONFIG.create_direct_pay_by_user_notify_url), //服务器异步通知页面路径,必填，不能修改, 需http://格式的完整路径，不能加?id=123这类自定义参数
 			return_url: url.resolve(ALIPAY_CONFIG.host , ALIPAY_CONFIG.create_direct_pay_by_user_return_url), //页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
-			seller_email:ALIPAY_CONFIG.seller_email, //卖家支付宝帐户 必填		
-			_input_charset:ALIPAY_CONFIG['input_charset'].toLowerCase().trim()
+			seller_email:ALIPAY_CONFIG.seller_email, //卖家支付宝帐户 必填	
+			// _input_charset:ALIPAY_CONFIG['input_charset'].toLowerCase().trim()
+			_input_charset: 'UTF-8'
 		};
 		for(var key in commercial_data){
 			parameter[key] = commercial_data[key];
