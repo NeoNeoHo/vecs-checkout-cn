@@ -316,9 +316,9 @@ var createSpecial = function() {
 					'product_id': product.product_id,
 					'customer_group_id': 1,
 					'priority': 0,
-					'price': Math.round(product.price / 2),
-					'date_start': '2016-11-09',
-					'date_end': '2016-11-12'
+					'price': Math.round(product.price * 0.7),
+					'date_start': '2016-12-05',
+					'date_end': '2016-12-13'
 				};
 				insert_coll.push(lproduct);
 				return insert_coll;
@@ -333,6 +333,6 @@ var createSpecial = function() {
 	});	
 	return defer.promise;
 };
-// createSpecial();
+createSpecial();
 
 
