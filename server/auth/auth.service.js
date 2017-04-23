@@ -34,6 +34,8 @@ export function isAuthenticated() {
 		// When Fail to validate JWT, res with status 401
 		.use(function(err, req, res, next) {
 			if (err.name === 'UnauthorizedError') {
+				console.log('In authentication section 1');
+				console.log(err);
 				res.status(401).send(err);
 			} else {
 				next();
@@ -44,6 +46,8 @@ export function isAuthenticated() {
 			// console.log(req.user);
 			mysql_pool.getConnection(function(err, connection){
 				if(err) {
+					console.log('In authentication section 2');
+					console.log(err);
 					connection.release();
 					res.status(401).send(err);
 				}
@@ -51,7 +55,11 @@ export function isAuthenticated() {
 				connection.query('select * from oc_customer where customer_id = ?',[req.user._id], function(err, rows) {
 					connection.release();
 					if(err) res.status(400).send(err);
-					if(!rows[0]) return res.status(401).end();
+					if(!rows[0]) {
+						console.log('In authentication section 3');
+						console.log(err);
+						return res.status(401).end();
+					}
 					if(rows) {
 						req.user = {
 							role: 'user', 
