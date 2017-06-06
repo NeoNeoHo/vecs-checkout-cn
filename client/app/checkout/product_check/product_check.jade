@@ -22,12 +22,12 @@ div.panel.panel-default
 						select(ng-options="option for option in allow_amount track by option", ng-model="product.quantity", ng-change="updateCartTotal()")
 					div.input-group(ng-show="product.isLimited") {{product.quantity}}
 				td.cart-price
-					| $ {{product.spot_price + product.option_price}}
+					| ¥ {{product.spot_price + product.option_price}}
 					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
-						| $ {{product.price.unit_price + product.option_price}} 
+						| ¥ {{product.price.unit_price + product.option_price}} 
 					div.text-green(ng-repeat="discount_condition in product.discount")
 						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
-				td.cart-total $ {{product.total}}
+				td.cart-total ¥ {{product.total}}
 				td.cart-remove
 					span.btn.btn-default.btn-sm.text-center(ng-click="removeProduct(product.key)")
 						span.glyphicon.glyphicon-trash
@@ -50,10 +50,10 @@ div.panel.panel-default
 						span.glyphicon.glyphicon-trash
 			tr
 				td(colspan="2") 
-					h3 $ {{product.spot_price + product.option_price}}
+					h3 ¥ {{product.spot_price + product.option_price}}
 						small /件
 					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
-						| $ {{product.price.unit_price + product.option_price}} 
+						| ¥ {{product.price.unit_price + product.option_price}} 
 			tr(ng-repeat-end)
 				td(colspan="3", style="border-top:0px solid black;")
 					div
@@ -68,7 +68,7 @@ div.panel.panel-default
 				table.table
 					tr
 						td.text-right 商品总计:
-						td.text-right $ {{cart.product_total_price}}
+						td.text-right ¥ {{cart.product_total_price}}
 div#checkout_buymore.panel.panel-default(ng-hide="true")
 	div.panel-heading.lead 超值加购区
 	div.panel-body
@@ -79,8 +79,8 @@ div#checkout_buymore.panel.panel-default(ng-hide="true")
 					div.caption
 						h5 {{product.name}}
 						div
-							strong.text-red $ {{product.price}}
-							del.small.pull-right $ {{product.default_price}}1000
+							strong.text-red ¥ {{product.price}}
+							del.small.pull-right ¥ {{product.default_price}}1000
 						p
 							label.btn.btn-sharp.btn-default(href="#", role="button", ng-click="addPromoteItem(product.key)") 加入购物车
 
@@ -108,13 +108,13 @@ div.panel.panel-default
 				table.table
 					tr
 						td.text-right 商品总计:
-						td.text-right $ {{cart.product_total_price}}
+						td.text-right ¥ {{cart.product_total_price}}
 					tr(style="color:green")
 						td.text-right 折扣:
-						td.text-right - $ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
+						td.text-right - ¥ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
 					tr.h2
 						td.text-right 小計
-						td.text-right $ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+						td.text-right ¥ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
 
 div.visible-xs
 	.row
@@ -122,13 +122,13 @@ div.visible-xs
 			table.table
 				tr
 					td.text-right 商品总计:
-					td.text-right $ {{cart.product_total_price}}
+					td.text-right ¥ {{cart.product_total_price}}
 				tr(style="color:green")
 					td.text-right 折扣:
-					td.text-right - $ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
+					td.text-right - ¥ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
 				tr.h3
 					td.text-right 小計
-					td.text-right $ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+					td.text-right ¥ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
 div.row.panel.panel-body
 	a.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-href="{{cross_obj.DIR_DOMAIN}}") 回官网
 	button.col-md-3.col-xs-7.btn.btn-vecs.btn-sharp.btn-lg.pull-right.text-justify(ng-click="checkout_second_step()") 下一步

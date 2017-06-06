@@ -18,12 +18,12 @@ div.panel.panel-default
 						h6(ng-show="product.reward") + 红利 {{product.reward}} 点  
 				td.cart-quantity {{product.quantity}}
 				td.cart-price
-					| $ {{product.spot_price + product.option_price}}
+					| ¥ {{product.spot_price + product.option_price}}
 					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
-						| $ {{product.price.unit_price + product.option_price}} 
+						| ¥ {{product.price.unit_price + product.option_price}} 
 					div.text-green(ng-repeat="discount_condition in product.discount")
 						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
-				td.cart-total $ {{product.total}}
+				td.cart-total ¥ {{product.total}}
 		table#checkout_cart_table_final_xs.table.checkout-cart.table-default.visible-xs
 			tr
 				th.col-xs-8.text-center 名称
@@ -37,10 +37,10 @@ div.panel.panel-default
 					h3 {{product.quantity}}件
 			tr
 				td(colspan="2") 
-					h3 $ {{product.spot_price + product.option_price}}
+					h3 ¥ {{product.spot_price + product.option_price}}
 						small /件
 					del.text-red(ng-show="product.price.unit_price > product.spot_price") 
-						| $ {{product.price.unit_price + product.option_price}} 
+						| ¥ {{product.price.unit_price + product.option_price}} 
 			tr(ng-repeat-end)
 				td(colspan="3", style="border-top:0px solid black;")
 					div
@@ -92,26 +92,26 @@ div.panel.panel-default
 				table.table
 					tr
 						td.text-right 商品总计:
-						td.text-right $ {{cart.product_total_price}}
+						td.text-right ¥ {{cart.product_total_price}}
 					tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
 						td.text-right 红利折扣:
-						td.text-right - $ {{cart.discount.reward.saved_amount}}
+						td.text-right - ¥ {{cart.discount.reward.saved_amount}}
 					tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
 						td.text-right 折扣码
 							b {{cart.discount.coupon.name}}:
-						td.text-right - $ {{cart.discount.coupon.saved_amount}}
+						td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
 					tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 						td.text-right 礼品券:
 						td.text-right 
-							| - $ {{cart.discount.voucher.saved_amount}}
+							| - ¥ {{cart.discount.voucher.saved_amount}}
 							br
-							small 尚余 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
+							small 尚余 ¥ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
 					tr
 						td.text-right 运费:
-						td.text-right $ {{cart.shipment_fee}}
+						td.text-right ¥ {{cart.shipment_fee}}
 					tr.h2
 						td.text-right 总计
-						td.text-right $ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+						td.text-right ¥ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
 
 div.visible-xs
 	.row
@@ -121,26 +121,26 @@ div.visible-xs
 			table.table
 				tr
 					td.text-right 商品总计:
-					td.text-right $ {{cart.product_total_price}}
+					td.text-right ¥ {{cart.product_total_price}}
 				tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
 					td.text-right 红利折扣:
-					td.text-right - $ {{cart.discount.reward.saved_amount}}
+					td.text-right - ¥ {{cart.discount.reward.saved_amount}}
 				tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
 					td.text-right 折扣码
 						b {{cart.discount.coupon.name}}:
-					td.text-right - $ {{cart.discount.coupon.saved_amount}}
+					td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
 				tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 					td.text-right 礼品券:
 					td.text-right 
-						| - $ {{cart.discount.voucher.saved_amount}}
+						| - ¥ {{cart.discount.voucher.saved_amount}}
 						br
-						small 尚余 $ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
+						small 尚余 ¥ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
 				tr
 					td.text-right 运费:
-					td.text-right $ {{cart.shipment_fee}}
+					td.text-right ¥ {{cart.shipment_fee}}
 				tr.h3
 					td.text-right 总计
-					td.text-right $ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+					td.text-right ¥ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
 div.loading(ng-show="cross_obj.is_submitted") Loading
 div.row.panel.panel-body
 	button.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-click="checkout_second_step()") 上一步
