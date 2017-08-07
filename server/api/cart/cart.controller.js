@@ -106,32 +106,44 @@ var cartCollToSerialize = function(cart_coll) {
 var UnserializeToCartColl = function(cart_obj) {
 	var defer = q.defer();
 	var option_promises = [];
-	var cart_coll = _.map(_.keys(cart_obj), function(lkey){
+	var product_keys = _.keys(cart_obj);
+	var cart_coll = [];
+	_.forEach(_.keys(cart_obj), function(lkey){
 		var obj = unserialize(new Buffer(lkey, 'base64'), 'ascii');
+		console.log(obj);
 		obj.quantity = cart_obj[lkey];
 		obj.product_key = lkey;
 		obj.key = lkey;
 		obj.href = api_config.DIR_PATH + 'index.php?route=product/product&product_id=' + obj.product_id;
-		if(obj.option){
+		if(_.has(obj, 'option')){
 			_.forEach(_.keys(obj.option), function(option_key) {
-				option_promises.push(getProductOptions(option_key, obj.option[option_key], obj.product_key));
+				option_promises.push(getProductOptions(option_key, obj.option[option_key], lkey));
 			});
 		} else {
 			obj.option = [];
 		}
-		return obj;
+		cart_coll.push(obj);
 	});
+
 	if(_.size(option_promises) == 0) {
 		defer.resolve(cart_coll);
 	}
 	q.all(option_promises).then(function(datas) {
+
+		var temp_product_option_obj = {};
 		_.forEach(datas, function(lproduct_option) {
-			_.map(cart_coll, function(obj){
-				if(obj.product_key == lproduct_option.product_key){
-					obj.option = lproduct_option.option;
-				}
-				return obj;
-			});
+			if(lproduct_option.product_key in temp_product_option_obj) {
+				temp_product_option_obj[lproduct_option.product_key].push(lproduct_option.option);
+			} else {
+				temp_product_option_obj[lproduct_option.product_key] = [];
+				temp_product_option_obj[lproduct_option.product_key].push(lproduct_option.option);
+			}
+		});
+		_.map(cart_coll, function(obj) {
+			if( obj.product_key in temp_product_option_obj) {
+				obj.option = _.flattenDeep(temp_product_option_obj[obj.product_key]);
+			}
+			return obj;
 		});
 		defer.resolve(cart_coll);
 	}, function(err) {
