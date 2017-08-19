@@ -102,8 +102,8 @@ var insertBulkSql = function(table, insert_coll) {
 
 var createOrder = function(shipping_info, customer_id, customer_group_id, email, customer_ip) {
 	var order_dict = {
-		'store_name': 'Vecs Gardenia 嘉丹妮爾',
-		'store_url': 'https://vecsgardenia.com',
+		'store_name': api_config.STORE_NAME,
+		'store_url': api_config.STORE_URL,
 		'invoice_prefix': '', 'invoice_filename': '', 'fax': '', 'custom_field': '',
 		'customer_id': customer_id,
 		'customer_group_id': customer_group_id,
