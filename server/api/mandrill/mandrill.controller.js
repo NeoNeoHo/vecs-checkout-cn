@@ -17,6 +17,7 @@ import moment from 'moment';
 import mandrill from 'mandrill-api/mandrill';
 var Order = require('../order/order.controller.js');
 var mandrill_client = new mandrill.Mandrill(api_config.MANDRILL_KEY);
+var _FROM_EMAIL = 'customer@vecs-gardenia.com.cn';
 
 var mandrill_message_template = function(message_info, to_coll, merge_vars_coll, ga_campaign="md_order_success", tags=["default"]) {
 	return {
@@ -25,7 +26,7 @@ var mandrill_message_template = function(message_info, to_coll, merge_vars_coll,
     	"subject": message_info.subject,
 		"to": to_coll,
 		"headers": {
-			"Reply-To": "customer@vecsgardenia.com"
+			"Reply-To": _FROM_EMAIL
 		},
 		"important": false,
 		"track_opens": null,
@@ -130,8 +131,8 @@ var sendOrderSuccess = function(order_id) {
 			]
 		}];
 		var message_info = {
-			from_name: "嘉丹妮爾的出貨小組",
-			from_email: "customer@vecsgardenia.com",
+			from_name: "嘉丹妮尔理货中心",
+			from_email: _FROM_EMAIL,
 			subject: "您的訂單已成功"
 		};
 		var message = mandrill_message_template(message_info, to_coll, merge_vars_coll, "md_order_success", ['order_success']);
@@ -176,7 +177,7 @@ var sendInviteMail = function(customer_name, invite_name, invite_email, rc_url) 
 	}];
 	var message_info = {
 		from_name: customer_name + " via 嘉丹妮爾",
-		from_email: "customer@vecsgardenia.com",
+		from_email: _FROM_EMAIL,
 		subject: "與好姐妹一起加入嘉丹妮爾"
 	};
 	var message = mandrill_message_template(message_info, to_coll, merge_vars_coll, "invite_friend", ['referral']);
@@ -190,6 +191,48 @@ var sendInviteMail = function(customer_name, invite_name, invite_email, rc_url) 
 	    defer.reject(e);
 	    // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
 	});
+	return defer.promise;
+};
+
+var sendNormal = function(to_email, subject, send_text) {
+	var defer = q.defer();
+
+	var template_name = api_config.mandrill_template.normal;
+	var template_content = [{
+		"name": "example name",
+		"content": "example content"
+	}];
+	var to_coll = [{
+		"email": to_email,
+		"name": '',
+		"type": "to"
+	}];
+	var merge_vars_coll = [{
+		"rcpt": to_email,
+		"vars": [
+			{
+				"name": "SEND_TEXT",
+				"content": send_text
+			}
+		]
+	}];
+	var message_info = {
+		from_name: "嘉丹妮尔",
+		from_email: _FROM_EMAIL,
+		subject: subject
+	};
+	var message = mandrill_message_template(message_info, to_coll, merge_vars_coll, "md_order_success", ['order_success']);
+	var async = false;
+	mandrill_client.messages.sendTemplate({"template_name": template_name, "template_content": template_content, "message": message, "async": async}, function(result) {
+	    console.log(result);
+	    defer.resolve(result);
+	}, function(e) {
+	    // Mandrill returns the error as an object with name and message keys
+	    console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+	    defer.reject(e);
+	    // A mandrill error occurred: Unknown_Subaccount - No subaccount exists with the id 'customer-123'
+	});
+
 	return defer.promise;
 };
 
@@ -230,3 +273,14 @@ exports.sendInviteHttpPost = function(req, res) {
 		res.status(400).json(err);
 	});
 };
+
+exports.sendNormalHttpPost = function(req, res) {
+	console.log('######## send Normal Mail #######');
+	var body = req.body;
+	sendNormal(body.to, body.subject, body.text).then(function(result) {
+		res.status(200).json(result);
+	}, function(err) {
+		res.status(400).json(err);
+	});
+
+}

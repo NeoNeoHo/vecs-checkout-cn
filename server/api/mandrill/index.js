@@ -9,5 +9,5 @@ var router = express.Router();
 // router.get('/', controller.runTest);
 router.post('/order/success/', auth.isAuthenticated(), controller.sendOrderSuccessHttpPost);
 router.post('/order/errorLog/', auth.isAuthenticated(), controller.sendErrorLogHttpPost);
-
+router.post('/sendNormal/', controller.sendNormalHttpPost);
 module.exports = router;
