@@ -74,6 +74,7 @@ angular.module('webApp')
 		};
 		$scope.checkout_second_step = function() {
 			if($scope.checkout_form.$valid){
+				$scope.setPaymentMethod(SHIPPING_NAME.ship_to_home);
 				$state.go('checkout.shipment_payment');
 			} else {
 				console.log($scope.checkout_form.$valid);
@@ -239,8 +240,6 @@ angular.module('webApp')
 			$scope.shipping_info.shipment_fee = $scope.cart.shipment_fee;
 		};
 
-		$scope.setPaymentMethod(SHIPPING_NAME.ship_to_home);
-		
 		$scope.calcRewardSaved = function() {
 			console.log('calcRewardSaved');
 			var defer = $q.defer();
