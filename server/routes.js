@@ -14,6 +14,7 @@ export default function(app) {
 	app.use('/api/rewards', require('./api/reward'));
 	app.use('/api/coupons', require('./api/coupon'));
 	app.use('/api/carts', require('./api/cart'));
+	app.use('/api/cto_shipments', require('./api/cto_shipment'));
 	app.use('/api/ezships', require('./api/ezship'));
 	app.use('/api/locations', require('./api/location'));
 	app.use('/api/mandrills', require('./api/mandrill'));

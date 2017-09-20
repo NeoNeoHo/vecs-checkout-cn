@@ -5,7 +5,8 @@ angular.module('webApp')
 
 
 		var SHIP_TO_HOME_METHOD = Config.SHIPPING_NAME.ship_to_home;
-		var SHIP_TO_HOME_ORDER_STATUS_ID = 51;
+		var SHIP_TO_HOME_ORDER_STATUS_ID = 53;
+		var CTO_SUCCESS_ORDER_STATUS_ID = 66;
 
 		var SHIP_TO_OVERSEAS_METHOD = Config.SHIPPING_NAME.ship_to_overseas;
 		var SHIP_TO_OVERSEAS_ORDER_STATUS_ID = 52;
@@ -34,11 +35,21 @@ angular.module('webApp')
 			});
 			return defer.promise;
 		};
-
+		var postCTOOrder = function(order_id) {
+			var defer = $q.defer();
+			$http.post('/api/cto_shipments/sendOrder/', {order_id: order_id}).then(function(res_data) {
+				defer.resolve(JSON.parse(res_data.data));
+			}, function(err) {
+				console.log(err);
+				defer.reject(err);
+			});
+			return defer.promise;			
+		};
 		var setShipToHome = function(cart, shipping_info, payment_method=Config.PAYMENT_NAME.store_pay) {
 			// console.log('我在shiptohome');
 			var defer = $q.defer();
 			var promises = [];
+			var update_promises = [];
 			var insert_order_dict = {};
 			var address_to_update = {};
 
@@ -53,12 +64,38 @@ angular.module('webApp')
 			promises.push(Order.createOrder(cart, shipping_info));
 
 			$q.all(promises).then(function(datas) {
-				// console.log('shipping: "Ship to Home" done !');
-				// console.log(datas);
 				var order_id = datas[1].order_id
-
-				// Shipment Method Should Return "Order Id" For Later Use (Payment Method)
-				defer.resolve(order_id);
+				postCTOOrder(order_id).then(function(cto_order_status_resp) {
+					var cto_order_status = cto_order_status_resp.data;
+					var update_dict = {
+						cto_billCode: cto_order_status.billCode,
+						cto_siteCode: cto_order_status.siteCode,
+						cto_siteName: cto_order_status.siteName,
+						order_status_id: CTO_SUCCESS_ORDER_STATUS_ID
+					};
+					var insert_dict = {
+						order_id: order_id,
+						order_status_id: CTO_SUCCESS_ORDER_STATUS_ID,
+						notify: 1,
+						comment: `您的中通快递单号：${cto_order_status.billCode}（http://www.zto.com/GuestService/BillNew） 嘉丹妮尔感谢您 嘉丹妮尔 Vecs Gardenia 官网：vecs-gardenia.com.cn 微博：@嘉丹妮尔`
+					}
+					console.log(cto_order_status_resp);
+					console.log(cto_order_status);
+					console.log(update_dict);
+					update_promises.push(Order.updateOrder(order_id, update_dict));
+					update_promises.push(Order.insertOrderHistory(order_id, insert_dict));
+					$q.all(update_promises).then(function(result) {
+						defer.resolve(order_id);
+					}, function(err) {
+						defer.reject(err);
+					});
+		
+				}, function(err) {
+					console.log(err);
+					Order.cancelDiscount(order_id);
+					Order.sendErrorLogMail(order_id, err);
+					defer.reject(err);					
+				});
 			}, function(err) {
 				console.log(err);
 				defer.reject(err);
@@ -95,16 +132,16 @@ angular.module('webApp')
 			return defer.promise;
 		};
 
-		var postEzshipOrder = function(order_id, order_type) {
+		var postEzshipOrder = function(order_id) {
 			var defer = $q.defer();
-			$http.post('/api/ezships/sendOrder/', {order_id: order_id, order_type: order_type}).then(function(data) {
+			$http.post('/api/cto_shipments/sendOrder/', {order_id: order_id}).then(function(data) {
 				defer.resolve(data);
 			}, function(err) {
 				console.log(err);
 				defer.reject(err);
 			});
 			return defer.promise;			
-		}
+		};
 
 		var setShipToEzship = function(cart, shipping_info, payment_method=Config.PAYMENT_NAME.store_pay) {
 			var defer = $q.defer();
@@ -137,22 +174,6 @@ angular.module('webApp')
 			promises.push(Order.createOrder(cart, shipping_info));
 			$q.all(promises).then(function(datas) {
 				var order_id = datas[0].order_id;
-				// Order.getOrder(order_id).then(function(data){
-				// 	var lorder = data[0] || data;
-				// 	console.log(lorder);
-				// 	document.getElementById("rv_name").value = lorder.firstname;
-				// 	document.getElementById("rv_email").value = lorder.email;
-				// 	document.getElementById("rv_mobil").value = lorder.telephone;
-				// 	document.getElementById("order_id").value = order_id;
-				// 	document.getElementById("order_status").value = 'A01';
-				// 	document.getElementById("order_type").value = order_type;
-				// 	document.getElementById("rv_amount").value = (order_type == 1) ? lorder.total : 0;
-				// 	document.getElementById("su_id").value = 'shipping@vecsgardenia.com';
-				// 	document.getElementById("st_code").value = lorder.shipping_country;
-				// 	document.getElementById("rturl").value = Config.DIR_NODE_SUBDOMAIN + '/api/ezships/receiveOrder/';
-				// 	document.getElementById("webtemp").value = 'cmxziorwLUrwqrW';
-				// 	document.getElementById("ezship_order_form").submit();			
-				// }, function(err) {});
 
 				postEzshipOrder(order_id, order_type).then(function(ezship_order_status_resp) {
 					console.log('shipping: "Ship to Ezship" done !');

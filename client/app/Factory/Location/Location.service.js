@@ -13,6 +13,10 @@ angular.module('webApp')
 			city_id: null,
 			districts: null
 		};
+		var sub_districts_dict_cache = {
+			district_id: null,
+			sub_districts: null
+		}
 		var meaningOfLife = 42;
 
 		var getCountries = function() {
@@ -56,6 +60,20 @@ angular.module('webApp')
 			return defer.promise;
 		};
 
+		var getSubDistricts = function(district_id) {
+			var defer = $q.defer();
+			if(sub_districts_dict_cache.district_id == district_id) defer.resolve(sub_districts_dict_cache);
+			$http.get('/api/locations/sub_districts/'+district_id)
+			.then(function(result) {
+				sub_districts_dict_cache.sub_districts = result.data;
+				sub_districts_dict_cache.district_id  = district_id;
+				defer.resolve(sub_districts_dict_cache);
+			}, function(err) {
+				defer.reject(err);
+			});
+			return defer.promise;
+		};
+
 		var getAddress = function() {
 			var defer = $q.defer();
 			$http.get('/api/locations/customer/')
@@ -76,12 +94,13 @@ angular.module('webApp')
 				company_id: shipping_info.company_id ? shipping_info.company_id : '',
 				address_1: shipping_info.address,
 				address_2: '',
-				country_id: shipping_info.country_id,
 				city: '',
 				postcode: (shipping_info.district_d) ? shipping_info.district_d.postcode : 0,
-				zone_id: shipping_info.city_id,
 				telephone: shipping_info.telephone,
-				district_id: shipping_info.district_id
+				country_id: shipping_info.country_id,   // 國家
+				zone_id: shipping_info.city_id,			// 省份，上海市
+				district_id: shipping_info.district_id, // 地級，上海市
+				sub_district_id: shipping_info.sub_district_id // 縣市/直轄區，靜安區
 			};
 			$http.put('/api/locations/address/', {address: address_to_update})
 			.then(function(result) {
@@ -100,6 +119,7 @@ angular.module('webApp')
 			getCountries: getCountries,
 			getCities: getCities,
 			getDistricts: getDistricts,
+			getSubDistricts: getSubDistricts,
 			getAddress: getAddress,
 			updateAddress: updateAddress
 		};

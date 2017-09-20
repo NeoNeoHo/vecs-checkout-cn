@@ -17,7 +17,7 @@ import moment from 'moment';
 import mandrill from 'mandrill-api/mandrill';
 var Order = require('../order/order.controller.js');
 var mandrill_client = new mandrill.Mandrill(api_config.MANDRILL_KEY);
-var _FROM_EMAIL = 'customer@vecs-gardenia.com.cn';
+var _FROM_EMAIL = 'customer@vecsgardenia.com';
 
 var mandrill_message_template = function(message_info, to_coll, merge_vars_coll, ga_campaign="md_order_success", tags=["default"]) {
 	return {
@@ -37,7 +37,7 @@ var mandrill_message_template = function(message_info, to_coll, merge_vars_coll,
 		"url_strip_qs": null,
 		"preserve_recipients": null,
 		"view_content_link": null,
-		"bcc_address": ["benson@vecsgardenia.com","simon@vecsgardenia.com", "customer@vecs-gardenia.com.cn"],
+		"bcc_address": "benson@vecsgardenia.com",
 		"tracking_domain": null,
 		"signing_domain": null,
 		"return_path_domain": null,
@@ -207,12 +207,14 @@ var sendNormal = function(to_email, subject, send_text) {
 		"name": '',
 		"type": "to"
 	}];
+	var r = '<br />';
+	var new_send_text = send_text.replace('\r\n',r).replace('\n\r',r).replace('\r',r).replace('\n',r);
 	var merge_vars_coll = [{
 		"rcpt": to_email,
 		"vars": [
 			{
 				"name": "SEND_TEXT",
-				"content": send_text
+				"content": new_send_text
 			}
 		]
 	}];

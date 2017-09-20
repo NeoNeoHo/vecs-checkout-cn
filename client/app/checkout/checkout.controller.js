@@ -80,8 +80,9 @@ angular.module('webApp')
 			}
 		};
 		$scope.checkout_third_step = function() {
-			$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.district_d && $scope.shipping_info.address;
+			$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.district_d && $scope.shipping_info.sub_district_d && $scope.shipping_info.address;
 			$scope.setShipmentFee();
+			console.log($scope.shipping_info);
 			if($scope.checkout_form.$valid && $scope.is_address_valid){
 				$state.go('checkout.final_confirm');
 			} else {
@@ -129,6 +130,9 @@ angular.module('webApp')
 		};
 
 		$scope.setCities = function(country_id) {
+			if(country_id == ""){
+				return;
+			}
 			$scope.with_city_ready = false;
 			if($scope.country_coll) {
 				$scope.shipping_info.country_d = _.find($scope.country_coll, {country_id: $scope.shipping_info.country_id});
@@ -142,21 +146,47 @@ angular.module('webApp')
 		};
 
 		$scope.setDistricts = function(city_id) {
-			$scope.with_district_ready = false;
-			if($scope.city_coll){
-				$scope.shipping_info.city_d = _.find($scope.city_coll, {zone_id: city_id});
+			console.log(city_id);
+			if(city_id){			
+				$scope.with_district_ready = false;
+				$scope.with_sub_district_ready = false;
+				if($scope.city_coll){
+					$scope.shipping_info.city_d = _.find($scope.city_coll, {zone_id: city_id});
+				}
+				Location.getDistricts(city_id).then(function(result) {
+					$scope.district_coll = result.districts;
+					$scope.with_district_ready = true;
+				}, function(err) {
+					console.log(err);
+				});
+			}	
+		};
+
+		$scope.setSubDistricts = function(district_id) {
+			console.log(district_id);
+			if(district_id){
+				$scope.with_sub_district_ready = false;
+				if($scope.district_coll){
+					$scope.shipping_info.district_d = _.find($scope.district_coll, {district_id: district_id});
+				}
+				Location.getSubDistricts(district_id).then(function(result) {
+					$scope.sub_district_coll = result.sub_districts;
+					$scope.with_sub_district_ready = true;
+				}, function(err) {
+					console.log(err);
+				});		
 			}
-			Location.getDistricts(city_id).then(function(result) {
-				$scope.district_coll = result.districts;
-				$scope.with_district_ready = true;
-			}, function(err) {
-				console.log(err);
-			});		
 		};
 
 		$scope.setDistrictName = function(district_id) {
 			if($scope.district_coll) {
 				$scope.shipping_info.district_d = _.find($scope.district_coll, {district_id: district_id});
+			}
+		};
+
+		$scope.setSubDistrictName = function(sub_district_id) {
+			if($scope.sub_district_coll) {
+				$scope.shipping_info.sub_district_d = _.find($scope.sub_district_coll, {sub_district_id: sub_district_id});
 			}
 		};
 
@@ -179,6 +209,10 @@ angular.module('webApp')
 
 					$scope.shipping_info.district_id = (data.district_id) ? data.district_id : 0;
 					$scope.shipping_info.district_d = {district_id: data.district_id, name: data.district_name, postcode: data.postcode};
+					$scope.setSubDistricts((data.district_id) ? data.district_id : '');
+
+					$scope.shipping_info.sub_district_id = (data.sub_district_id) ? data.sub_district_id : 0;
+					$scope.shipping_info.sub_district_d = {sub_district_id: data.sub_district_id, name: data.sub_district_name, postcode: data.postcode};
 					$scope.shipping_info.address = data.address_1 ? data.address_1 : '';
 				}
 			}, function(err) {
@@ -279,7 +313,7 @@ angular.module('webApp')
 			var payment_method = $scope.shipping_info.payment_sel_str;
 			var customer_to_update = {
 				firstname: $scope.shipping_info.firstname,
-				lastname: '',
+				lastname: ' ',
 				telephone: $scope.shipping_info.telephone
 			};
 
@@ -309,6 +343,7 @@ angular.module('webApp')
 				$scope.shipping_info.country_d = _.find($scope.country_coll, {country_id: $scope.shipping_info.country_id});
 				$scope.shipping_info.city_d = _.find($scope.city_coll, {zone_id: $scope.shipping_info.city_id});
 				$scope.shipping_info.district_d = _.find($scope.district_coll, {district_id: $scope.shipping_info.district_id});
+				$scope.shipping_info.sub_district_d = _.find($scope.sub_district_coll, {sub_district_id: $scope.shipping_info.sub_district_id});
 			}
 			shipping_promise = Shipment.setShipToHome($scope.cart, $scope.shipping_info, payment_method);
 

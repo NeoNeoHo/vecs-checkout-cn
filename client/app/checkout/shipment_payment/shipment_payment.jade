@@ -36,12 +36,15 @@ div.panel.panel-default
 		div.form-group.required(ng-class="{'disabled': payment_btn.store_pay}")
 			label.col-sm-2.col-xs-4.control-label.text-right(for='input_country') 地址
 			.row.col-sm-4.col-xs-8(ng-show="shipping_info.shipment_sel_str != SHIPPING_NAME.ship_to_overseas")
-				div.col-sm-6.col-xs-12
+				div.col-sm-4.col-xs-12
 					select.form-control(ng-options="city.zone_id as city.name for city in city_coll", ng-model="shipping_info.city_id", ng-change="setDistricts(shipping_info.city_id)", ng-disabled="!with_city_ready", name="input_city2", required)
-						option(value='') 省市区
-				div.col-sm-6.col-xs-12
-					select.form-control(ng-options="district.district_id as district.name for district in district_coll", ng-model="shipping_info.district_id", ng-disabled="!shipping_info.city_id && !with_district_ready", ng-change="setDistrictName(shipping_info.district_id)", name="input_district", required)
-						option(value='') 地区
+						option(value="") 省市区
+				div.col-sm-4.col-xs-12
+					select.form-control(ng-options="district.district_id as district.name for district in district_coll", ng-model="shipping_info.district_id", ng-disabled="!shipping_info.city_id && !with_district_ready", ng-change="setDistrictName(shipping_info.district_id); setSubDistricts(shipping_info.district_id); ", name="input_district", required)
+						option(value="") 地區1
+				div.col-sm-4.col-xs-12
+					select.form-control(ng-options="sub_district.sub_district_id as sub_district.name for sub_district in sub_district_coll", ng-model="shipping_info.sub_district_id", ng-disabled="!shipping_info.district_id && !with_sub_district_ready", ng-change="setSubDistrictName(shipping_info.sub_district_id)", name="input_sub_district", required)
+						option(value="") 地區2
 			div.col-sm-6.col-xs-8.pull-right
 				input.form-control(type='address', id='input_address', placeholder='您的地址', ng-model="shipping_info.address", name="input_address", required)
 		div.form-group.required

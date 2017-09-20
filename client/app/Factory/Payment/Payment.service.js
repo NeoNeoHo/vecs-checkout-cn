@@ -12,7 +12,7 @@ angular.module('webApp')
 
 		var PAY_BY_ALIPAY_METHOD = Config.PAYMENT_NAME.alipay;
 		var PAY_BY_ALIPAY_STATUS_coll = [
-			{shipping_method: Config.SHIPPING_NAME.ship_to_home, confirm_status_id: 53, success_status_id: 54},
+			{shipping_method: Config.SHIPPING_NAME.ship_to_home, confirm_status_id: 66, success_status_id: 67},
 			{shipping_method: Config.SHIPPING_NAME.ship_to_store, confirm_status_id: 56, success_status_id: 57},
 			{shipping_method: Config.SHIPPING_NAME.ship_to_overseas, confirm_status_id: 59, success_status_id: 60}
 		];

@@ -126,10 +126,7 @@ angular.module('webApp')
 					},
 					shipment_fee: 0,
 				};
-				console.log('Cart 到底是什麼');
-				console.log(lcart);
-				console.log(cart_cookies);
-				console.log('Cart 的部分結束');
+
 				Product.getProductsDetail(lcart.products).then(function(db_products) {
 					lcart.products = _.map(lcart.products, function(product) {
 						var db_product = _.find(db_products, {product_id: product.product_id});

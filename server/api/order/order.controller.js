@@ -124,7 +124,9 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 		'shipping_zone_id': shipping_info.city_d ? shipping_info.city_d.zone_id : 0,
 		'shipping_district': shipping_info.district_d ? shipping_info.district_d.name : '',
 		'shipping_district_id': shipping_info.district_d ? shipping_info.district_d.district_id : 0,
-		'shipping_postcode': shipping_info.district_d ? shipping_info.district_d.postcode : '',
+		'shipping_sub_district': `${shipping_info.city_d.name},${shipping_info.district_d.name},${shipping_info.sub_district_d.name}`,
+		'shipping_sub_district_id': shipping_info.sub_district_d ? shipping_info.sub_district_d.sub_district_id : 0,
+		'shipping_postcode': shipping_info.sub_district_d ? shipping_info.sub_district_d.postcode : '',
 		'shipping_method': shipping_info.shipping_method,
 		'shipping_address_format': '', 'shipping_custom_field': '', 'shipping_code': '',
 
@@ -140,7 +142,7 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 		'payment_zone_id': shipping_info.city_d ? shipping_info.city_d.zone_id : 0,
 		'payment_district': shipping_info.district_d ? shipping_info.district_d.name : '',
 		'payment_district_id': shipping_info.district_d ? shipping_info.district_d.district_id : 0,
-		'payment_postcode': shipping_info.district_d ? shipping_info.district_d.postcode : '',
+		'payment_postcode': shipping_info.sub_district_d ? shipping_info.sub_district_d.postcode : '',
 		'payment_method': '', 
 		'payment_address_format': '', 'payment_custom_field': '', 'payment_code': '',
 		
@@ -153,7 +155,8 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 		'currency_value': 1,
 		'ip': customer_ip,
 		'date_added': new Date(),
-		'date_modified': new Date()
+		'date_modified': new Date(),
+		'cto_printMark': shipping_info.sub_district_d ? shipping_info.sub_district_d.printMark : shipping_info.sub_district_d.name
 	};
 	var defer = q.defer();
 	mysql_pool.getConnection(function(err, connection) {
