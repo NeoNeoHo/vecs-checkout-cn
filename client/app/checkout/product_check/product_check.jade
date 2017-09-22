@@ -19,7 +19,7 @@ div.panel.panel-default
 						h6.text-muted(ng-show="product.reward") + 红利 {{product.reward}} 点  
 				td.cart-quantity
 					div.input-group(ng-show="!product.isLimited")
-						select(ng-options="option for option in product.maximum track by option", ng-model="product.quantity", ng-change="updateCartTotal()")
+						select(ng-options="option for option in allow_amount track by option", ng-model="product.quantity", ng-change="updateCartTotal()")
 					div.input-group(ng-show="product.isLimited") {{product.quantity}}
 				td.cart-price
 					| ¥ {{product.spot_price + product.option_price}}
