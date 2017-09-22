@@ -595,7 +595,7 @@ export function insertOrderHistory(req, res) {
 			if(err) res.status(400).send(err);
 			if(rows.length == 0) res.status(400).send('You Don\'t Have the Permission For This Order.');
 			if(rows.length > 0) {
-				createOrderHistory(order_id, insert_dict.order_status_id, 0, insert_dict.comment).then(function(data) {
+				createOrderHistory(order_id, insert_dict.order_status_id, insert_dict.notify || 0, insert_dict.comment).then(function(data) {
 					res.status(200).json(data);
 				}, function(err) {
 					res.status(400).send(err);
