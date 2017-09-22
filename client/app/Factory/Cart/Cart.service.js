@@ -137,6 +137,7 @@ angular.module('webApp')
 							product.model = db_product.model;
 							product.name = db_product.name;
 							product.image = db_product.image;
+							product.maximum = (db_product.maximum > 0) ? _.range(1,db_product.maximum+1) : _.range(1,20); 
 							product.spot_price = product.price.special_price;
 							product.option_price = _.reduce(_.pluck(product.option, 'price'), function(sum, num){return sum+num;}, 0);
 							
