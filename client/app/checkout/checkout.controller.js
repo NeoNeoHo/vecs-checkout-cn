@@ -81,7 +81,7 @@ angular.module('webApp')
 			}
 		};
 		$scope.checkout_third_step = function() {
-			$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.district_d && $scope.shipping_info.sub_district_d && $scope.shipping_info.address;
+			$scope.is_address_valid = $scope.shipping_info.city_d && $scope.shipping_info.district_d && $scope.shipping_info.sub_district_d && $scope.shipping_info.address && ($scope.shipping_info.district_id !== 0);
 			$scope.setShipmentFee();
 			console.log($scope.shipping_info);
 			if($scope.checkout_form.$valid && $scope.is_address_valid){
@@ -213,7 +213,7 @@ angular.module('webApp')
 					$scope.setSubDistricts((data.district_id) ? data.district_id : '');
 
 					$scope.shipping_info.sub_district_id = (data.sub_district_id) ? data.sub_district_id : 0;
-					$scope.shipping_info.sub_district_d = {sub_district_id: data.sub_district_id, name: data.sub_district_name, postcode: data.postcode};
+					$scope.shipping_info.sub_district_d = {sub_district_id: $scope.shipping_info.sub_district_id, name: data.sub_district_name, postcode: data.postcode};
 					$scope.shipping_info.address = data.address_1 ? data.address_1 : '';
 				}
 			}, function(err) {

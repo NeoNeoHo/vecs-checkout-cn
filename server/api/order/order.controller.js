@@ -101,6 +101,7 @@ var insertBulkSql = function(table, insert_coll) {
 
 
 var createOrder = function(shipping_info, customer_id, customer_group_id, email, customer_ip) {
+	var defer = q.defer();
 	var order_dict = {
 		'store_name': api_config.STORE_NAME,
 		'store_url': api_config.STORE_URL,
@@ -124,7 +125,7 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 		'shipping_zone_id': shipping_info.city_d ? shipping_info.city_d.zone_id : 0,
 		'shipping_district': shipping_info.district_d ? shipping_info.district_d.name : '',
 		'shipping_district_id': shipping_info.district_d ? shipping_info.district_d.district_id : 0,
-		'shipping_sub_district': `${shipping_info.city_d.name},${shipping_info.district_d.name},${shipping_info.sub_district_d.name}`,
+		'shipping_sub_district': shipping_info.sub_district_d ? `${shipping_info.city_d.name},${shipping_info.district_d.name},${shipping_info.sub_district_d.name}` : `${shipping_info.city_d.name},${shipping_info.district_d.name}, `,
 		'shipping_sub_district_id': shipping_info.sub_district_d ? shipping_info.sub_district_d.sub_district_id : 0,
 		'shipping_postcode': shipping_info.sub_district_d ? shipping_info.sub_district_d.postcode : '',
 		'shipping_method': shipping_info.shipping_method,
@@ -157,8 +158,9 @@ var createOrder = function(shipping_info, customer_id, customer_group_id, email,
 		'date_added': new Date(),
 		'date_modified': new Date(),
 		'cto_printMark': shipping_info.sub_district_d ? shipping_info.sub_district_d.printMark : shipping_info.sub_district_d.name
-	};
-	var defer = q.defer();
+	};		
+	
+	
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
 			connection.release();
