@@ -271,9 +271,11 @@ var updateOrderByAlipayResponse = function(order_id, update_msg, order_status_id
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
 			console.log(err);
+			connection.release();
 			defer.reject(err);
 		} else {
 			connection.query(sql, function(err, result) {
+				connection.release();
 				if(err) {
 					defer.reject(err);
 				}
