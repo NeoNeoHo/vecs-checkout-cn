@@ -17,6 +17,7 @@ angular.module('webApp')
 		$scope.SHIPPING_NAME = SHIPPING_NAME;
 		$scope.PAYMENT_NAME = PAYMENT_NAME;
 		$scope.is_address_valid = $scope.is_address_valid || true;
+		$scope.errors = {};
 
 		$scope.cross_obj = {
 			temp_reward_use: '', 
@@ -131,8 +132,9 @@ angular.module('webApp')
 		};
 
 		$scope.setCities = function(country_id) {
+			var defer = $q.defer();
 			if(country_id == ""){
-				return;
+				defer.reject(new Error('no country_id'));
 			}
 			$scope.with_city_ready = false;
 			if($scope.country_coll) {
@@ -141,12 +143,16 @@ angular.module('webApp')
 			Location.getCities(country_id).then(function(result) {
 				$scope.city_coll = result.cities;
 				$scope.with_city_ready = true;
+				defer.resolve(result.cities);
 			}, function(err) {
 				console.log(err);
+				defer.reject(err);
 			});
+			return defer.promise;
 		};
 
 		$scope.setDistricts = function(city_id) {
+			var defer = $q.defer();
 			console.log(city_id);
 			if(city_id){			
 				$scope.with_district_ready = false;
@@ -157,13 +163,19 @@ angular.module('webApp')
 				Location.getDistricts(city_id).then(function(result) {
 					$scope.district_coll = result.districts;
 					$scope.with_district_ready = true;
+					defer.resolve(result.districts);
 				}, function(err) {
 					console.log(err);
+					defer.reject(err);
 				});
-			}	
+			} else {
+				defer.reject(new Error('no city_id'));
+			}
+			return defer.promise;
 		};
 
 		$scope.setSubDistricts = function(district_id) {
+			var defer = $q.defer();
 			console.log(district_id);
 			if(district_id){
 				$scope.with_sub_district_ready = false;
@@ -173,10 +185,15 @@ angular.module('webApp')
 				Location.getSubDistricts(district_id).then(function(result) {
 					$scope.sub_district_coll = result.sub_districts;
 					$scope.with_sub_district_ready = true;
+					defer.resolve(result.sub_districts);
 				}, function(err) {
 					console.log(err);
+					defer.reject(err);
 				});		
+			} else {
+				defer.reject(new Error('no district_id'));
 			}
+			return defer.promise;
 		};
 
 		$scope.setDistrictName = function(district_id) {
@@ -200,22 +217,33 @@ angular.module('webApp')
 		var getAddress = function() {
 			Location.getAddress().then(function(data) {
 				if(data) {
-					$scope.shipping_info.city_id = (data.zone_id) ? data.zone_id : 0;
-					$scope.shipping_info.city_d = {zone_id: data.zone_id, name: data.city_name};
-					$scope.setDistricts((data.zone_id) ? data.zone_id : '');
-
 					$scope.shipping_info.country_id = (data.country_id) ? data.country_id : 0;
 					$scope.shipping_info.country_d = {country_id: data.country_id, name: data.country_name};
-					$scope.setCities((data.country_id) ? data.country_id : 44);
+					$scope.setCities((data.country_id) ? data.country_id : 44)
 
-					$scope.shipping_info.district_id = (data.district_id) ? data.district_id : 0;
-					$scope.shipping_info.district_d = {district_id: data.district_id, name: data.district_name, postcode: data.postcode};
-					$scope.setSubDistricts((data.district_id) ? data.district_id : '');
+					$scope.shipping_info.city_id = (data.zone_id) ? data.zone_id : 0;
+					$scope.shipping_info.city_d = {zone_id: data.zone_id, name: data.city_name};
+					$scope.setDistricts((data.zone_id) ? data.zone_id : '').then(function() {
+						$scope.shipping_info.district_id = (data.district_id) ? data.district_id : 0;
+						$scope.setDistrictName($scope.shipping_info.district_id);
 
-					$scope.shipping_info.sub_district_id = (data.sub_district_id) ? data.sub_district_id : 0;
-					$scope.shipping_info.sub_district_d = {sub_district_id: $scope.shipping_info.sub_district_id, name: data.sub_district_name, postcode: data.postcode};
-					$scope.shipping_info.address = data.address_1 ? data.address_1 : '';
+						$scope.setSubDistricts((data.district_id) ? data.district_id : '').then(function() {
+							$scope.shipping_info.sub_district_id = (data.sub_district_id) ? data.sub_district_id : 0;
+							$scope.setSubDistrictName($scope.shipping_info.sub_district_id);
+
+							$scope.shipping_info.address = data.address_1 ? data.address_1 : '';							
+						}).catch(function(err) {
+							$scope.errors.address_msg = err;
+						});						
+					}).catch(function(err) {
+							$scope.errors.address_msg = err;
+					});
+
+
+
+
 				}
+				console.log($scope.shipping_info);
 			}, function(err) {
 				console.log(err);
 				// $state.go('failure');
@@ -344,6 +372,7 @@ angular.module('webApp')
 				$scope.shipping_info.city_d = _.find($scope.city_coll, {zone_id: $scope.shipping_info.city_id});
 				$scope.shipping_info.district_d = _.find($scope.district_coll, {district_id: $scope.shipping_info.district_id});
 				$scope.shipping_info.sub_district_d = _.find($scope.sub_district_coll, {sub_district_id: $scope.shipping_info.sub_district_id});
+
 			}
 			shipping_promise = Shipment.setShipToHome($scope.cart, $scope.shipping_info, payment_method);
 
