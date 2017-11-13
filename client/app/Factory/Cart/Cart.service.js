@@ -143,6 +143,7 @@ angular.module('webApp')
 							
 							product.total = (product.spot_price + product.option_price) * product.quantity;
 						} else {
+							alert('注意！某項商品已無庫存囉，請選擇關閉此視窗，繼續結帳下一步，或是回到首頁，聯絡線上客服');
 							product = {};
 						}
 						return product;

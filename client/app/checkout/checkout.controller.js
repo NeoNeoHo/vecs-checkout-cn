@@ -353,8 +353,8 @@ angular.module('webApp')
 
 			}, function(err) {
 				$scope.cross_obj.is_submitted = false;
-				alert('商品價格及紅利點數有異，請洽客服人員，謝謝');
-				$scope.checkout_first_step();
+				alert(err.data + '  ，請關閉此訊息欄，並重新點選購物車，謝謝');
+				window.location.href = Config.DIR_DOMAIN;
 				return 0;
 			});
 

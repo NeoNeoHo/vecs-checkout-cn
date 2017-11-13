@@ -123,7 +123,7 @@ var getProductDiscounts = function(product_id_list, customer_group_id) {
 			connection.release();
 			defer.reject(err);
 		}
-		connection.query('SELECT product_id, customer_group_id, quantity, price FROM oc_product_discount WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end >= ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
+		connection.query('SELECT product_id, customer_group_id, quantity, price FROM oc_product_discount WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end > ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
 			defer.resolve(rows);
@@ -141,7 +141,7 @@ var getProductSpecials = function(product_id_list, customer_group_id) {
 			connection.release();
 			defer.reject(err);
 		}
-		connection.query('SELECT * FROM oc_product_special WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end >= ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
+		connection.query('SELECT * FROM oc_product_special WHERE product_id in (?) AND customer_group_id = ? AND date_start <= ? AND (date_end > ? OR date_end = "0000-00-00");', [product_id_list, customer_group_id, today, today], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
 			defer.resolve(rows);
@@ -239,7 +239,7 @@ export function validate(req, res) {
 
 		var resp = _.map(product_coll, function(product_to_validate) {
 			var product_id = product_to_validate.product_id;	
-			var db_product = _.find(db_product_coll, {product_id: product_id}) ? _.find(db_product_coll, {product_id: product_id}) : res.status(400).send('查無'+ product_to_validate.name);
+			var db_product = _.find(db_product_coll, {product_id: product_id}) ? _.find(db_product_coll, {product_id: product_id}) : res.status(400).send('抱歉，【'+product_to_validate.name+'】 已無庫存。');
 			var db_discount_many_condition = _.filter(db_discount_coll, function(discount) { 
 				return (discount.product_id == product_id) && (discount.customer_group_id == customer_group_id) && (discount.quantity <= product_to_validate.quantity);
 			});
@@ -249,7 +249,7 @@ export function validate(req, res) {
 
 			return validate_price_discount_special_reward(product_to_validate, db_product, db_discount, db_special, db_reward, db_product_option_value_coll);
 		});
-		if(_.filter(resp, {valid: false}).length > 0) res.status(400).json(resp);
+		if(_.filter(resp, {valid: false}).length > 0) res.status(400).json(resp.msg);
 		else res.status(200).json(resp);
 	}, function(err) {
 		res.status(400).send(err);
