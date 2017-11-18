@@ -77,7 +77,7 @@ angular.module('webApp')
 						order_id: order_id,
 						order_status_id: CTO_SUCCESS_ORDER_STATUS_ID,
 						notify: 1,
-						comment: `您的中通快递单号：${cto_order_status.billCode}（http://www.zto.com/index.html） 嘉丹妮尔感谢您 嘉丹妮尔 Vecs Gardenia 官网：vecs-gardenia.com.cn 微博：@嘉丹妮尔`
+						comment: `嘉丹妮尔感谢您 嘉丹妮尔 Vecs Gardenia。微博：@嘉丹妮尔`
 					}
 					console.log(cto_order_status_resp);
 					console.log(cto_order_status);

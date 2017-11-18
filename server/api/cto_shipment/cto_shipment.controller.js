@@ -329,7 +329,7 @@ var getChinaCity = function(prov_postcode) {
 	return defer.promise;
 };
 
-// getChinaCity(340304).then((result) => {console.log(result)});
+// getChinaCity(110113).then((result) => {console.log(result)});
 
 var lala = function() {
 	var defer = q.defer();
