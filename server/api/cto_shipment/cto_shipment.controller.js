@@ -175,12 +175,17 @@ export function sendOrder(req, res) {
 			res.status(400).send(err); 
 		}
 		connection.query('SELECT * FROM oc_order WHERE order_id = ? AND customer_id = ?;', [order_id, customer_id], function(err, rows) {
-			connection.release();
-			if(err) res.status(400).send(err);
-			if(_.size(rows) == 0) res.status(400).send('Error from send ezship order: no order record.');
+			if(err) {
+				connection.release();
+				res.status(400).send(err);
+			}
+			if(_.size(rows) == 0) {
+				connection.release();
+				res.status(400).send('Error from send ezship order: no order record.');
+			}
 			
 			var order = rows[0];
-
+			// Step 1. 獲取單號
 			var order_data = {
 				partner: 'ZTO1505198206811',
 				id: '#' + order_id,
@@ -211,15 +216,49 @@ export function sendOrder(req, res) {
 			console.log(order_dict);
 			request_retry.post({url: 'http://japi.zto.cn/gateway.do', form: order_dict, maxAttempts: 4, retryDelay: 1200}, function(err, lhttpResponse, body) {
 				if(err) {
-					console.log('######### ezship request fails , order_id: ###########');
+					console.log('######### ezship request fails , order_id: ###########' + order.order_id);
+
+					connection.release();
 					res.status(400).json(err);
 				} else {
-					console.log('中通回覆.........')
 					console.log(body);
-					res.status(200).json(body);	
+
+					// Step 2. 獲取集包地單號
+					var sending_remark_data = {
+						'unionCode': body.billCode,
+						'send_province': '广东省',
+						'send_city': '广州市',
+						'send_district': '荔湾区',
+						'send_address': '荔湾路49号之1,3楼306室,何济公综合大楼',
+						'receive_province': order.shipping_zone,
+						'receive_city': order.shipping_district,
+						'receive_district': (order.shipping_sub_district.split(','))[2] || '',
+						'receive_address': order.shipping_address_1
+					};
+					var get_sending_remark_dict = {
+						'company_id': CTO_company_id,
+						'msg_type': 'BAGADDRMARK_GETMARK',
+						'data': JSON.stringify(sending_remark_data),
+						'data_digest': crypto.createHash('md5').update(JSON.stringify(sending_remark_data)+CTO_key).digest('base64')						
+					};
+					console.log(get_sending_remark_dict);
+					request_retry.post({url: 'http://japi.zto.cn/gateway.do', form: get_sending_remark_dict, maxAttempts: 4, retryDelay: 1200}, function(err, lhttpResponse, get_sending_remark_body) {
+						if(err) {
+							console.log(err);
+							connection.release();
+							res.status(400).json(err);							
+						} else {
+							var update_order_sql = updateDictSql('oc_order', {cto_printMark: get_sending_remark_body.mark}, {order_id: order.order_id});
+							connection.query(update_order_sql, function(err, value) {
+								console.log('中通回覆集包地.........')
+								console.log(get_sending_remark_body);	
+								connection.release();
+								res.status(200).json(body);
+							});				
+						}
+					});
 				}
 			});
-			// res.status(200).json(rows);
 		});
 	});
 }
