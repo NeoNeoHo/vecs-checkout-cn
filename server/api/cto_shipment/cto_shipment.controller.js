@@ -66,6 +66,9 @@ var insertDictSql = function(table, insert_dict) {
 
 var updateBulkSql = function(table, update_coll, condition_coll) {
 	var sqls = '';
+	if(_.size(update_coll) == 0) {
+		return sqls;
+	}
 	for(var i = 0; i < _.size(update_coll); i++) {
 		var sub_sql = updateDictSql(table, update_coll[i], condition_coll[i]);
 		if(sqls.length == 0) {
@@ -79,6 +82,9 @@ var updateBulkSql = function(table, update_coll, condition_coll) {
 
 var insertBulkSql = function(table, insert_coll) {
 	var sqls = '';
+	if(_.size(insert_coll) == 0) {
+		return sqls;
+	}
 	_.forEach(insert_coll, function(insert_dict) {
 		var sub_sql = insertDictSql(table, insert_dict);
 		if(sqls.length == 0) {
@@ -312,18 +318,12 @@ export function getOrderTrace() {
 					return defer.reject(err);
 				} else {
 
-
-					connection.release();
-
 					var trace_return_coll = JSON.parse(body).data;
-					_.forEach(trace_return_coll, function(o) {
-						var insert_order_trace_dict = [];
-
-						var update_order_status_dict = [];
-						var condiction_order_status_dict = [];
-						
+					var insert_order_trace_dict = [];
+					var update_order_status_dict = [];
+					var condiction_order_status_dict = [];
+					_.forEach(trace_return_coll, function(o) {						
 						var this_order = _.find(origin_order_rows, {billCode: o.billCode});
-
 						console.log(o.traces);
 						// 假使物流還沒完成
 						if(o.traces.scanType !== '签收') {
@@ -354,10 +354,10 @@ export function getOrderTrace() {
 					});
 					var insert_order_history_sql = insertBulkSql('oc_order_history', insert_order_trace_dict);
 					var update_order_sql = updateBulkSql('oc_order', update_order_status_dict, condiction_order_status_dict);
-					// connection.query(insert_order_history_sql+';'+update_order_sql)
-					console.log(insert_order_history_sql);
-					console.log(update_order_sql);
-					defer.resolve();
+					connection.query(insert_order_history_sql+';'+update_order_sql, function(err, rows) {
+						connection.release();
+						defer.resolve();
+					});
 				}
 			});
 		});
