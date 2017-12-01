@@ -288,21 +288,20 @@ export function getOrderTrace() {
 			return defer.reject(err);
 		}
 		connection.query('SELECT order_id, cto_billCode as billCode FROM oc_order WHERE order_status_id = ? and cto_billCode > 0 order by order_id desc limit 15;', [ORDER_SHIPPED_STATUS_ID], function(err, origin_order_rows) {
-			connection.release();
 			if(err) {
+				connection.release();
 				return defer.reject(err);
 			}
 			if(_.size(origin_order_rows) == 0) {
+				connection.release();
 				return defer.resolve('沒有需要更新中通物流狀態的訂單');
 			}
 			
-			// Step 1. 獲取單號
 			var trace_data = _.map(origin_order_rows, 'billCode');
-
 			var trace_groups = [];
 			var trace_return_coll = [];
 
-			for(var i = 0; i < trace_data.length % 10; i++) {
+			for(var i = 0; i < trace_data.length / 10; i++) {
 				trace_groups.push(trace_data.slice(i*10, (i+1)*10));
 			}
 
@@ -318,53 +317,53 @@ export function getOrderTrace() {
 
 			lastPromise.then(function(trace_coll) {
 				trace_return_coll.push(trace_coll);
-				console.log(trace_return_coll);
-				defer.resolve(trace_return_coll);
+				trace_return_coll = _.flatten(trace_return_coll);
+
+				var insert_order_trace_dict = [];
+				var update_order_status_dict = [];
+				var condiction_order_status_dict = [];
+				_.forEach(trace_return_coll, function(o) {						
+					var this_order = _.find(origin_order_rows, {billCode: o.billCode});
+					console.log(o.traces);
+					// 假使物流還沒完成
+					if(o.traces.scanType !== '签收') {
+						insert_order_trace_dict.push({
+							'order_id': this_order.order_id,
+							'order_status_id': ORDER_SHIPPED_STATUS_ID,
+							'notify': 1,
+							'comment': o.traces.desc,
+							'date_added': new Date()
+						});
+					} 
+					// 假使物流已派送成功
+					else {
+						insert_order_trace_dict.push({
+							'order_id': this_order.order_id,
+							'order_status_id': ORDER_DONE_STATUS_ID,
+							'notify': 1,
+							'comment': o.traces.desc,
+							'date_added': new Date()
+						});
+						update_order_status_dict.push({
+							'order_status_id': ORDER_DONE_STATUS_ID
+						});
+						condiction_order_status_dict.push({
+							'order_id': this_order.order_id
+						});
+					}
+				});
+				var insert_order_history_sql = insertBulkSql('oc_order_history', insert_order_trace_dict);
+				var update_order_sql = updateBulkSql('oc_order', update_order_status_dict, condiction_order_status_dict);
+				connection.query(insert_order_history_sql+';'+update_order_sql, function(err, rows) {
+					connection.release();
+					defer.resolve();
+				});
 			}, function(err) {
 				console.log(err);
+				connection.release();
 				defer.reject(err);
 			});
 
-			// var insert_order_trace_dict = [];
-			// var update_order_status_dict = [];
-			// var condiction_order_status_dict = [];
-			// _.forEach(trace_return_coll, function(o) {						
-			// 	var this_order = _.find(origin_order_rows, {billCode: o.billCode});
-			// 	console.log(o.traces);
-			// 	// 假使物流還沒完成
-			// 	if(o.traces.scanType !== '签收') {
-			// 		insert_order_trace_dict.push({
-			// 			'order_id': this_order.order_id,
-			// 			'order_status_id': ORDER_SHIPPED_STATUS_ID,
-			// 			'notify': 1,
-			// 			'comment': o.traces.desc,
-			// 			'date_added': new Date()
-			// 		});
-			// 	} 
-			// 	// 假使物流已派送成功
-			// 	else {
-			// 		insert_order_trace_dict.push({
-			// 			'order_id': this_order.order_id,
-			// 			'order_status_id': ORDER_DONE_STATUS_ID,
-			// 			'notify': 1,
-			// 			'comment': o.traces.desc,
-			// 			'date_added': new Date()
-			// 		});
-			// 		update_order_status_dict.push({
-			// 			'order_status_id': ORDER_DONE_STATUS_ID
-			// 		});
-			// 		condiction_order_status_dict.push({
-			// 			'order_id': this_order.order_id
-			// 		});
-			// 	}
-			// });
-			// var insert_order_history_sql = insertBulkSql('oc_order_history', insert_order_trace_dict);
-			// var update_order_sql = updateBulkSql('oc_order', update_order_status_dict, condiction_order_status_dict);
-			// connection.query(insert_order_history_sql+';'+update_order_sql, function(err, rows) {
-			// 	connection.release();
-			// 	defer.resolve();
-			// });
-			
 		});
 	});
 	return defer.promise;
