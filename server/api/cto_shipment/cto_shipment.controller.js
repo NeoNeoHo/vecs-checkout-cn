@@ -365,7 +365,7 @@ export function getOrderTrace() {
 	return defer.promise;
 }
 
-getOrderTrace();
+// getOrderTrace();
 
 var getChinaArea = function() {
 	console.log('######### CT Get Area Start ###########');
