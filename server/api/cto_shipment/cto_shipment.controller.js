@@ -22,6 +22,7 @@ import q from 'q';
 var mysql_pool = db_config.mysql_pool;
 var mysql_config = db_config.mysql_config;  
 var HOST_PATH = api_config.HOST_PATH;
+var ORDER_SHIPPED_STATUS_ID = 68; // 已出貨的狀態id
 
 
 var updateDictSql = function(table, update_dict, condition_dict) {
@@ -221,11 +222,11 @@ export function sendOrder(req, res) {
 					connection.release();
 					res.status(400).json(err);
 				} else {
-					console.log(body);
+					console.log(JSON.parse(body));
 
 					// Step 2. 獲取集包地單號
 					var sending_remark_data = {
-						'unionCode': body.billCode,
+						'unionCode': JSON.parse(body).data.billCode,
 						'send_province': '广东省',
 						'send_city': '广州市',
 						'send_district': '荔湾区',
@@ -248,10 +249,11 @@ export function sendOrder(req, res) {
 							connection.release();
 							res.status(400).json(err);							
 						} else {
-							var update_order_sql = updateDictSql('oc_order', {cto_printMark: get_sending_remark_body.mark}, {order_id: order.order_id});
+							console.log('中通回覆集包地.........')
+							console.log(JSON.parse(get_sending_remark_body));	
+							var update_order_sql = updateDictSql('oc_order', {cto_printMark: JSON.parse(get_sending_remark_body).result.mark}, {order_id: order.order_id});
 							connection.query(update_order_sql, function(err, value) {
-								console.log('中通回覆集包地.........')
-								console.log(get_sending_remark_body);	
+								
 								connection.release();
 								res.status(200).json(body);
 							});				
@@ -271,48 +273,52 @@ export function receiveOrder(req, res) {
 	// res.redirect('/showCheckout');
 }
 
-var sendCTOrder = function() {
-	console.log('######### CT Request Start ###########');
-	const CTO_key = 'submitordertest==';//'d6c9be93579c';
-	const CTO_company_id = 'ea8c719489de4ad0bf475477bad43dc6'; //'b884e56ea465441f85ddd34ac2a13fd1';
-	const CTO_msg_type = 'PARTNERINSERT_SUBMITAGENT';
-	var order_data = {
-		partner: 'test',
-		id: 'xfs101100111011',
-		typeid: '1',
-		sender: {
-			name: '李琳',
-			mobile: '13912345678',
-			city: '上海市,上海市,青浦区',
-			address: '华新镇华志路123号'
-		},
-		receiver: {
-			name: '杨逸嘉',
-			mobile: '13912345678',
-			city: '上海市,上海市,青浦区',
-			address: '华新镇华志路123号'
-		},
-		order_type: '0'
-	};
-	var order_dict = {
-		'company_id': CTO_company_id,
-		'msg_type': CTO_msg_type,
-		'data': JSON.stringify(order_data),
-		'data_digest': crypto.createHash('md5').update(JSON.stringify(order_data)+CTO_key).digest('base64')
-	};
-	request.post({header : {'Content-Type' : 'application/x-www-form-urlencoded'}, url: 'http://58.40.16.125:9001/gateway.do', form: order_dict}, function(err, lhttpResponse, body) {
-		if(err) {
-			console.log('######### CT request fails , order_id: ###########');
-			console.log(err);
-			res.status(400).json(err);
-		} else {
-			console.log(order_dict);
-			console.log(body);
+
+export function getOrderTrace() {
+	const CTO_key = 'd6c9be93579c';//'submitordertest==';
+	const CTO_company_id = 'b884e56ea465441f85ddd34ac2a13fd1';//'ea8c719489de4ad0bf475477bad43dc6'; //'b884e56ea465441f85ddd34ac2a13fd1';
+	const CTO_msg_type = 'TRACEINTERFACE_LATEST';
+	var defer = q.defer();
+	mysql_pool.getConnection(function(err, connection) {
+		if(err) { 
+			connection.release();
+			defer.reject(err);
 		}
+		connection.query('SELECT billCode FROM oc_order WHERE order_status_id = ? order by order_id desc limit 10;', [ORDER_SHIPPED_STATUS_ID], function(err, rows) {
+			if(err) {
+				connection.release();
+				defer.reject(err);
+			}
+			if(_.size(rows) == 0) {
+				connection.release();
+				defer.resolve('沒有需要更新中通物流狀態的訂單');
+			}
+			
+			var order = rows[0];
+			// Step 1. 獲取單號
+			var trace_data = _.map(rows, 'billCode');
+			console.log(trace_data);
+			var order_dict = {
+				'company_id': CTO_company_id,
+				'msg_type': CTO_msg_type,
+				'data': JSON.stringify(trace_data),
+				'data_digest': crypto.createHash('md5').update(JSON.stringify(trace_data)+CTO_key).digest('base64')
+			};
+			console.log(order_dict);
+			request_retry.post({url: 'http://japi.zto.cn/gateway.do', form: order_dict, maxAttempts: 4, retryDelay: 1200}, function(err, lhttpResponse, body) {
+				connection.release();
+				if(err) {
+					console.log(err);
+					defer.reject(err);
+				} else {
+					console.log(JSON.parse(body));
+				}
+			});
+		});
 	});
 }
 
-// sendCTOrder();
+getOrderTrace();
 
 var getChinaArea = function() {
 	console.log('######### CT Get Area Start ###########');
