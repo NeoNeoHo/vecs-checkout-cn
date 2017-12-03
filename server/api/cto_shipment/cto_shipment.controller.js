@@ -287,7 +287,7 @@ export function getOrderTrace() {
 			connection.release();
 			return defer.reject(err);
 		}
-		connection.query('SELECT order_id, cto_billCode as billCode FROM oc_order WHERE order_status_id = ? and cto_billCode > 0 order by order_id desc limit 15;', [ORDER_SHIPPED_STATUS_ID], function(err, origin_order_rows) {
+		connection.query('SELECT order_id, cto_billCode as billCode FROM oc_order WHERE order_status_id = ? and cto_billCode > 0 order by order_id desc;', [ORDER_SHIPPED_STATUS_ID], function(err, origin_order_rows) {
 			if(err) {
 				connection.release();
 				return defer.reject(err);
@@ -307,49 +307,56 @@ export function getOrderTrace() {
 
 			var lastPromise = trace_groups.reduce(function(promise, input_data) {
 				return promise.then(function(trace_coll) {
-					if(trace_coll) trace_return_coll.push(trace_coll);
+					if(trace_coll) {
+						console.log(trace_coll);
+						trace_return_coll.push(trace_coll);
+					}
 					return asyncTrace(input_data);
 				})
 				.catch(function(err) {
-					
+					console.log(err);
 				});
 			}, q.resolve());
 
 			lastPromise.then(function(trace_coll) {
-				trace_return_coll.push(trace_coll);
+				if(trace_coll) trace_return_coll.push(trace_coll);
 				trace_return_coll = _.flatten(trace_return_coll);
 
 				var insert_order_trace_dict = [];
 				var update_order_status_dict = [];
 				var condiction_order_status_dict = [];
-				_.forEach(trace_return_coll, function(o) {						
-					var this_order = _.find(origin_order_rows, {billCode: o.billCode});
-					console.log(o.traces);
-					// 假使物流還沒完成
-					if(o.traces.scanType !== '签收') {
-						insert_order_trace_dict.push({
-							'order_id': this_order.order_id,
-							'order_status_id': ORDER_SHIPPED_STATUS_ID,
-							'notify': 1,
-							'comment': o.traces.desc,
-							'date_added': new Date()
-						});
-					} 
-					// 假使物流已派送成功
-					else {
-						insert_order_trace_dict.push({
-							'order_id': this_order.order_id,
-							'order_status_id': ORDER_DONE_STATUS_ID,
-							'notify': 1,
-							'comment': o.traces.desc,
-							'date_added': new Date()
-						});
-						update_order_status_dict.push({
-							'order_status_id': ORDER_DONE_STATUS_ID
-						});
-						condiction_order_status_dict.push({
-							'order_id': this_order.order_id
-						});
+
+				_.forEach(trace_return_coll, function(o) {
+					if('billCode' in o){				
+						var this_order = _.find(origin_order_rows, {billCode: o.billCode});
+						// console.log('回傳資訊:' + this_order.order_id + '  #' + o.billCode);
+						// console.log(o.traces);
+						// 假使物流還沒完成
+						if(o.traces.scanType !== '签收') {
+							insert_order_trace_dict.push({
+								'order_id': this_order.order_id,
+								'order_status_id': ORDER_SHIPPED_STATUS_ID,
+								'notify': 1,
+								'comment': o.traces.desc,
+								'date_added': new Date()
+							});
+						} 
+						// 假使物流已派送成功
+						else {
+							insert_order_trace_dict.push({
+								'order_id': this_order.order_id,
+								'order_status_id': ORDER_DONE_STATUS_ID,
+								'notify': 1,
+								'comment': o.traces.desc,
+								'date_added': new Date()
+							});
+							update_order_status_dict.push({
+								'order_status_id': ORDER_DONE_STATUS_ID
+							});
+							condiction_order_status_dict.push({
+								'order_id': this_order.order_id
+							});
+						}
 					}
 				});
 				var insert_order_history_sql = insertBulkSql('oc_order_history', insert_order_trace_dict);
