@@ -50,7 +50,17 @@ div.panel.panel-default
 						h6(ng-show="product.reward") + 红利 {{product.reward}} 点  
 					div.text-green(ng-repeat="discount_condition in product.discount")
 						p(ng-hide="discount_condition.quantity <= product.quantity") 加{{discount_condition.quantity - product.quantity}}件，每件再折{{product.spot_price - discount_condition.price}}元
-
+div#checkout_buymore.panel.panel-default(ng-show="cart.giftWithPurchase.length")
+	div.panel-heading.lead
+		i.fa.fa-gift.fa-2x(style="color:#bccd99")&nbsp; 
+		span 此次購物您可獲得的福袋滿額禮
+	div.panel-body
+		div.row
+			div.col-lg-3.col-md-4.col-sm-6.col-xs-6(ng-repeat="product in cart.giftWithPurchase")
+				div.thumbnail
+					img(ng-src="{{product.image}}")
+					div.caption.text-center
+						strong.h5 {{product.name}}
 div.panel.panel-default
 	div.panel-body
 		.row
