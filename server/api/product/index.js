@@ -8,6 +8,7 @@ var router = express.Router();
 
 router.get('/discount/:ids', auth.isAuthenticated(), controller.getDiscounts);
 router.get('/price/:ids', auth.isAuthenticated(), controller.getPrices);
+router.get('/gift/:ids', auth.isAuthenticated(), controller.getGifts);
 router.get('/:ids', auth.isAuthenticated(), controller.get);
 router.post('/validate/', auth.isAuthenticated(), controller.validate);
 

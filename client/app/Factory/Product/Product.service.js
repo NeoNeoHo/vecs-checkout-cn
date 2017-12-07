@@ -41,6 +41,23 @@ angular.module('webApp')
 			return defer.promise;			
 		};
 
+		var getGifts = function(product_id_list) {
+			var defer = $q.defer();
+			$http.get('/api/products/gift/'+JSON.stringify(product_id_list))
+			.then(function(result) {
+				var gifts = [];
+				_.forEach(product_id_list, function(gift_id) {
+					var gift_obj = _.find(result.data, {product_id: gift_id});
+					gift_obj.image = DIR_IMAGE_PATH + '/' + gift_obj.image;
+					gifts.push(gift_obj);
+				});
+				defer.resolve(gifts);
+			}, function(err) {
+				defer.reject(err);
+			});
+			return defer.promise;	
+		};
+
 		var getProducts = function(product_id_list) {
 			var defer = $q.defer();
 			$http.get('/api/products/'+JSON.stringify(product_id_list))
@@ -84,6 +101,7 @@ angular.module('webApp')
 			validateProducts: validateProducts,
 			getDiscounts: getDiscounts,
 			getPrices: getPrices,
+			getGifts: getGifts,
 			getProducts: getProducts,
 			getProductsDetail: getProductsDetail
 		};

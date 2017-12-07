@@ -218,6 +218,20 @@ var createOrderProduct = function(order_id, cart) {
 			reward: product.reward * product.quantity
 		};
 	});
+	if(_.size(cart.giftWithPurchase)) {
+		_.forEach(cart.giftWithPurchase, function(gift) {
+			insert_coll.push({
+				order_id: order_id,
+				product_id: gift.product_id,
+				name: '滿額禮 - ' + gift.name,
+				model: gift.name,
+				quantity: 1,
+				price: 0,
+				total: 0,
+				reward: 0				
+			});
+		});
+	}
 	var sql = insertBulkSql('oc_order_product', insert_coll);
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
@@ -246,6 +260,11 @@ var reduceProductQuantity = function(cart) {
 		sql += 'update oc_product set quantity = quantity - ' + product.quantity + ' where product_id = ' + product.product_id + ';';
 		return sql;
 	}, '');
+	if(_.size(cart.giftWithPurchase)) {
+		_.forEach(cart.giftWithPurchase, function(gift) {
+			update_sql += 'update oc_product set quantity = quantity - 1 where product_id = ' + gift.product_id + ';';
+		});
+	}
 	mysql_pool.getConnection(function(err, connection) {
 		if(err) {
 			connection.release();

@@ -46,9 +46,17 @@ angular.module('webApp')
 			if(!$scope.shipping_info.address) {
 				getAddress();
 			}
+
 			Reward.getFromCustomer().then(function(reward) {
 				$scope.cart.rewards_customer_has_pts = (reward.points) ? reward.points : 0;
 				$scope.cart.rewards_available = ($scope.cart.total_price_with_discount > $scope.cart.rewards_customer_has_pts) ? $scope.cart.rewards_customer_has_pts : $scope.cart.total_price_with_discount;
+
+				// 滿額禮區域
+				Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+					$scope.cart = lcart;
+				}, function(err) {
+				});
+
 			}, function(err) {
 				$scope.cart.rewards_customer_has_pts = 0;
 				$scope.cart.rewards_available = 0;
@@ -75,6 +83,11 @@ angular.module('webApp')
 		};
 		$scope.checkout_second_step = function() {
 			if($scope.checkout_form.$valid){
+				// 滿額禮區域
+				Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+					$scope.cart = lcart;
+				}, function(err) {
+				});
 				$scope.setPaymentMethod(SHIPPING_NAME.ship_to_home);
 				$state.go('checkout.shipment_payment');
 			} else {
@@ -86,6 +99,11 @@ angular.module('webApp')
 			$scope.setShipmentFee();
 			console.log($scope.shipping_info);
 			if($scope.checkout_form.$valid && $scope.is_address_valid){
+				// 滿額禮區域
+				Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+					$scope.cart = lcart;
+				}, function(err) {
+				});
 				$state.go('checkout.final_confirm');
 			} else {
 				$scope.is_address_valid = false;
@@ -120,6 +138,11 @@ angular.module('webApp')
 			if($scope.cart.discount.coupon.saved_amount > 0) {
 				$scope.calcCouponSaved();
 			}
+			// 滿額禮區域
+			Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+				$scope.cart = lcart;
+			}, function(err) {
+			});
 		};
 
 		$scope.removeProduct = function(key='') {
@@ -128,6 +151,11 @@ angular.module('webApp')
 			if($scope.cart.discount.coupon.saved_amount > 0) {
 				$scope.calcCouponSaved();
 			}
+			// 滿額禮區域
+			Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+				$scope.cart = lcart;
+			}, function(err) {
+			});
 			return true;
 		};
 

@@ -113,6 +113,24 @@ var getProducts = function(product_id_list, customer_group_id) {
 	return defer.promise;
 };
 
+var getGifts = function(product_id_list, customer_group_id) {
+	var defer = q.defer();
+	product_id_list = product_id_list.length ? product_id_list : '';
+	mysql_pool.getConnection(function(err, connection) {
+		if(err) {
+			connection.release();
+			defer.reject(err);
+		}
+		connection.query('SELECT a.*, b.name as name, c.points as reward FROM oc_product a, oc_product_description b, oc_product_reward c WHERE a.product_id in (?) AND a.quantity > 0 AND a.date_available <= NOW() AND a.product_id = b.product_id AND b.language_id = 2 AND a.product_id = c.product_id AND c.customer_group_id = ?;', [product_id_list, customer_group_id], function(err, rows) {
+			connection.release();
+			if(err) defer.reject(err);
+			defer.resolve(_.sortBy(rows, 'product_id'));
+		});
+	});
+	return defer.promise;
+};
+
+
 var getProductDiscounts = function(product_id_list, customer_group_id) {
 	// console.log(product_id_list+' '+customer_group_id);
 	var defer = q.defer();
@@ -293,6 +311,17 @@ export function get(req, res) {
 	var product_id_list = JSON.parse(req.params.ids);
 	var customer_group_id = req.user.customer_group_id;
 	getProducts(product_id_list, customer_group_id).then(function(data) {
+		res.status(200).json(data);
+	}, function(err) {
+		res.status(400).send(err);
+	});
+};
+
+
+export function getGifts(req, res) {
+	var product_id_list = JSON.parse(req.params.ids);
+	var customer_group_id = req.user.customer_group_id;
+	getGifts(product_id_list, customer_group_id).then(function(data) {
 		res.status(200).json(data);
 	}, function(err) {
 		res.status(400).send(err);

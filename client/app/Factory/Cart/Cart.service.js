@@ -3,6 +3,7 @@
 angular.module('webApp')
 	.factory('Cart', function ($q, $http, Config, $cookies, Product) {
 		var cart_cache = '';
+		const _random_ = Math.floor((Math.random() * 10) + 1);
 
 		var checkDiscount = function(cart) {
 			cart.products = _.map(cart.products, function(product) {
@@ -122,6 +123,10 @@ angular.module('webApp')
 							name: '',
 							id: 0,
 							available_amount: 0
+						},
+						promotion: {
+							saved_amount: 0,
+							name: ''
 						}
 					},
 					shipment_fee: 0,
@@ -168,12 +173,56 @@ angular.module('webApp')
 			// window.location.href = Config.SERVER_HOST + '/index.php?route=checkout/cart/clear';
 		};
 
+
+		var addGiftWithPurchase = function(lcart) {
+			var defer = $q.defer();
+			const price_after_discount = lcart.product_total_price - lcart.discount.reward.saved_amount - lcart.discount.coupon.saved_amount - lcart.discount.voucher.saved_amount - lcart.discount.promotion.saved_amount;
+			lcart.giftWithPurchase = [];
+
+			/* This is usual Campaign Area */
+			Product.getGifts([420, 125, 403]).then(function(gifts){
+				// product: 420, 125，護唇膏
+				// product: 403，小角鯊
+				_random_;
+				if(price_after_discount >= 1000) {
+					if(_random_ % 2 == 0 && gifts[0].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+					} else {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+					}
+				}
+				if(price_after_discount >= 2000 && gifts[2].quantity > 1) {
+					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
+				}
+				if(price_after_discount >= 3000 && gifts[2].quantity > 1) {
+					if(_random_ % 2 == 0 && gifts[1].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+					} else {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+					}
+				}
+				defer.resolve(_cart);				
+			}, function(err) {
+				defer.resolve(_cart);
+			});
+			return defer.promise;
+		}
+
+		var _mapGoodFormGift = function(gift_obj) {
+			return {
+				product_id: gift_obj.product_id,
+				image: gift_obj.image,
+				name: gift_obj.quantity < 10 ? `${gift_obj.name}，僅剩${gift_obj.quantity}個` : `${gift_obj.name}`	
+			};
+		}
+
 		// Public API here
 		return {
 			getCart: getCart,
 			updateCartTotal: updateCartTotal,
 			updateSession: updateSession,
 			clear: clear,
-			getSession: getSession
+			getSession: getSession,
+			addGiftWithPurchase: addGiftWithPurchase
 		};
 	});
