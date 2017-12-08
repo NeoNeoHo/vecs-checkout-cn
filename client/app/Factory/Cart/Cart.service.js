@@ -183,23 +183,14 @@ angular.module('webApp')
 			Product.getGifts([420, 125, 403]).then(function(gifts){
 				// product: 420, 125，護唇膏
 				// product: 403，小角鯊
-				_random_;
-				if(price_after_discount >= 1000) {
-					if(_random_ % 2 == 0 && gifts[0].quantity > 1) {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-					} else {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-					}
+				if(price_after_discount >= 1000 && gifts[1].quantity > 1) {
+					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
 				}
 				if(price_after_discount >= 2000 && gifts[2].quantity > 1) {
 					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
 				}
-				if(price_after_discount >= 3000 && gifts[2].quantity > 1) {
-					if(_random_ % 2 == 0 && gifts[1].quantity > 1) {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-					} else {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-					}
+				if(price_after_discount >= 3000 && gifts[0].quantity > 1) {
+					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
 				}
 				defer.resolve(_cart);				
 			}, function(err) {
