@@ -389,9 +389,9 @@ angular.module('webApp')
 			// Step 4. 處理特殊需求 Comment
 			if($scope.shipping_info.dmRequest) {
 				if($scope.shipping_info.comment) {
-					$scope.shipping_info.comment = $scope.shipping_info.comment + '; ' + '我需要产品画册目录';
+					$scope.shipping_info.comment = $scope.shipping_info.comment + '; ' + '我不需要产品目录';
 				} else {
-					$scope.shipping_info.comment = '我需要产品画册目录';
+					$scope.shipping_info.comment = '我不需要产品目录';
 				}	
 			}
 			// Step 3. 檢查優惠內容與禮品券內容
