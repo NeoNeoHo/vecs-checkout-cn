@@ -352,6 +352,7 @@ var createOrderTotal = function(order_id = 0, shipping_info, cart) {
 	insert_coll.push(getOrderTotalDict(order_id, 'sub_total', '商品總計', cart.product_total_price, 1));
 	if(cart.discount.coupon.saved_amount > 0) insert_coll.push(getOrderTotalDict(order_id, 'coupon', '優惠券 - '+cart.discount.coupon.name, -cart.discount.coupon.saved_amount, 2));
 	if(cart.discount.reward.saved_amount > 0) insert_coll.push(getOrderTotalDict(order_id, 'reward', '紅利點數 - '+cart.discount.reward.saved_amount, -cart.discount.reward.saved_amount, 3));
+if(cart.discount.promotion.saved_amount > 0) insert_coll.push(getOrderTotalDict(order_id, 'promotion', cart.discount.promotion.name+' - '+cart.discount.promotion.saved_amount, -cart.discount.promotion.saved_amount, 3));
 	insert_coll.push(getOrderTotalDict(order_id, 'shipping', '運費 - '+shipping_info.shipment_sel_str, shipping_info.shipment_fee, 4));
 	if(cart.discount.voucher.saved_amount > 0) insert_coll.push(getOrderTotalDict(order_id, 'voucher', '禮券 - '+cart.discount.voucher.name, -cart.discount.voucher.saved_amount, 5));
 	insert_coll.push(getOrderTotalDict(order_id, 'total', '訂單總計', shipping_info.total, 6));
@@ -518,7 +519,7 @@ export function create(req, res) {
 	var cart = req.body.cart;
 	var shipping_info = req.body.shipping_info;
 
-	shipping_info.total = cart.product_total_price + cart.shipment_fee - cart.discount.coupon.saved_amount - cart.discount.reward.saved_amount - cart.discount.voucher.saved_amount;
+	shipping_info.total = cart.product_total_price + cart.shipment_fee - cart.discount.coupon.saved_amount - cart.discount.reward.saved_amount - cart.discount.voucher.saved_amount - cart.discount.promotion.saved_amount;;
 	
 	// Step 1. Create "Order"
 	createOrder(shipping_info, customer_id, customer_group_id, email, customer_ip).then(function(data) {
