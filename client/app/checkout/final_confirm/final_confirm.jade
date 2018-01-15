@@ -109,10 +109,10 @@ div.panel.panel-default
 					tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
 						td.text-right 折扣码
 							b {{cart.discount.coupon.name}}:
-					td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
-						tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-							td.text-right {{cart.discount.promotion.name}}:
-							td.text-right - $ {{cart.discount.promotion.saved_amount}}
+						td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
+					tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
+						td.text-right {{cart.discount.promotion.name}}:
+						td.text-right - $ {{cart.discount.promotion.saved_amount}}
 					tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 						td.text-right 礼品券:
 						td.text-right 
@@ -141,10 +141,10 @@ div.visible-xs
 				tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
 					td.text-right 折扣码
 						b {{cart.discount.coupon.name}}:
-				td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
-					tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-						td.text-right {{cart.discount.promotion.name}}:
-						td.text-right - $ {{cart.discount.promotion.saved_amount}}
+					td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
+				tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
+					td.text-right {{cart.discount.promotion.name}}:
+					td.text-right - $ {{cart.discount.promotion.saved_amount}}
 				tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 					td.text-right 礼品券:
 					td.text-right 
