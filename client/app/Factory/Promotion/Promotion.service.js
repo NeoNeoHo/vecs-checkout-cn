@@ -6,6 +6,7 @@ angular.module('webApp')
 		// ...
 
 		var meaningOfLife = 42;
+		var _buyXGetY = '';
 
 		var getVoucher = function(voucher_name) {
 			var defer = $q.defer();
@@ -150,6 +151,50 @@ angular.module('webApp')
 			}
 			return defer.promise;
 		};
+
+		var getBuyXGetY = function() {
+			var defer = $q.defer();
+			if(_buyXGetY !== '') {
+				defer.resolve(_buyXGetY);
+			}
+			var defer = $q.defer();
+			$http.get('/api/promotions/buyXGetY').then(function(data) {
+				_buyXGetY = data.data;
+				defer.resolve(data.data);
+			}, function(err) {
+				defer.reject(err);
+			});
+			return defer.promise;	
+		};
+
+		var calcBuyXGetYSaved = function (cart) {
+			if(_buyXGetY === '' || _buyXGetY.status === false) {
+				return {saved_amount: 0, name: ''};
+			}
+			var promo_qual_prod_ids = _buyXGetY.content.product_ids;
+			var qual_products = [];
+			var saved_amount = 0
+			var total_qual_quantity = _.reduce(cart.products, function(lquantity, product) {
+				if(promo_qual_prod_ids === 'all' || _.contains(promo_qual_prod_ids, product.product_id)) {
+					for(let i = 0; i < product.quantity; i++) {
+						qual_products.push(product);
+					}
+					return lquantity + product.quantity;
+				} else {
+					return lquantity;
+				}
+			}, 0);
+			if(_buyXGetY.content.X > total_qual_quantity) {
+				return {saved_amount: 0, name: ''};
+			}
+			var discount_quantity = (parseInt(total_qual_quantity / parseInt(_buyXGetY.content.X+1))) * _buyXGetY.content.Y;
+			qual_products = _.sortBy(qual_products, 'spot_price');
+			for(let j = 0; j < discount_quantity; j++) {
+				saved_amount += qual_products[j].spot_price;
+			}
+			return {saved_amount: Math.round(saved_amount), name: _buyXGetY.content.description};
+		};
+		
 		// Public API here
 		return {
 			someMethod: function () {
@@ -159,6 +204,8 @@ angular.module('webApp')
 			calcCouponSaved: calcCouponSaved,
 			calcVoucherSaved: calcVoucherSaved,
 			calcRewardSaved: calcRewardSaved,
-			getVoucher: getVoucher
+			getVoucher: getVoucher,
+			getBuyXGetY: getBuyXGetY,
+			calcBuyXGetYSaved: calcBuyXGetYSaved
 		};
 	});

@@ -20,6 +20,7 @@ export default function(app) {
 	app.use('/api/mandrills', require('./api/mandrill'));
 	app.use('/api/megamenus', require('./api/megamenu'));
 	app.use('/api/orders', require('./api/order'));
+	app.use('/api/promotions', require('./api/promotion'));
 	app.use('/api/products', require('./api/product'));
 	app.use('/api/payment', require('./api/payment'));
 	app.use('/api/things', require('./api/thing'));

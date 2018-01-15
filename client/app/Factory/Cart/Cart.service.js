@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('webApp')
-	.factory('Cart', function ($q, $http, Config, $cookies, Product) {
+	.factory('Cart', function ($q, $http, Config, $cookies, Product, Promotion) {
 		var cart_cache = '';
 		const _random_ = Math.floor((Math.random() * 10) + 1);
 
@@ -74,12 +74,19 @@ angular.module('webApp')
 			});
 			return defer.promise;
 		};
+		
+		var _calcBuyXGetYSaved = function(cart) {
+			var resp_promotion = Promotion.calcBuyXGetYSaved(cart);
+			cart.discount.promotion = resp_promotion;
+			cart = checkDiscount(cart);
+			return cart;
+		};
 
 		var updateCartTotal = function(cart) {
+			cart = _calcBuyXGetYSaved(cart);
 			cart = checkDiscount(cart);
 			cart = updateProductTotal(cart);
 			cart.product_total_price = _.reduce(cart.products, function(sum, o){return sum+o.total}, 0);
-			console.log('fjdosifjasoif');
 			console.log(cart);
 			updateCartCookiesSession(cart.products);
 			return cart;
@@ -154,8 +161,19 @@ angular.module('webApp')
 						return product;
 					});
 					lcart = updateCartTotal(lcart);
-					// cart_cache = cart;
-					defer.resolve(lcart);
+
+					// 先計算買X送Y折Z的優惠，然後才加上紅利與Coupon的優惠
+					var promotion_promise = [];
+					// promotion_promise.push(Promotion.getBuyXLastOneYOff());
+					promotion_promise.push(Promotion.getBuyXGetY());
+					$q.all(promotion_promise)
+						.then(function(promotion_datas) {
+							// _calcBuyXLastOneYOffSaved();
+							lcart = _calcBuyXGetYSaved(lcart);
+							defer.resolve(lcart);
+						}).catch(function(err) {
+							defer.reject(err);
+						});
 				}, function(err) {
 					defer.reject(err);
 				});

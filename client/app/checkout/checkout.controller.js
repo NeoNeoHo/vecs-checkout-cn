@@ -308,6 +308,13 @@ angular.module('webApp')
 					var expired_min = 5;
 					date.setTime(date.getTime() + (expired_min * 60 * 1000));
 					$cookies.put('vecs_reward', $scope.cart.discount.reward.saved_amount, {domain: Config.DIR_COOKIES, expires: date});
+
+					// 滿額禮區域
+					Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+						$scope.cart = lcart;
+					}, function(err) {
+					});
+
 					defer.resolve();
 				}, function(err) {
 					alert(err);
@@ -335,6 +342,13 @@ angular.module('webApp')
 				var expired_min = 5;
 				date.setTime(date.getTime() + (expired_min * 60 * 1000));
 				$cookies.put('vecs_coupon', $scope.cart.discount.coupon.name, {domain: Config.DIR_COOKIES, expires: date});
+
+				// 滿額禮區域
+				Cart.addGiftWithPurchase($scope.cart).then(function(lcart) {
+					$scope.cart = lcart;
+				}, function(err) {
+				});
+
 				defer.resolve();			
 			}, function(err) {
 				alert(err);
