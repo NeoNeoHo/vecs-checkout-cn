@@ -60,7 +60,16 @@ angular.module('webApp')
 					// Or
 					// Apply to those qualified Products
 					if(_qualified_products_coll.length === 0) {
-						_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round(cart.product_total_price * _discount_fee / 100);
+						try {
+							if(cart.discount.promotion) {
+								var promotion_deduct_amount = cart.discount.promotion.saved_amount;
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round((cart.product_total_price-promotion_deduct_amount) * _discount_fee / 100);
+							} else {
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round(cart.product_total_price * _discount_fee / 100);
+							}
+						} catch (e) {
+
+						}
 					} else {
 						_coupon_saved_amount = _.reduce(cart.products, function(lcoupon_saved_amount, lproduct) {
 							if(_.find(_qualified_products_coll, {'product_id': lproduct.product_id})) {
