@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 angular.module('webApp')
 	.factory('Cart', function ($q, $http, Config, $cookies, Product, Promotion) {
@@ -198,18 +198,15 @@ angular.module('webApp')
 			lcart.giftWithPurchase = [];
 
 			/* This is usual Campaign Area */
-			Product.getGifts([420, 125, 403]).then(function(gifts){
+			Product.getGifts([454, 455]).then(function(gifts){
 				// product: 420, 125，護唇膏
 				// product: 403，小角鯊
-				// if(price_after_discount >= 1000 && gifts[0].quantity > 1) {
-				// 	lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-				// }
-				// if(price_after_discount >= 2000 && gifts[2].quantity > 1) {
-				// 	lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
-				// }
-				// if(price_after_discount >= 3000 && gifts[1].quantity > 1) {
-				// 	lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-				// }
+				if(price_after_discount >= 600 && gifts[0].quantity > 1) {
+					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+				}
+				if(price_after_discount >= 1200 && gifts[1].quantity > 1) {
+					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+				}
 				defer.resolve(_cart);				
 			}, function(err) {
 				defer.resolve(_cart);
