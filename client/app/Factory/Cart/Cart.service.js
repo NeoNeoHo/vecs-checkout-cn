@@ -197,20 +197,21 @@ angular.module('webApp')
 			const price_after_discount = lcart.product_total_price - lcart.discount.reward.saved_amount - lcart.discount.coupon.saved_amount - lcart.discount.voucher.saved_amount - lcart.discount.promotion.saved_amount;
 			lcart.giftWithPurchase = [];
 
-			/* This is usual Campaign Area */
-			Product.getGifts([454, 455]).then(function(gifts){
-				// product: 420, 125，護唇膏
-				// product: 403，小角鯊
-				if(price_after_discount >= 600 && gifts[0].quantity > 1) {
-					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-				}
-				if(price_after_discount >= 1200 && gifts[1].quantity > 1) {
-					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-				}
-				defer.resolve(_cart);				
-			}, function(err) {
-				defer.resolve(_cart);
-			});
+			// /* This is usual Campaign Area */
+			// Product.getGifts([454, 455]).then(function(gifts){
+			// 	// product: 420, 125，護唇膏
+			// 	// product: 403，小角鯊
+			// 	if(price_after_discount >= 600 && gifts[0].quantity > 1) {
+			// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+			// 	}
+			// 	if(price_after_discount >= 1200 && gifts[1].quantity > 1) {
+			// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+			// 	}
+			// 	defer.resolve(_cart);				
+			// }, function(err) {
+			// 	defer.resolve(_cart);
+			// });
+			defer.resolve(_cart);
 			return defer.promise;
 		}
 

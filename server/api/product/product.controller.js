@@ -121,7 +121,7 @@ var getGifts = function(product_id_list, customer_group_id) {
 			connection.release();
 			defer.reject(err);
 		}
-		connection.query('SELECT a.*, b.name as name, c.points as reward FROM oc_product a, oc_product_description b, oc_product_reward c WHERE a.product_id in (?) AND a.quantity > 0 AND a.date_available <= NOW() AND a.product_id = b.product_id AND b.language_id = 2 AND a.product_id = c.product_id AND c.customer_group_id = ?;', [product_id_list, customer_group_id], function(err, rows) {
+		connection.query('SELECT a.*, b.name as name, c.points as reward FROM oc_product a, oc_product_description b, oc_product_reward c WHERE a.product_id in (?) AND a.date_available <= NOW() AND a.product_id = b.product_id AND b.language_id = 2 AND a.product_id = c.product_id AND c.customer_group_id = ?;', [product_id_list, customer_group_id], function(err, rows) {
 			connection.release();
 			if(err) defer.reject(err);
 			defer.resolve(_.sortBy(rows, 'product_id'));
