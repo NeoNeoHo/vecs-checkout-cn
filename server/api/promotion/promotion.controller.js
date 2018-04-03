@@ -18,7 +18,7 @@ const mysql_pool = db_config.mysql_pool;
 const mysql_config = db_config.mysql_config;  
 
 export function getBuyXGetY(req, res) {
-	var is_started = true;
+	var is_started = false;
 	if (is_started) {
 		var content = {
 			category_ids: [146],

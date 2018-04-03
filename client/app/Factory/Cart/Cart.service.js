@@ -207,11 +207,11 @@ angular.module('webApp')
 			// 	if(price_after_discount >= 1200 && gifts[1].quantity > 1) {
 			// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
 			// 	}
-			// 	defer.resolve(_cart);				
+			// 	defer.resolve(lcart);				
 			// }, function(err) {
-			// 	defer.resolve(_cart);
+			// 	defer.resolve(lcart);
 			// });
-			defer.resolve(_cart);
+			defer.resolve(lcart);
 			return defer.promise;
 		}
 
