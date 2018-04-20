@@ -211,7 +211,68 @@ angular.module('webApp')
 			// }, function(err) {
 			// 	defer.resolve(lcart);
 			// });
-			defer.resolve(lcart);
+
+			// 芙蓉花精，product_id: 360
+			// CC舊自然，product_id: 362
+			// 鼠尾草凝露，product_id: 376
+			// 柑橘複方植萃護手霜，product_id: 367
+			// 檸檬複方植萃護手霜，product_id: 239
+			// 玫瑰角鯊植萃護手霜，product_id: 368
+			// 薰衣草植萃護手霜，product_id: 467
+			// 舒敏角鯊潤澤精萃 15ML，product_id: 403
+
+			// 芙蓉花乳組(出清特別優惠), product_id: 476
+			// CC01組, product_id: 477
+			// CC02組, product_id: 470
+
+			var cart_product_476 = _.find(lcart.products, {product_id: 476});
+			var cart_product_477 = _.find(lcart.products, {product_id: 477});
+			var cart_product_470 = _.find(lcart.products, {product_id: 470});
+
+			Product.getGifts([360, 362, 376, 367, 239, 368, 467, 403]).then(function(gifts) {
+				if(cart_product_476 && gifts[0].quantity >= cart_product_476.quantity) {
+					for(var i = 0; i < cart_product_476.quantity; i++) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+					}
+				}
+				if(cart_product_477 && gifts[1].quantity >= cart_product_477.quantity) {
+					for(var i = 0; i < cart_product_477.quantity; i++) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+					}
+				}
+				if(cart_product_470 && gifts[1].quantity >= cart_product_470.quantity) {
+					for(var i = 0; i < cart_product_470.quantity; i++) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+					}
+				}
+
+				if(price_after_discount >= 450) {
+					if(gifts[2].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
+					}			
+				}
+				if(price_after_discount >= 800) {
+					var _random_gifts = [];
+					for(var i = 3; i < 7; i++) {
+						if(gifts[i].quantity > 1) {
+							_random_gifts.push(gifts[i]);
+						}
+					}
+					var _random_gifts_length = _random_gifts.length;
+					if(_random_gifts_length > 0) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
+					}
+				}
+				if(price_after_discount >= 1200) {
+					if(gifts[7].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[7]));
+					}			
+				}	
+				defer.resolve(lcart);				
+			}, function(err) {
+				defer.resolve(lcart);
+			});
+			// defer.resolve(lcart);
 			return defer.promise;
 		}
 
