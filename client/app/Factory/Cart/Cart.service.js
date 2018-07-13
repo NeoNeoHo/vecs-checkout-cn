@@ -219,6 +219,7 @@ angular.module('webApp')
 			// 薰衣草植萃護手霜，product_id: 467
 
 			Product.getGifts([488, 455]).then(function(gifts) {
+				lcart.giftWithPurchase = [];
 				// if(price_after_discount >= 600) {
 				// 	var _random_gifts = [];
 				// 	for(var i = 3; i < 7; i++) {
