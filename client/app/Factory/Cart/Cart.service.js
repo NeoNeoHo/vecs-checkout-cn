@@ -81,9 +81,29 @@ angular.module('webApp')
 			cart = checkDiscount(cart);
 			return cart;
 		};
-
+		var _calcBuySameCategory_X_BundlePrice_PSaved = function(cart) {
+			var resp_promotions = Promotion.calcBuySameCategory_X_BundlePrice_PSaved(cart);
+			console.log('通過任選Ｘ件Y元計算');
+			console.log(resp_promotions);
+			_.forEach(resp_promotions, (resp_promotion) => {
+				if(!_.find(cart.discount.promotions, {'name': resp_promotion.name})){
+					if(resp_promotion.name) {
+						cart.discount.promotions.push(resp_promotion);
+					}
+				} else {
+					cart.discount.promotions = _.map(cart.discount.promotions, (promotion) => {
+						if(promotion.name === resp_promotion.name) {
+							promotion = resp_promotion;
+						}
+						return promotion;
+					});				
+				}
+			});
+			return cart;
+		};
 		var updateCartTotal = function(cart) {
-			cart = _calcBuyXGetYSaved(cart);
+			// cart = _calcBuyXGetYSaved(cart);
+			cart = _calcBuySameCategory_X_BundlePrice_PSaved(cart);
 			cart = checkDiscount(cart);
 			cart = updateProductTotal(cart);
 			cart.product_total_price = _.reduce(cart.products, function(sum, o){return sum+o.total}, 0);
@@ -131,10 +151,7 @@ angular.module('webApp')
 							id: 0,
 							available_amount: 0
 						},
-						promotion: {
-							saved_amount: 0,
-							name: ''
-						}
+						promotions: []
 					},
 					shipment_fee: 0,
 				};
@@ -165,11 +182,12 @@ angular.module('webApp')
 					// 先計算買X送Y折Z的優惠，然後才加上紅利與Coupon的優惠
 					var promotion_promise = [];
 					// promotion_promise.push(Promotion.getBuyXLastOneYOff());
-					promotion_promise.push(Promotion.getBuyXGetY());
+					promotion_promise.push(Promotion.getBuySameCategory_X_BundlePrice_P(cart));
 					$q.all(promotion_promise)
 						.then(function(promotion_datas) {
 							// _calcBuyXLastOneYOffSaved();
-							lcart = _calcBuyXGetYSaved(lcart);
+							// lcart = _calcBuyXGetYSaved(lcart);
+							lcart = _calcBuySameCategory_X_BundlePrice_PSaved(lcart);
 							defer.resolve(lcart);
 						}).catch(function(err) {
 							defer.reject(err);
@@ -194,7 +212,7 @@ angular.module('webApp')
 
 		var addGiftWithPurchase = function(lcart) {
 			var defer = $q.defer();
-			const price_after_discount = lcart.product_total_price - lcart.discount.reward.saved_amount - lcart.discount.coupon.saved_amount - lcart.discount.voucher.saved_amount - lcart.discount.promotion.saved_amount;
+			const price_after_discount = lcart.product_total_price - lcart.discount.reward.saved_amount - lcart.discount.coupon.saved_amount - lcart.discount.voucher.saved_amount - _.reduce(lcart.discount.promotions, (lsum, promotion) => {return lsum+promotion.saved_amount}, 0);
 			lcart.giftWithPurchase = [];
 
 			// /* This is usual Campaign Area */

@@ -7,6 +7,7 @@ angular.module('webApp')
 
 		var meaningOfLife = 42;
 		var _buyXGetY = '';
+		var _buySameCategory_X_BundlePrice_P = '';
 
 		var getVoucher = function(voucher_name) {
 			var defer = $q.defer();
@@ -176,6 +177,21 @@ angular.module('webApp')
 			return defer.promise;	
 		};
 
+		var getBuySameCategory_X_BundlePrice_P = function() {
+			if(_buySameCategory_X_BundlePrice_P !== '') {
+				defer.resolve(_buySameCategory_X_BundlePrice_P);
+			}
+			var defer = $q.defer();
+			$http.get('/api/promotions/buySameCategory_X_BundlePrice_P').then(function(data) {
+				_buySameCategory_X_BundlePrice_P = data.data;
+				console.log(data.data);
+				defer.resolve(data.data);
+			}, function(err) {
+				defer.reject(err);
+			});
+			return defer.promise;	
+		};
+
 		var calcBuyXGetYSaved = function (cart) {
 			if(_buyXGetY === '' || _buyXGetY.status === false) {
 				return {saved_amount: 0, name: ''};
@@ -203,7 +219,37 @@ angular.module('webApp')
 			}
 			return {saved_amount: Math.round(saved_amount), name: _buyXGetY.content.description};
 		};
-		
+
+		var calcBuySameCategory_X_BundlePrice_PSaved = function (cart) {
+			if(_buySameCategory_X_BundlePrice_P === '' || _buySameCategory_X_BundlePrice_P.status === false) {
+				return [{saved_amount: 0, name: ''}];
+			}
+			var ret_coll = [];
+			_.forEach(_buySameCategory_X_BundlePrice_P.content_coll, (content) => {
+				var promo_qual_prod_ids = content.product_ids;
+				var qual_products = [];
+				var saved_amount = 0
+				var total_qual_quantity = _.reduce(cart.products, function(lquantity, product) {
+					if(promo_qual_prod_ids === 'all' || _.contains(promo_qual_prod_ids, product.product_id)) {
+						for(let i = 0; i < product.quantity; i++) {
+							qual_products.push(product);
+						}
+						return lquantity + product.quantity;
+					} else {
+						return lquantity;
+					}
+				}, 0);
+				if(content.X > total_qual_quantity) {
+					ret_coll.push({saved_amount: 0, name: content.description, note: `還差${content.X-total_qual_quantity}樣就達成目標`});
+				} else { 
+					qual_products = _.sortBy(qual_products, 'spot_price');
+					saved_amount = _.reduce(qual_products, (lsum, product) => {return lsum+product.spot_price;}, 0) - (total_qual_quantity*parseInt(content.Y) / parseInt(content.X));
+					ret_coll.push({saved_amount: Math.round(saved_amount), name: content.description});
+				}
+			});
+			return ret_coll;
+		};
+
 		// Public API here
 		return {
 			someMethod: function () {
@@ -215,6 +261,8 @@ angular.module('webApp')
 			calcRewardSaved: calcRewardSaved,
 			getVoucher: getVoucher,
 			getBuyXGetY: getBuyXGetY,
-			calcBuyXGetYSaved: calcBuyXGetYSaved
+			calcBuyXGetYSaved: calcBuyXGetYSaved,
+			getBuySameCategory_X_BundlePrice_P: getBuySameCategory_X_BundlePrice_P,
+			calcBuySameCategory_X_BundlePrice_PSaved: calcBuySameCategory_X_BundlePrice_PSaved
 		};
 	});

@@ -35,7 +35,7 @@ angular.module('webApp')
 
 		Cart.getCart().then(function(cart) {
 			$scope.cart = cart;
-			$scope.cart.total_price_with_discount = cart.product_total_price - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount;
+			$scope.cart.total_price_with_discount = cart.product_total_price - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount - _.reduce($scope.cart.discount.promotions, (lsum, promotion) => {return lsum+promotion.saved_amount}, 0);
 			$scope.currentUser.$promise.then(function(data) {
 				$scope.shipping_info.firstname = $scope.shipping_info.firstname || data.firstname;
 				$scope.shipping_info.telephone = $scope.shipping_info.telephone || data.telephone;
@@ -124,11 +124,11 @@ angular.module('webApp')
 			return result;
 		}
 		var getDiscountPrice = function() {
-			var discount_price = $scope.cart.product_total_price - $scope.cart.discount.coupon.saved_amount - $scope.cart.discount.voucher.saved_amount - $scope.cart.discount.reward.saved_amount;
+			var discount_price = $scope.cart.product_total_price - $scope.cart.discount.coupon.saved_amount - $scope.cart.discount.voucher.saved_amount - $scope.cart.discount.reward.saved_amount - _.reduce($scope.cart.discount.promotions, (lsum, promotion) => {return lsum+promotion.saved_amount}, 0);
 			return discount_price;
 		};
 		var getAvailableReward = function() {
-			var total_price_with_discount_wo_reward = $scope.cart.product_total_price - $scope.cart.discount.coupon.saved_amount - $scope.cart.discount.voucher.saved_amount;
+			var total_price_with_discount_wo_reward = $scope.cart.product_total_price - $scope.cart.discount.coupon.saved_amount - $scope.cart.discount.voucher.saved_amount - _.reduce($scope.cart.discount.promotions, (lsum, promotion) => {return lsum+promotion.saved_amount}, 0);
 			return (total_price_with_discount_wo_reward > $scope.cart.rewards_customer_has_pts) ? $scope.cart.rewards_customer_has_pts : total_price_with_discount_wo_reward;
 		};
 		$scope.updateCartTotal = function() {

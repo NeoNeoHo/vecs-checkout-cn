@@ -110,9 +110,10 @@ div.panel.panel-default
 						td.text-right 折扣码
 							b {{cart.discount.coupon.name}}:
 						td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
-					tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-						td.text-right {{cart.discount.promotion.name}}:
-						td.text-right - $ {{cart.discount.promotion.saved_amount}}
+					tr(ng-repeat="promotion in cart.discount.promotions", ng-style="(promotion.saved_amount) ? {color:'red'} : {color: 'Gainsboro'}")
+						td.text-right {{promotion.name}}:
+							span(ng-show="promotion.note") {{promotion.note}}
+						td.text-right - ¥ {{promotion.saved_amount}}
 					tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 						td.text-right 礼品券:
 						td.text-right 
@@ -124,7 +125,7 @@ div.panel.panel-default
 						td.text-right ¥ {{cart.shipment_fee}}
 					tr.h2
 						td.text-right 总计
-						td.text-right ¥ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount - cart.discount.promotion.saved_amount}}
+						td.text-right ¥ {{cart.total_price_with_discount + cart.shipment_fee}}
 
 div.visible-xs
 	.row
@@ -142,9 +143,10 @@ div.visible-xs
 					td.text-right 折扣码
 						b {{cart.discount.coupon.name}}:
 					td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
-				tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-					td.text-right {{cart.discount.promotion.name}}:
-					td.text-right - $ {{cart.discount.promotion.saved_amount}}
+				tr(ng-repeat="promotion in cart.discount.promotions", ng-style="(promotion.saved_amount) ? {color:'red'} : {color: 'Gainsboro'}")
+					td.text-right {{promotion.name}}:
+						span(ng-show="promotion.note") {{promotion.note}}
+					td.text-right - ¥ {{promotion.saved_amount}}
 				tr(ng-show="cart.discount.voucher.saved_amount > 0", style="color:green")
 					td.text-right 礼品券:
 					td.text-right 
@@ -156,7 +158,7 @@ div.visible-xs
 					td.text-right ¥ {{cart.shipment_fee}}
 				tr.h3
 					td.text-right 总计
-					td.text-right ¥ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount - cart.discount.promotion.saved_amount}}
+					td.text-right ¥ {{cart.total_price_with_discount + cart.shipment_fee}}
 div.loading(ng-show="cross_obj.is_submitted") Loading
 div.row.panel.panel-body
 	button.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-click="checkout_second_step()") 上一步

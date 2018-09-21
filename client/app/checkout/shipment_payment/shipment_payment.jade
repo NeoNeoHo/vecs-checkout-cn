@@ -77,6 +77,10 @@ div.panel.panel-default
 			tr(style="color:green")
 				td.text-right 折扣:
 				td.text-right - ¥ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
+			tr(ng-repeat="promotion in cart.discount.promotions", ng-style="(promotion.saved_amount) ? {color:'red'} : {color: 'Gainsboro'}")
+				td.text-right {{promotion.name}}:
+					span(ng-show="promotion.note") {{promotion.note}}
+				td.text-right - ¥ {{promotion.saved_amount}}
 			tr
 				td.text-right 运费:
 				td.text-right ¥ {{cart.shipment_fee}}
@@ -88,7 +92,7 @@ div.panel.panel-default
 					small 尚余 ¥ {{cart.discount.voucher.available_amount - cart.discount.voucher.saved_amount}}
 			tr.h2
 				td.text-right 总计
-				td.text-right ¥ {{cart.product_total_price + cart.shipment_fee - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount}}
+				td.text-right ¥ {{cart.total_price_with_discount + cart.shipment_fee}}
 .row
 	{{errors.address_msg}}
 .row

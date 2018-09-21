@@ -119,15 +119,20 @@ div.panel.panel-default
 					tr
 						td.text-right 商品总计:
 						td.text-right ¥ {{cart.product_total_price}}
-					tr(style="color:green")
-						td.text-right 折扣:
-						td.text-right - ¥ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
-					tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-						td.text-right {{cart.discount.promotion.name}}:
-						td.text-right - ¥{{cart.discount.promotion.saved_amount}}
+					tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
+						td.text-right 红利折扣:
+						td.text-right - ¥ {{cart.discount.reward.saved_amount}}
+					tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
+						td.text-right 折扣码
+							b {{cart.discount.coupon.name}}:
+						td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
+					tr(ng-repeat="promotion in cart.discount.promotions", ng-style="(promotion.saved_amount) ? {color:'red'} : {color: 'Gainsboro'}")
+						td.text-right {{promotion.name}}:
+							span(ng-show="promotion.note") {{promotion.note}}
+						td.text-right - $ {{promotion.saved_amount}}
 					tr.h2
 						td.text-right 小計
-						td.text-right ¥ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount  - cart.discount.promotion.saved_amount}}
+						td.text-right ¥ {{cart.total_price_with_discount}}
 
 div.visible-xs
 	.row
@@ -136,15 +141,20 @@ div.visible-xs
 				tr
 					td.text-right 商品总计:
 					td.text-right ¥ {{cart.product_total_price}}
-				tr(style="color:green")
-					td.text-right 折扣:
-					td.text-right - ¥ {{cart.discount.reward.saved_amount + cart.discount.coupon.saved_amount}}
-				tr(ng-show="cart.discount.promotion.saved_amount > 0", style="color:green")
-					td.text-right {{cart.discount.promotion.name}}:
-					td.text-right - ¥ {{cart.discount.promotion.saved_amount}}
+				tr(style="color:green", ng-show="cart.discount.reward.saved_amount >0")
+					td.text-right 红利折扣:
+					td.text-right - ¥ {{cart.discount.reward.saved_amount}}
+				tr(style="color:green", ng-show="cart.discount.coupon.saved_amount >0")
+					td.text-right 折扣码
+						b {{cart.discount.coupon.name}}:
+					td.text-right - ¥ {{cart.discount.coupon.saved_amount}}
+				tr(ng-repeat="promotion in cart.discount.promotions", ng-style="(promotion.saved_amount) ? {color:'red'} : {color: 'Gainsboro'}")
+					td.text-right {{promotion.name}}:
+						span(ng-show="promotion.note") {{promotion.note}}
+					td.text-right - ¥ {{promotion.saved_amount}}
 				tr.h3
 					td.text-right 小計
-					td.text-right ¥ {{cart.product_total_price - cart.discount.reward.saved_amount - cart.discount.coupon.saved_amount - cart.discount.voucher.saved_amount  - cart.discount.promotion.saved_amount}}
+					td.text-right ¥ {{cart.total_price_with_discount}}
 div.row.panel.panel-body
 	a.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-href="{{cross_obj.DIR_DOMAIN}}") 回官网
 	button.col-md-3.col-xs-7.btn.btn-vecs.btn-sharp.btn-lg.pull-right.text-justify(ng-click="checkout_second_step()") 下一步

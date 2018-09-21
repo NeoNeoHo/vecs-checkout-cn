@@ -8,6 +8,6 @@ var router = express.Router();
 
 
 router.get('/buyXGetY', auth.isAuthenticated(), controller.getBuyXGetY);
-
+router.get('/buySameCategory_X_BundlePrice_P', auth.isAuthenticated(), controller.getBuySameCategory_X_BundlePrice_P);
 
 module.exports = router;
