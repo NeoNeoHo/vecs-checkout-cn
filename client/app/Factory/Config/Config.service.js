@@ -5,17 +5,17 @@ angular.module('webApp')
 		// var DIR_IMAGE_PATH = 'https://www.vecsgardenia.com/image';
 		var DIR_IMAGE_PATH = 'http://vecs-gardenia.com.cn/image';
 
-		// var DIR_COOKIES = 'vecs-gardenia.com.cn';
+		var DIR_COOKIES = 'vecs-gardenia.com.cn';
 		// var DIR_COOKIES = 'vecsgardenia.com';
 		// var DIR_COOKIES = '61.220.72.50';
-		var DIR_COOKIES = 'localhost';
+		// var DIR_COOKIES = 'localhost';
 
 		var DIR_DOMAIN = 'http://' + DIR_COOKIES;
 		// var DIR_DOMAIN = 'https://' + DIR_COOKIES;
 		
-		// var DIR_NODE_SUBDOMAIN = 'http://checkout.' + DIR_COOKIES;
+		var DIR_NODE_SUBDOMAIN = 'http://checkout.' + DIR_COOKIES;
 		// var DIR_NODE_SUBDOMAIN = 'https://checkout.' + DIR_COOKIES;
-		var DIR_NODE_SUBDOMAIN = 'http:' + DIR_COOKIES + ':9001';
+		// var DIR_NODE_SUBDOMAIN = 'http:' + DIR_COOKIES + ':9001';
 		
 		
 
