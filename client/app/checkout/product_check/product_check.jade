@@ -83,17 +83,6 @@ div#checkout_buymore.panel.panel-default(ng-hide="true")
 							del.small.pull-right ¥ {{product.default_price}}1000
 						p
 							label.btn.btn-sharp.btn-default(href="#", role="button", ng-click="addPromoteItem(product.key)") 加入购物车
-div#checkout_buymore.panel.panel-default(ng-show="cart.giftWithPurchase.length")
-	div.panel-heading.lead
-		i.fa.fa-gift.fa-2x(style="color:#bccd99")&nbsp; 
-		span 此次购物您可获得的满额礼
-	div.panel-body
-		div.row
-			div.col-lg-3.col-md-4.col-sm-6.col-xs-6(ng-repeat="product in cart.giftWithPurchase")
-				div.thumbnail
-					img(ng-src="{{product.image}}")
-					div.caption.text-center
-						strong.h5 {{product.name}}
 div.panel.panel-default
 	div.panel-body
 		.row
@@ -155,6 +144,19 @@ div.visible-xs
 				tr.h3
 					td.text-right 小計
 					td.text-right ¥ {{cart.total_price_with_discount}}
+
+div#checkout_buymore.panel.panel-default(ng-show="cart.giftWithPurchase.length")
+	div.panel-heading.lead
+		i.fa.fa-gift.fa-2x(style="color:#bccd99")&nbsp; 
+		span 此次购物您可获得的满额礼
+	div.panel-body
+		div.row
+			div.col-lg-3.col-md-4.col-sm-6.col-xs-6(ng-repeat="product in cart.giftWithPurchase")
+				div.thumbnail
+					img(ng-src="{{product.image}}")
+					div.caption.text-center
+						strong.h5 {{product.name}}
+
 div.row.panel.panel-body
 	a.col-md-3.col-xs-4.btn.btn-default.btn-sharp.btn-lg.text-justify(ng-href="{{cross_obj.DIR_DOMAIN}}") 回官网
 	button.col-md-3.col-xs-7.btn.btn-vecs.btn-sharp.btn-lg.pull-right.text-justify(ng-click="checkout_second_step()") 下一步

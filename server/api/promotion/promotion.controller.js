@@ -55,19 +55,19 @@ export function getBuySameCategory_X_BundlePrice_P(req, res) {
 	if (is_started) {
 		var content_coll = [
 			{
-				category_ids: [120], // [156]
+				category_ids: [183], // [156]
 				product_ids: 'all', //'all' or [153], 
 				X: 4,    // 任選四件
 				Y: 320, // 1200元
 				description: '面膜專區任選四件320元'
 			},{
-				category_ids: [191],
+				category_ids: [184],
 				product_ids: 'all',
 				X: 3,
 				Y: 390,
 				description: '凍膜泥膜專區任選三件390元'
 			},{
-				category_ids: [129],
+				category_ids: [181],
 				product_ids: 'all',
 				X: 3,
 				Y: 420,
