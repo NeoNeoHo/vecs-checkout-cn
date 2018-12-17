@@ -51,28 +51,29 @@ export function getBuyXGetY(req, res) {
 	}
 };
 export function getBuySameCategory_X_BundlePrice_P(req, res) {
-	var is_started = false;  // true: campaign is running; false: campaign paused
+	var is_started = true;  // true: campaign is running; false: campaign paused
 	if (is_started) {
 		var content_coll = [
 			{
-				category_ids: [183], // [156]
+				category_ids: [190], // [156]
 				product_ids: 'all', //'all' or [153], 
-				X: 4,    // 任選四件
-				Y: 320, // 1200元
+				X: 2,    // 任選四件
+				Y: 220, // 1200元
 				description: '面膜專區任選四件320元'
-			},{
-				category_ids: [184],
-				product_ids: 'all',
-				X: 3,
-				Y: 390,
-				description: '凍膜泥膜專區任選三件390元'
-			},{
-				category_ids: [181],
-				product_ids: 'all',
-				X: 3,
-				Y: 420,
-				description: '防曬底妝專區任選三件420元'
 			}
+			//,{
+			// 	category_ids: [184],
+			// 	product_ids: 'all',
+			// 	X: 3,
+			// 	Y: 390,
+			// 	description: '凍膜泥膜專區任選三件390元'
+			// },{
+			// 	category_ids: [181],
+			// 	product_ids: 'all',
+			// 	X: 3,
+			// 	Y: 420,
+			// 	description: '防曬底妝專區任選三件420元'
+			// }
 		];
 
 		var category_ids = [];

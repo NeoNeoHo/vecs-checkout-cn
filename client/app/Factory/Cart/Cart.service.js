@@ -193,12 +193,12 @@ angular.module('webApp')
 					// 先計算買X送Y折Z的優惠，然後才加上紅利與Coupon的優惠
 					var promotion_promise = [];
 					// promotion_promise.push(Promotion.getBuyXLastOneYOff());
-					// promotion_promise.push(Promotion.getBuySameCategory_X_BundlePrice_P(cart));
+					promotion_promise.push(Promotion.getBuySameCategory_X_BundlePrice_P(cart));
 					$q.all(promotion_promise)
 						.then(function(promotion_datas) {
 							// _calcBuyXLastOneYOffSaved();
 							// lcart = _calcBuyXGetYSaved(lcart);
-							// lcart = _calcBuySameCategory_X_BundlePrice_PSaved(lcart);
+							lcart = _calcBuySameCategory_X_BundlePrice_PSaved(lcart);
 							defer.resolve(lcart);
 						}).catch(function(err) {
 							defer.reject(err);
