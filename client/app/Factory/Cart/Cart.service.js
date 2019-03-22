@@ -247,8 +247,8 @@ angular.module('webApp')
 			// 玫瑰角鯊植萃護手霜，product_id: 368
 			// 薰衣草植萃護手霜，product_id: 467
 
-			// Product.getGifts([367,239,368,467,421,454]).then(function(gifts) {
-			// 	lcart.giftWithPurchase = [];
+			Product.getGifts([367,239,368,467,272]).then(function(gifts) {
+				lcart.giftWithPurchase = [];
 			// // 	if(price_after_discount >= 1500) {
 			// // 		if(gifts[0].quantity > 1) {
 			// // 			lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
@@ -265,33 +265,28 @@ angular.module('webApp')
 			// 	// 	}			
 			// 	// }
 
-			// 	if(price_after_discount >= 588) {
-			// 		var _random_gifts = [];
-			// 		for(var i = 0; i < 4; i++) {
-			// 			if(gifts[i].quantity > 1) {
-			// 				_random_gifts.push(gifts[i]);
-			// 			}
-			// 		}
-			// 		var _random_gifts_length = _random_gifts.length;
-			// 		if(_random_gifts_length > 0) {
-			// 			lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
-			// 		}
-			// 	}
-			// 	if(price_after_discount >= 888) {
-			// 		if(gifts[4].quantity > 1) {
-			// 			lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[4]));
-			// 		}			
-			// 	}
-			// 	if(price_after_discount >= 1288) {
-			// 		if(gifts[5].quantity > 1) {
-			// 			lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[5]));
-			// 		}			
-			// 	}				
-			// 	defer.resolve(lcart);				
-			// }, function(err) {
-			// 	defer.resolve(lcart);
-			// });
-			defer.resolve(lcart);
+				if(price_after_discount >= 500) {
+					var _random_gifts = [];
+					for(var i = 0; i < 4; i++) {
+						if(gifts[i].quantity > 1) {
+							_random_gifts.push(gifts[i]);
+						}
+					}
+					var _random_gifts_length = _random_gifts.length;
+					if(_random_gifts_length > 0) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
+					}
+				}
+				if(price_after_discount >= 1000) {
+					if(gifts[4].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[4]));
+					}			
+				}			
+				defer.resolve(lcart);				
+			}, function(err) {
+				defer.resolve(lcart);
+			});
+			// defer.resolve(lcart);
 			return defer.promise;
 		}
 
