@@ -25,8 +25,8 @@ angular.module('webApp')
 		};
 
 		var FREE_SHIPPING_CONDICTION = {
-			EZSHIP: 10, //200,
-			HOME: 10, //200,
+			EZSHIP: 200,
+			HOME: 200,
 			OVERSEAS: 5000
 		};
 
