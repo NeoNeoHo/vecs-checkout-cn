@@ -51,15 +51,15 @@ export function getBuyXGetY(req, res) {
 	}
 };
 export function getBuySameCategory_X_BundlePrice_P(req, res) {
-	var is_started = false;  // true: campaign is running; false: campaign paused
+	var is_started = true;  // true: campaign is running; false: campaign paused
 	if (is_started) {
 		var content_coll = [
 			{
-				category_ids: [190], // [156]
+				category_ids: [120], // [156]
 				product_ids: 'all', //'all' or [153], 
-				X: 2,    // 任選四件
-				Y: 220, // 1200元
-				description: '身體系列任選兩件220元'
+				X: 4,    // 任選四件
+				Y: 320, // 1200元
+				description: '面膜系列任選四件320元'
 			}
 			//,{
 			// 	category_ids: [184],
