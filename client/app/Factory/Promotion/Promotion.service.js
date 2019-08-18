@@ -62,11 +62,13 @@ angular.module('webApp')
 					// Apply to those qualified Products
 					if(_qualified_products_coll.length === 0) {
 						try {
+							var bundle_sale_result = calcBuySameCategory_X_BundlePrice_PSaved(cart);
+							var need_to_adjust_amount = bundle_sale_result[0].original_total_price ? bundle_sale_result[0].original_total_price : 0;
 							if(cart.discount.promotion) {
 								var promotion_deduct_amount = cart.discount.promotion.saved_amount;
-								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round((cart.product_total_price-promotion_deduct_amount) * _discount_fee / 100);
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round((cart.product_total_price-promotion_deduct_amount - need_to_adjust_amount) * _discount_fee / 100);
 							} else {
-								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round(cart.product_total_price * _discount_fee / 100);
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round( (cart.product_total_price-need_to_adjust_amount) * _discount_fee / 100);
 							}
 						} catch (e) {
 
@@ -228,7 +230,7 @@ angular.module('webApp')
 			_.forEach(_buySameCategory_X_BundlePrice_P.content_coll, (content) => {
 				var promo_qual_prod_ids = content.product_ids;
 				var qual_products = [];
-				var saved_amount = 0
+				var saved_amount = 0;
 				var total_qual_quantity = _.reduce(cart.products, function(lquantity, product) {
 					if(promo_qual_prod_ids === 'all' || _.contains(promo_qual_prod_ids, product.product_id)) {
 						for(let i = 0; i < product.quantity; i++) {
@@ -244,7 +246,11 @@ angular.module('webApp')
 				} else { 
 					qual_products = _.sortBy(qual_products, 'spot_price');
 					saved_amount = _.reduce(qual_products, (lsum, product) => {return lsum+product.spot_price;}, 0) - (total_qual_quantity*parseInt(content.Y) / parseInt(content.X));
-					ret_coll.push({saved_amount: Math.round(saved_amount), name: content.description});
+					ret_coll.push({
+						saved_amount: Math.round(saved_amount), 
+						name: content.description,
+						original_total_price: _.reduce(qual_products, (lsum, product) => {return lsum+product.spot_price;}, 0)
+					});
 				}
 			});
 			return ret_coll;
