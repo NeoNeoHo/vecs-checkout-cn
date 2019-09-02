@@ -51,7 +51,7 @@ angular.module('webApp')
 
 				// Check If Coupon Content Has Weird Discount
 				if(_discount_type === 'P' && _discount_fee >= 60) {
-					var lerr = {status: 500, data: '此折購碼優惠折扣異常，請洽客服02-23623827！！'};
+					var lerr = {status: 500, data: '此折購碼優惠折扣異常，請洽客服886-2-23623827！！'};
 					defer.reject(lerr);
 				}
 
@@ -64,11 +64,11 @@ angular.module('webApp')
 						try {
 							var bundle_sale_result = calcBuySameCategory_X_BundlePrice_PSaved(cart);
 							var need_to_adjust_amount = bundle_sale_result[0].original_total_price ? bundle_sale_result[0].original_total_price : 0;
-							if(cart.discount.promotion) {
-								var promotion_deduct_amount = cart.discount.promotion.saved_amount;
-								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round((cart.product_total_price-promotion_deduct_amount - need_to_adjust_amount) * _discount_fee / 100);
+							if(cart.discount.promotions) {
+								var promotion_deduct_amount = _.reduce(cart.discount.promotions, (lsum, promotion) => {return lsum+promotion.saved_amount}, 0);
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round((cart.product_total_price-promotion_deduct_amount) * _discount_fee / 100);
 							} else {
-								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round( (cart.product_total_price-need_to_adjust_amount) * _discount_fee / 100);
+								_coupon_saved_amount = (_discount_type === 'F') ? _discount_fee : Math.round( (cart.product_total_price) * _discount_fee / 100);
 							}
 						} catch (e) {
 

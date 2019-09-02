@@ -87,10 +87,11 @@ angular.module('webApp')
 		};
 		
 		var _calcBuyXGetYSaved = function(cart) {
-			var resp_promotion = Promotion.calcBuyXGetYSaved(cart);
-			cart.discount.promotion = resp_promotion;
-			cart = checkDiscount(cart);
-			return cart;
+			// 尚未完成
+			// var resp_promotion = Promotion.calcBuyXGetYSaved(cart);
+			// cart.discount.promotion = resp_promotion;
+			// cart = checkDiscount(cart);
+			// return cart;
 		};
 		var _calcBuySameCategory_X_BundlePrice_PSaved = function(cart) {
 			var resp_promotions = Promotion.calcBuySameCategory_X_BundlePrice_PSaved(cart);
