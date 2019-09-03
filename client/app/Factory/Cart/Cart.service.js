@@ -228,19 +228,19 @@ angular.module('webApp')
 			lcart.giftWithPurchase = [];
 
 			// /* This is usual Campaign Area */
-			Product.getGifts([250]).then(function(gifts){
+			// Product.getGifts([250]).then(function(gifts){
 				// product: 420, 125，護唇膏
 				// product: 403，小角鯊
-				if(price_after_discount >= 400 && gifts[0].quantity > 1) {
-					lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-				}
+				// if(price_after_discount >= 400 && gifts[0].quantity > 1) {
+				// 	lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+				// }
 				// if(price_after_discount >= 1200 && gifts[1].quantity > 1) {
 				// 	lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
 				// }
-				defer.resolve(lcart);				
-			}, function(err) {
-				defer.resolve(lcart);
-			});
+			// 	defer.resolve(lcart);				
+			// }, function(err) {
+			// 	defer.resolve(lcart);
+			// });
 
 
 			// 柑橘複方植萃護手霜，product_id: 367
@@ -287,7 +287,7 @@ angular.module('webApp')
 			// }, function(err) {
 			// 	defer.resolve(lcart);
 			// });
-			// defer.resolve(lcart);
+			defer.resolve(lcart);
 			return defer.promise;
 		}
 
