@@ -3,9 +3,8 @@
 angular.module('webApp')
 	.factory('Cart', function ($q, $http, Config, $cookies, Product, Promotion) {
 		var cart_cache = '';
-		// const _random_ = Math.floor((Math.random() * 10) + 1);
-
-		var _random_ = 0;
+		const _random_ = Math.floor((Math.random() * 10) + 1);
+		// var _random_ = 0;
 
 		if($cookies.get('vg_gift_t')) {
 			_random_ = $cookies.get('vg_gift_t')
@@ -195,6 +194,7 @@ angular.module('webApp')
 					var promotion_promise = [];
 					// promotion_promise.push(Promotion.getBuyXLastOneYOff());
 					promotion_promise.push(Promotion.getBuySameCategory_X_BundlePrice_P(cart));
+
 					$q.all(promotion_promise)
 						.then(function(promotion_datas) {
 							// _calcBuyXLastOneYOffSaved();
@@ -248,23 +248,37 @@ angular.module('webApp')
 			// 玫瑰角鯊植萃護手霜，product_id: 368
 			// 薰衣草植萃護手霜，product_id: 467
 
-			// Product.getGifts([272, 421]).then(function(gifts) {
-			// 	lcart.giftWithPurchase = [];
-			// 	if(price_after_discount >= 450) {
-			// 		if(gifts[0].quantity > 1) {
-			// 			lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-			// 		}			
-			// 	}
-			// 	if(price_after_discount >= 600) {	
-			// 		if(gifts[1].quantity > 1) {
-			// 			lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-			// 		}			
-			// 	}
-				// if(price_after_discount >= 800) {
-				// 	if(gifts[2].quantity > 1) {
-				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
-				// 	}			
+			Product.getGifts([420, 357, 422]).then(function(gifts) {
+				lcart.giftWithPurchase = [];
+
+				// if(price_after_discount >= 300) {
+				// 	var _random_gifts = [];
+				// 	for(var i = 0; i < 4; i++) {
+				// 		if(gifts[i].quantity > 1) {
+				// 			_random_gifts.push(gifts[i]);
+				// 		}
+				// 	}
+				// 	var _random_gifts_length = _random_gifts.length;
+				// 	if(_random_gifts_length > 0) {
+				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
+				// 	}
 				// }
+
+				if(price_after_discount >= 600) {
+					if(gifts[0].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+					}			
+				}
+				if(price_after_discount >= 800) {	
+					if(gifts[1].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+					}			
+				}
+				if(price_after_discount >= 1200) {
+					if(gifts[2].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
+					}			
+				}
 
 				// if(price_after_discount >= 300) {
 				// 	var _random_gifts = [];
@@ -283,11 +297,11 @@ angular.module('webApp')
 				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[4]));
 				// 	}			
 				// }			
-			// 	defer.resolve(lcart);				
-			// }, function(err) {
-			// 	defer.resolve(lcart);
-			// });
-			defer.resolve(lcart);
+				defer.resolve(lcart);				
+			}, function(err) {
+				defer.resolve(lcart);
+			});
+			// defer.resolve(lcart);
 			return defer.promise;
 		}
 
