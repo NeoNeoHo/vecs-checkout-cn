@@ -3,8 +3,8 @@
 angular.module('webApp')
 	.factory('Cart', function ($q, $http, Config, $cookies, Product, Promotion) {
 		var cart_cache = '';
-		const _random_ = Math.floor((Math.random() * 10) + 1);
-		// var _random_ = 0;
+		// const _random_ = Math.floor((Math.random() * 10) + 1);
+		var _random_ = 0;
 
 		if($cookies.get('vg_gift_t')) {
 			_random_ = $cookies.get('vg_gift_t')
