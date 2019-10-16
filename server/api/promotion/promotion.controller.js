@@ -51,7 +51,7 @@ export function getBuyXGetY(req, res) {
 	}
 };
 export function getBuySameCategory_X_BundlePrice_P(req, res) {
-	var is_started = true;  // true: campaign is running; false: campaign paused
+	var is_started = false;  // true: campaign is running; false: campaign paused
 	if (is_started) {
 		var content_coll = [
 			{

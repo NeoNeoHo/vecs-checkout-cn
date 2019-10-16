@@ -264,21 +264,21 @@ angular.module('webApp')
 				// 	}
 				// }
 
-				if(price_after_discount >= 600) {
-					if(gifts[0].quantity > 1) {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-					}			
-				}
-				if(price_after_discount >= 800) {	
-					if(gifts[1].quantity > 1) {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
-					}			
-				}
-				if(price_after_discount >= 1200) {
-					if(gifts[2].quantity > 1) {
-						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
-					}			
-				}
+				// if(price_after_discount >= 600) {
+				// 	if(gifts[0].quantity > 1) {
+				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+				// 	}			
+				// }
+				// if(price_after_discount >= 800) {	
+				// 	if(gifts[1].quantity > 1) {
+				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
+				// 	}			
+				// }
+				// if(price_after_discount >= 1200) {
+				// 	if(gifts[2].quantity > 1) {
+				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[2]));
+				// 	}			
+				// }
 
 				// if(price_after_discount >= 300) {
 				// 	var _random_gifts = [];
