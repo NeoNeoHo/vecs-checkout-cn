@@ -81,7 +81,7 @@
     "time-grunt": "^1.2.1",
     "grunt-mocha-test": "~0.12.7",
     "grunt-mocha-istanbul": "^3.0.1",
-    "open": "~0.0.4",
+    "open": "~7.0.0",
     "jshint-stylish": "~2.1.0",
     "connect-livereload": "^0.5.3",
     "istanbul": "~0.4.1",
