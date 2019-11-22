@@ -20,8 +20,8 @@ angular.module('webApp')
 		
 
 		var SHIPPING_FEE = {
-			EZSHIP: 60,
-			HOME: 20,
+			EZSHIP: 0,
+			HOME: 0,
 		};
 
 		var FREE_SHIPPING_CONDICTION = {
