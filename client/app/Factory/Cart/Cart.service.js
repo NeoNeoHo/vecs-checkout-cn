@@ -248,21 +248,21 @@ angular.module('webApp')
 			// 玫瑰角鯊植萃護手霜，product_id: 368
 			// 薰衣草植萃護手霜，product_id: 467
 
-			Product.getGifts([420, 357, 422]).then(function(gifts) {
+			Product.getGifts([367, 239, 368, 467]).then(function(gifts) {
 				lcart.giftWithPurchase = [];
 
-				// if(price_after_discount >= 300) {
-				// 	var _random_gifts = [];
-				// 	for(var i = 0; i < 4; i++) {
-				// 		if(gifts[i].quantity > 1) {
-				// 			_random_gifts.push(gifts[i]);
-				// 		}
-				// 	}
-				// 	var _random_gifts_length = _random_gifts.length;
-				// 	if(_random_gifts_length > 0) {
-				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
-				// 	}
-				// }
+				if(price_after_discount >= 300) {
+					var _random_gifts = [];
+					for(var i = 0; i < 4; i++) {
+						if(gifts[i].quantity > 1) {
+							_random_gifts.push(gifts[i]);
+						}
+					}
+					var _random_gifts_length = _random_gifts.length;
+					if(_random_gifts_length > 0) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(_random_gifts[_random_ % _random_gifts_length]));
+					}
+				}
 
 				// if(price_after_discount >= 600) {
 				// 	if(gifts[0].quantity > 1) {
