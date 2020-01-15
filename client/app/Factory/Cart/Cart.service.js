@@ -248,12 +248,12 @@ angular.module('webApp')
 			// 玫瑰角鯊植萃護手霜，product_id: 368
 			// 薰衣草植萃護手霜，product_id: 467
 
-			Product.getGifts([367, 239, 368, 467]).then(function(gifts) {
+			Product.getGifts([125, 420]).then(function(gifts) {
 				lcart.giftWithPurchase = [];
 
-				if(price_after_discount >= 300) {
+				if(price_after_discount >= 500) {
 					var _random_gifts = [];
-					for(var i = 0; i < 4; i++) {
+					for(var i = 0; i < 2; i++) {
 						if(gifts[i].quantity > 1) {
 							_random_gifts.push(gifts[i]);
 						}
