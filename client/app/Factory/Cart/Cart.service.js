@@ -248,8 +248,8 @@ angular.module('webApp')
 			// 玫瑰角鯊植萃護手霜，product_id: 368
 			// 薰衣草植萃護手霜，product_id: 467
 
-			// Product.getGifts([125, 420]).then(function(gifts) {
-			// 	lcart.giftWithPurchase = [];
+			Product.getGifts([420]).then(function(gifts) {
+				lcart.giftWithPurchase = [];
 
 			// 	if(price_after_discount >= 500) {
 			// 		var _random_gifts = [];
@@ -264,11 +264,11 @@ angular.module('webApp')
 			// 		}
 			// 	}
 
-				// if(price_after_discount >= 600) {
-				// 	if(gifts[0].quantity > 1) {
-				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
-				// 	}			
-				// }
+				if(price_after_discount >= 300) {
+					if(gifts[0].quantity > 1) {
+						lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[0]));
+					}			
+				}
 				// if(price_after_discount >= 800) {	
 				// 	if(gifts[1].quantity > 1) {
 				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[1]));
@@ -297,11 +297,11 @@ angular.module('webApp')
 				// 		lcart.giftWithPurchase.push(_mapGoodFormGift(gifts[4]));
 				// 	}			
 				// }			
-			// 	defer.resolve(lcart);				
-			// }, function(err) {
-			// 	defer.resolve(lcart);
-			// });
-			defer.resolve(lcart);
+				defer.resolve(lcart);				
+			}, function(err) {
+				defer.resolve(lcart);
+			});
+			// defer.resolve(lcart);
 			return defer.promise;
 		}
 
